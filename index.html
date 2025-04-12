@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Website Keren Saya</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/scrollreveal"></script>
   <style>
-    html {
-      scroll-behavior: smooth;
-    }
-
+    html { scroll-behavior: smooth; }
     body {
       font-family: 'Poppins', sans-serif;
       margin: 0;
@@ -17,35 +15,20 @@
       color: #333;
       transition: 0.4s ease;
     }
-
     header {
       background: #1f2937;
       color: white;
       padding: 20px;
       text-align: center;
     }
-
-    nav {
-      margin-top: 10px;
-    }
-
     nav a {
       margin: 0 15px;
       color: #eee;
       text-decoration: none;
       font-weight: 600;
     }
-
-    nav a:hover {
-      color: #38bdf8;
-    }
-
-    .dark header,
-    .dark footer {
-      background: #1e293b;
-      color: #f1f5f9;
-    }
-
+    nav a:hover { color: #38bdf8; }
+    .dark header, .dark footer { background: #1e293b; color: #f1f5f9; }
     main {
       max-width: 800px;
       margin: 40px auto;
@@ -54,23 +37,10 @@
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-
-    .dark main {
-      background: #1f2937;
-      color: #e5e7eb;
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 2.5rem;
-      color: #111827;
-    }
-
-    p {
-      font-size: 1.1rem;
-      line-height: 1.7;
-    }
-
+    .dark main { background: #1f2937; color: #e5e7eb; }
+    h1, h2 { text-align: center; color: #111827; }
+    #typing { color: #2563eb; font-size: 1.3rem; margin-bottom: 20px; }
+    p { font-size: 1.1rem; line-height: 1.7; }
     .cta-button {
       display: block;
       width: fit-content;
@@ -83,38 +53,14 @@
       font-weight: bold;
       transition: 0.3s ease;
     }
-
-    .cta-button:hover {
-      background: #1e40af;
-    }
-
-    .dark .cta-button {
-      background: #0ea5e9;
-    }
-
-    .banner {
-      text-align: center;
-    }
-
+    .cta-button:hover { background: #1e40af; }
+    .dark .cta-button { background: #0ea5e9; }
+    .banner { text-align: center; }
     .banner img {
       width: 100%;
       border-radius: 12px;
       margin-top: 20px;
     }
-
-    .dark {
-      background: #111827;
-      color: #f9fafb;
-    }
-
-    .dark a {
-      color: #38bdf8;
-    }
-
-    .dark a:hover {
-      color: #60a5fa;
-    }
-
     button.toggle-dark {
       margin-top: 10px;
       padding: 8px 16px;
@@ -125,22 +71,44 @@
       font-weight: bold;
       cursor: pointer;
     }
-
     footer {
       text-align: center;
       padding: 20px;
       font-size: 0.9rem;
       color: #888;
     }
-
     .social-icons img {
       margin: 0 8px;
       vertical-align: middle;
       transition: 0.3s;
     }
-
     .social-icons img:hover {
       transform: scale(1.2);
+    }
+    form input, form textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+    form button {
+      padding: 10px 20px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    form button:hover {
+      background: #1e40af;
+    }
+    .dark form button { background: #0ea5e9; }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8rem; }
+      .cta-button { width: 100%; text-align: center; }
+      nav a { display: block; margin: 10px 0; }
     }
   </style>
 </head>
@@ -150,8 +118,8 @@
     <h2>Selamat Datang di Website Saya!</h2>
     <nav>
       <a href="#">Beranda</a>
-      <a href="#">Tentang</a>
-      <a href="#">Kontak</a>
+      <a href="#tentang">Tentang</a>
+      <a href="#kontak">Kontak</a>
     </nav>
     <button class="toggle-dark" onclick="toggleDarkMode()">🌙 Dark Mode</button>
   </header>
@@ -162,8 +130,17 @@
 
   <main>
     <h1>Halo Dunia 👋</h1>
-    <p>Ini adalah halaman website pertamaku! Di sini saya belajar HTML, CSS, dan cara membuat website tampil online. Nantinya halaman ini bisa saya kembangkan jadi portofolio, toko online, atau apapun yang saya suka.</p>
+    <h2 id="typing"></h2>
+    <p id="tentang">Ini adalah website pertamaku! Aku belajar cara membangun website sendiri dari awal, mulai dari HTML, CSS, lalu hosting di GitHub Pages. Semoga nanti bisa jadi portofolio online atau website project pribadi.</p>
     <a href="#" class="cta-button">Pelajari Lebih Lanjut</a>
+
+    <h2 id="kontak">Hubungi Saya</h2>
+    <form action="https://formspree.io/f/yourFormID" method="POST">
+      <input type="text" name="nama" placeholder="Nama Anda" required>
+      <input type="email" name="email" placeholder="Email Anda" required>
+      <textarea name="pesan" rows="4" placeholder="Tulis pesan..." required></textarea>
+      <button type="submit">Kirim</button>
+    </form>
   </main>
 
   <footer>
@@ -179,6 +156,32 @@
     function toggleDarkMode() {
       document.body.classList.toggle('dark');
     }
+
+    const texts = ["Saya Web Developer", "Saya Suka Coding", "Ini Website Pertamaku!"];
+    let count = 0;
+    let index = 0;
+    let currentText = "";
+    let letter = "";
+
+    function type() {
+      if (count === texts.length) count = 0;
+      currentText = texts[count];
+      letter = currentText.slice(0, ++index);
+
+      document.getElementById("typing").textContent = letter;
+      if (letter.length === currentText.length) {
+        count++;
+        index = 0;
+        setTimeout(type, 1000);
+      } else {
+        setTimeout(type, 100);
+      }
+    }
+
+    type();
+
+    ScrollReveal().reveal('main', { delay: 300, origin: 'bottom', distance: '50px' });
+    ScrollReveal().reveal('.banner img', { delay: 500, origin: 'top', distance: '100px' });
   </script>
 
 </body>
