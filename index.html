@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Laksawl | Portofolio</title>
+  <title>Laksmana | Portofolio</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
@@ -77,7 +77,7 @@
       border-radius: 1rem;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       margin: 1rem auto;
-      max-width: 600px;
+      max-width: 800px;
       transition: transform 0.3s ease;
     }
 
@@ -90,6 +90,54 @@
       max-width: 300px;
       border-radius: 1rem;
       margin: 1rem;
+    }
+
+    .skills {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .skill {
+      background: #eee;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .skill-bar {
+      height: 20px;
+      background-color: var(--sky);
+      width: 0;
+      animation: growBar 2s forwards;
+    }
+
+    @keyframes growBar {
+      to {
+        width: var(--level);
+      }
+    }
+
+    .filter-buttons {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .filter-buttons button {
+      margin: 0.5rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      background: var(--sky);
+      color: white;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .filter-item {
+      display: none;
+    }
+
+    .filter-item.show {
+      display: inline-block;
     }
 
     footer {
@@ -115,6 +163,19 @@
 
     .dark-mode nav a {
       color: white;
+    }
+
+    .contact-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--sky);
+      color: white;
+      padding: 1rem;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 999;
     }
   </style>
 </head>
@@ -142,16 +203,29 @@
     <div class="card">
       <h2>Tentang Saya</h2>
       <p>Saya seorang pengembang web yang antusias dengan desain bersih dan fungsionalitas modern.</p>
+      <div class="skills">
+        <div class="skill">
+          <div class="skill-bar" style="--level: 90%"></div>
+        </div>
+        <div class="skill">
+          <div class="skill-bar" style="--level: 80%"></div>
+        </div>
+      </div>
     </div>
   </section>
 
   <section id="portfolio" data-aos="fade-up">
     <div class="card">
       <h2>Portofolio</h2>
+      <div class="filter-buttons">
+        <button onclick="filterSelection('all')">Semua</button>
+        <button onclick="filterSelection('web')">Web</button>
+        <button onclick="filterSelection('design')">Desain</button>
+      </div>
       <div class="gallery">
-        <img src="https://i.pinimg.com/236x/4d/49/ed/4d49ed44a01a7a8e3330ebb317c1869f.jpg" alt="Project 1">
-        <img src="https://via.placeholder.com/300x200.png?text=Project+2" alt="Project 2">
-        <img src="https://via.placeholder.com/300x200.png?text=Project+3" alt="Project 3">
+        <img class="filter-item web show" src="https://i.pinimg.com/236x/4d/49/ed/4d49ed44a01a7a8e3330ebb317c1869f.jpg" alt="Web Project">
+        <img class="filter-item design show" src="https://via.placeholder.com/300x200.png?text=Desain+2" alt="Design Project">
+        <img class="filter-item web show" src="https://via.placeholder.com/300x200.png?text=Web+3" alt="Web Project 3">
       </div>
     </div>
   </section>
@@ -180,12 +254,15 @@
       <a href="https://instagram.com/laksawl" target="_blank"><i class="fab fa-instagram"></i></a>
       <a href="#top"><i class="fas fa-arrow-up"></i></a>
     </div>
-    <p>&copy; <span id="year"></span> Laksawl. All rights reserved.</p>
+    <p>&copy; <span id="year"></span> Laksmana. All rights reserved.</p>
   </footer>
+
+  <a class="contact-btn" href="mailto:email@example.com" title="Hubungi Saya"><i class="fas fa-envelope"></i></a>
 
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
     AOS.init();
+
     const typed = new Typed('#typed', {
       strings: ["Halo, saya Laksawl", "Web Developer", "UI Designer", "Welcome to my website"],
       typeSpeed: 60,
@@ -198,6 +275,16 @@
     }
 
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    function filterSelection(c) {
+      var x = document.getElementsByClassName("filter-item");
+      if (c === "all") c = "";
+      for (var i = 0; i < x.length; i++) {
+        x[i].classList.remove("show");
+        if (x[i].className.indexOf(c) > -1) x[i].classList.add("show");
+      }
+    }
+    filterSelection("all");
   </script>
 </body>
 
