@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Interaktif Berfikir</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Keren Saya</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/scrollreveal"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <style>
     html { scroll-behavior: smooth; }
     body {
       font-family: 'Poppins', sans-serif;
       margin: 0;
-      background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+      background: linear-gradient(to right, #fbc2eb, #a6c1ee);
       color: #333;
       transition: 0.4s ease;
     }
     header {
       background: #1f2937;
-      color: blue;
+      color: white;
       padding: 20px;
       text-align: center;
+      position: relative;
+      z-index: 2;
     }
     nav a {
       margin: 0 15px;
@@ -36,26 +39,27 @@
       background: white;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 2;
     }
     .dark main { background: #1f2937; color: #e5e7eb; }
     h1, h2 { text-align: center; color: #111827; }
-    #typing { color: #2563eb; font-size: 1.3rem; margin-bottom: 20px; }
+    #typing { color: #d97706; font-size: 1.3rem; margin-bottom: 20px; text-align: center; }
     p { font-size: 1.1rem; line-height: 1.7; }
     .cta-button {
       display: block;
       width: fit-content;
       margin: 30px auto 0;
       padding: 12px 24px;
-      background: #2563eb;
+      background: #d97706;
       color: white;
       text-decoration: none;
       border-radius: 8px;
       font-weight: bold;
       transition: 0.3s ease;
     }
-    .cta-button:hover { background: #1e40af; }
-    .dark .cta-button { background: #0ea5e9; }
-    .banner { text-align: center; }
+    .cta-button:hover { background: #b45309; }
+    .dark .cta-button { background: #eab308; }
     .banner img {
       width: 100%;
       border-radius: 12px;
@@ -76,88 +80,89 @@
       padding: 20px;
       font-size: 0.9rem;
       color: #888;
+      z-index: 2;
+      position: relative;
     }
-    .social-icons img {
-      margin: 0 8px;
-      vertical-align: middle;
-      transition: 0.3s;
-    }
-    .social-icons img:hover {
-      transform: scale(1.2);
-    }
-    form input, form textarea {
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
+      height: 100%;
+      z-index: 0;
     }
-    form button {
-      padding: 10px 20px;
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+    audio {
+      display: block;
+      margin: 20px auto;
     }
-    form button:hover {
-      background: #1e40af;
-    }
-    .dark form button { background: #0ea5e9; }
-
-    @media (max-width: 600px) {
-      h1 { font-size: 1.8rem; }
-      .cta-button { width: 100%; text-align: center; }
-      nav a { display: block; margin: 10px 0; }
+    #clock {
+      text-align: center;
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
+  <div id="particles-js"></div>
 
   <header>
-    <h2>Selamat Datang di Website Saya!</h2>
+    <h2>🌟 Selamat Datang di Dunia Digital Saya 🌟</h2>
     <nav>
       <a href="#">Beranda</a>
       <a href="#tentang">Tentang</a>
       <a href="#kontak">Kontak</a>
     </nav>
     <button class="toggle-dark" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+    <div id="clock"></div>
   </header>
 
   <section class="banner">
-    <img src="https://source.unsplash.com/1200x400/?coding,technology" alt="Banner">
+    <img src="https://images.unsplash.com/photo-1584277263364-4a0922bdf4eb?auto=format&fit=crop&w=1200&q=80" alt="Banner Keren">
   </section>
 
   <main>
-    <h1>Halo Dunia 👋</h1>
-    <h2 id="typing"></h2>
-    <p id="tentang">Ini adalah website pertamaku! Aku belajar cara membangun website sendiri dari awal, mulai dari HTML, CSS, lalu hosting di GitHub Pages. Semoga nanti bisa jadi portofolio online atau website project pribadi.</p>
-    <a href="#" class="cta-button">Pelajari Lebih Lanjut</a>
+    <h1>✨ Website Impianmu Telah Hadir ✨</h1>
+    <div id="typing"></div>
+    <p id="tentang">Selamat datang di tempat di mana kreativitas dan teknologi bertemu. Website ini adalah langkah pertama menuju masa depan digitalmu. Mari kita jelajahi bersama!</p>
+
+    <a href="#kontak" class="cta-button">Hubungi Saya Sekarang</a>
+
+    <audio id="music" controls autoplay loop>
+      <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" type="audio/mp3">
+      Browser Anda tidak mendukung audio.
+    </audio>
 
     <h2 id="kontak">Hubungi Saya</h2>
     <form action="https://formspree.io/f/yourFormID" method="POST">
-      <input type="text" name="nama" placeholder="=Laksmana Prasat" required>
-      <input type="email" name="email" placeholder="prasatlaksmana@gmail.com" required>
-      <textarea name="pesan" rows="4" placeholder="Mari Tuangkan Pikiran Kita Bersama dan Kita Kelola dengan Baik..." required></textarea>
+      <input type="text" name="nama" placeholder="Laksmana Prasat" required>
+      <input type="email" name="email" placeholder="Prasatlaksmana@gmail.com" required>
+      <textarea name="pesan" rows="4" placeholder="Change your thoughts and you change your world..." required></textarea>
       <button type="submit">Kirim</button>
     </form>
   </main>
 
   <footer>
-    <p>© 2025 Laksmana Prasat. Dibuat dengan semangat dan kopi ☕</p>
-    <div class="social-icons">
-      <a href="#"><img src="https://img.icons8.com/ios-filled/24/000000/github.png"/></a>
-      <a href="#"><img src="https://img.icons8.com/ios-filled/24/000000/instagram-new.png"/></a>
-      <a href="#"><img src="https://img.icons8.com/ios-filled/24/000000/linkedin.png"/></a>
-    </div>
+    <p>© 2025 Website Laksmana. Dibuat dengan semangat Bollywood 💃</p>
   </footer>
 
   <script>
+    // Particles
+    particlesJS.load('particles-js', 'https://cdn.jsdelivr.net/gh/VincentGarreau/particles.js/demo/particles.json');
+
+    // Dark Mode Toggle
     function toggleDarkMode() {
       document.body.classList.toggle('dark');
     }
 
-    const texts = ["Saya Web Developer", "Saya Suka Coding", "Ini Website Pertamaku!"];
+    // Auto Dark Mode at Night
+    const hour = new Date().getHours();
+    if (hour >= 18 || hour < 6) {
+      document.body.classList.add('dark');
+    }
+
+    // Typing Effect
+    const texts = ["Namaste! 👋", "Selamat datang di website saya", "Mari kita bangun masa depan bersama!"];
     let count = 0;
     let index = 0;
     let currentText = "";
@@ -167,7 +172,6 @@
       if (count === texts.length) count = 0;
       currentText = texts[count];
       letter = currentText.slice(0, ++index);
-
       document.getElementById("typing").textContent = letter;
       if (letter.length === currentText.length) {
         count++;
@@ -177,61 +181,17 @@
         setTimeout(type, 100);
       }
     }
-
     type();
 
+    // Clock
+    setInterval(() => {
+      const now = new Date();
+      document.getElementById("clock").innerText = now.toLocaleTimeString("id-ID");
+    }, 1000);
+
+    // Scroll Reveal
     ScrollReveal().reveal('main', { delay: 300, origin: 'bottom', distance: '50px' });
     ScrollReveal().reveal('.banner img', { delay: 500, origin: 'top', distance: '100px' });
   </script>
-
 </body>
 </html>
-<div class="hero-video">
-  <video autoplay muted loop>
-    <source src="https://www.vecteezy.com/video/33862924-glowing-sphere-in-hand-drawn-style-stylized-energy-pink-andpurple-sphere" type="video/mp4">
-  </video>
-  <div class="hero-text">
-    <h1>Selamat Datang!</h1>
-    <p>Website saya, dengan video latar.</p>
-  </div>
-</div>
-<div id="clock" style="text-align:center; font-size:2em;"></div>
-<script>
-  setInterval(() => {
-    const now = new Date();
-    document.getElementById("clock").innerText =
-      now.toLocaleTimeString("id-ID");
-  }, 1000);
-</script>
-<audio id="music" src="https://stock.adobe.com/search/audio?k=638560199" autoplay loop></audio>
-<button onclick="document.getElementById('music').play()">▶️ Mainkan Musik</button>
-<div id="particles-js"></div>
-<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-<script>
-particlesJS.load('particles-js', 'https://cdn.jsdelivr.net/gh/VincentGarreau/particles.js/demo/particles.json');
-</script>
-<style>
-#particles-js {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-}
-</style>
-<script>
-  const hour = new Date().getHours();
-  if (hour >= 18 || hour < 6) {
-    document.body.classList.add('dark');
-  }
-</script>
-<input type="text" id="search" placeholder="Cari di website..." onkeyup="searchContent()" style="width:100%; padding:10px; margin-bottom:20px;">
-
-<script>
-  function searchContent() {
-    const input = document.getElementById("search").value.toLowerCase();
-    const pList = document.querySelectorAll("main p");
-    pList.forEach(p => {
-      p.style.display = p.innerText.toLowerCase().includes(input) ? "" : "none";
-    });
-  }
-</script>
