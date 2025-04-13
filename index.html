@@ -294,3 +294,208 @@
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Laksawl | Portofolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+  <style>
+    :root {
+      --sky: #57c7f1;
+      --dark: #121212;
+      --light: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--light);
+      color: #333;
+      scroll-behavior: smooth;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 999;
+    }
+
+    nav a {
+      margin: 0 1rem;
+      text-decoration: none;
+      color: #000;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: var(--sky);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--sky);
+    }
+
+    .hero {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: url('https://i.pinimg.com/736x/12/39/bd/1239bd52ed659fbdb6a941bc87d26c53.jpg') no-repeat center/cover;
+      color: white;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+    }
+
+    section {
+      padding: 4rem 2rem;
+    }
+
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin: 1rem auto;
+      max-width: 600px;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+    }
+
+    .gallery img {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 1rem;
+      margin: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: #eee;
+    }
+
+    .socials a {
+      margin: 0 0.5rem;
+      color: #333;
+      transition: 0.3s;
+    }
+
+    .socials a:hover {
+      color: var(--sky);
+    }
+
+    .dark-mode {
+      background-color: var(--dark);
+      color: white;
+    }
+
+    .dark-mode nav a {
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">Laksawl</div>
+    <nav>
+      <a href="#about">Tentang</a>
+      <a href="#portfolio">Portofolio</a>
+      <a href="#blog">Blog</a>
+      <a href="#contact">Kontak</a>
+      <a href="#" onclick="toggleDarkMode()">🌗</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h1><span id="typed"></span></h1>
+      <p>Selamat datang di situs pribadi saya</p>
+    </div>
+  </section>
+
+  <section id="about" data-aos="fade-up">
+    <div class="card">
+      <h2>Tentang Saya</h2>
+      <p>Saya seorang pengembang web yang antusias dengan desain bersih dan fungsionalitas modern.</p>
+    </div>
+  </section>
+
+  <section id="portfolio" data-aos="fade-up">
+    <div class="card">
+      <h2>Portofolio</h2>
+      <div class="gallery">
+        <img src="https://i.pinimg.com/236x/4d/49/ed/4d49ed44a01a7a8e3330ebb317c1869f.jpg" alt="Project 1">
+        <img src="https://via.placeholder.com/300x200.png?text=Project+2" alt="Project 2">
+        <img src="https://via.placeholder.com/300x200.png?text=Project+3" alt="Project 3">
+      </div>
+    </div>
+  </section>
+
+  <section id="blog" data-aos="fade-up">
+    <div class="card">
+      <h2>Blog</h2>
+      <p>Saya akan membagikan tips coding, desain, dan pengalaman di dunia pengembangan web.</p>
+    </div>
+  </section>
+
+  <section id="contact" data-aos="fade-up">
+    <div class="card">
+      <h2>Kontak Saya</h2>
+      <form action="https://formspree.io/f/mqkrzwgd" method="POST">
+        <input type="text" name="name" placeholder="Nama" required><br><br>
+        <input type="email" name="email" placeholder="Email" required><br><br>
+        <textarea name="message" placeholder="Pesan" rows="4" required></textarea><br><br>
+        <button type="submit">Kirim</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="socials">
+      <a href="https://instagram.com/laksawl" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="#top"><i class="fas fa-arrow-up"></i></a>
+    </div>
+    <p>&copy; <span id="year"></span> Laksawl. All rights reserved.</p>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init();
+    const typed = new Typed('#typed', {
+      strings: ["Halo, saya Laksawl", "Web Developer", "UI Designer", "Welcome to my website"],
+      typeSpeed: 60,
+      backSpeed: 30,
+      loop: true
+    });
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+    }
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+
+</html>
+
