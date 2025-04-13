@@ -13,7 +13,7 @@
       margin: 0;
       background: #e0f7ff;
       color: #333;
-      transition: 0.4s ease;
+      transition: background 0.4s ease, color 0.4s ease;
     }
     header {
       background: #0284c7;
@@ -62,12 +62,30 @@
       border-radius: 12px;
       margin-top: 20px;
     }
+    .card-section {
+      padding: 40px 20px;
+    }
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .card {
+      background: #f0f9ff;
+      border-radius: 10px;
+      padding: 20px;
+      width: 260px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
     footer {
       text-align: center;
       padding: 20px;
       font-size: 0.9rem;
       color: #555;
       background: #f0f9ff;
+      position: relative;
     }
     .social-icons {
       margin-top: 10px;
@@ -102,6 +120,24 @@
     button[type="submit"]:hover {
       background: #0369a1;
     }
+    .testimoni {
+      padding: 40px 20px;
+      background: #bae6fd;
+      text-align: center;
+    }
+    .top-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #0ea5e9;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 50%;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -124,6 +160,30 @@
 
     <a href="#kontak" class="cta-button">Hubungi Saya</a>
 
+    <section class="card-section">
+      <h2>Apa yang Saya Kerjakan</h2>
+      <div class="card-container">
+        <div class="card">
+          <h3>💻 Web Design</h3>
+          <p>Desain website responsif dan menarik dengan sentuhan profesional.</p>
+        </div>
+        <div class="card">
+          <h3>📱 UI/UX</h3>
+          <p>Fokus pada kenyamanan dan keindahan tampilan untuk pengguna.</p>
+        </div>
+        <div class="card">
+          <h3>🚀 Front-End Dev</h3>
+          <p>Koding HTML, CSS, JavaScript dengan performa tinggi dan clean.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimoni">
+      <h2>Kata Mereka</h2>
+      <blockquote>"Website ini punya vibes profesional dan elegan banget. Gak nyangka bikin sendiri!"</blockquote>
+      <p>- Pengunjung setia</p>
+    </section>
+
     <h2 id="kontak">Kontak</h2>
     <form action="https://formspree.io/f/yourFormID" method="POST">
       <input type="text" name="nama" placeholder="Nama Anda" required>
@@ -135,14 +195,25 @@
 
   <footer>
     <div class="social-icons">
-      <a href="https://instagram.com/laksawl" target="_blank" title="Instagram"><span>📸</span></a>
+      <a href="https://instagram.com/laksawl" target="_blank" title="Instagram">📸</a>
     </div>
     <p>© 2025 Dibuat dengan penuh cinta 💙 oleh Saya</p>
   </footer>
 
+  <button class="top-button" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">⬆️</button>
+
   <script>
     ScrollReveal().reveal('main', { delay: 300, origin: 'bottom', distance: '50px' });
     ScrollReveal().reveal('.banner img', { delay: 500, origin: 'top', distance: '100px' });
+
+    const topButton = document.querySelector('.top-button');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        topButton.style.display = 'block';
+      } else {
+        topButton.style.display = 'none';
+      }
+    });
   </script>
 </body>
 </html>
