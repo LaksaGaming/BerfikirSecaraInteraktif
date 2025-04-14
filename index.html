@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>InteraktifBerfikir | Portofolio</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <!-- Tambahan CSS Swiper untuk slider -->
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
   <style>
     :root {
@@ -44,11 +46,6 @@
       color: var(--sky);
     }
 
-    nav {
-      display: flex;
-      align-items: center;
-    }
-
     nav a {
       margin: 0 1rem;
       text-decoration: none;
@@ -59,53 +56,6 @@
 
     nav a:hover {
       color: var(--sky);
-    }
-
-    .menu-toggle {
-      display: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: #000;
-    }
-
-    @media (max-width: 768px) {
-      nav {
-        position: absolute;
-        top: 70px;
-        right: 0;
-        background: white;
-        flex-direction: column;
-        width: 100%;
-        text-align: center;
-        padding: 1rem 0;
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        opacity: 0;
-        pointer-events: none;
-        transform: translateY(-10px);
-      }
-
-      nav.active {
-        opacity: 1;
-        pointer-events: all;
-        transform: translateY(0);
-      }
-
-      .menu-toggle {
-        display: block;
-      }
-
-      nav a {
-        margin: 1rem 0;
-      }
-    }
-
-    .menu-toggle i {
-      transition: transform 0.3s ease;
-    }
-
-    .menu-toggle.active i {
-      transform: rotate(90deg);
     }
 
     .hero {
@@ -210,12 +160,11 @@
     }
   </style>
 </head>
-<body>
 
+<body>
   <header>
     <div class="logo">Laksmana</div>
-    <div class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></div>
-    <nav id="nav-menu">
+    <nav>
       <a href="#about">Tentang</a>
       <a href="#portfolio">Portofolio</a>
       <a href="#skills">Skill</a>
@@ -253,13 +202,16 @@
     <div class="card">
       <h2>Skill Saya</h2>
       <div class="skills">
-        <div class="skill">HTML & CSS
+        <div class="skill">
+          HTML & CSS
           <div class="skill-bar" style="--level: 90%;"></div>
         </div>
-        <div class="skill">JavaScript
+        <div class="skill">
+          JavaScript
           <div class="skill-bar" style="--level: 80%;"></div>
         </div>
-        <div class="skill">Git & GitHub
+        <div class="skill">
+          Git & GitHub
           <div class="skill-bar" style="--level: 75%;"></div>
         </div>
       </div>
@@ -274,6 +226,7 @@
     </div>
   </section>
 
+  <!-- Tambahan Slider Testimoni -->
   <section id="slider">
     <div class="swiper-container">
       <div class="swiper-wrapper">
@@ -281,6 +234,7 @@
         <div class="swiper-slide">"Sangat mudah dinavigasi dan tampilannya keren." – Klien B</div>
         <div class="swiper-slide">"Profesional dan responsif, saya sangat merekomendasikan." – Klien C</div>
       </div>
+      <!-- Navigasi Slider -->
       <div class="swiper-button-next"></div>
       <div class="swiper-button-prev"></div>
     </div>
@@ -291,58 +245,13 @@
       <h2>Kontak</h2>
       <p>Email: prasatlaksmana@gmail.com</p>
       <p>Instagram: <a href="https://instagram.com/laksawl" target="_blank">@laksawl</a></p>
+      
+      <!-- Lokasi / Google Maps -->
+      <h3 style="margin-top: 1rem;">Lokasi</h3>
+      <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63312.332820417866!2d107.57311649999999!3d-6.9032734!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e65068bbac67%3A0x9b8e4e08803c53ed!2sBandung%2C%20Kota%20Bandung%2C%20Jawa%20Barat!5e0!3m2!1sen!2sid!4v1713099986554!5m2!1sen!2sid" 
+        width="100%" height="300" style="border:0; border-radius: 1rem;" 
+        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
     </div>
-  </section>
-
-  <footer>
-    <p>&copy; 2025 Interaktif Berfikir</p>
-    <div class="socials">
-      <a href="https://instagram.com/laksawl" target="_blank"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-twitter"></i></a>
-      <a href="#"><i class="fab fa-github"></i></a>
-    </div>
-  </footer>
-
-  <!-- Typed.js -->
-  <script>
-    const typed = new Typed("#typed", {
-      strings: ["Halo, saya Laksmana", "Web Developer", "Content Creator", "Pembuat Website Keren"],
-      typeSpeed: 60,
-      backSpeed: 40,
-      loop: true,
-    });
-  </script>
-
-  <!-- Swiper -->
-  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-  <script>
-    var swiper = new Swiper('.swiper-container', {
-      loop: true,
-      autoplay: { delay: 3000, disableOnInteraction: false },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-    });
-  </script>
-
-  <!-- Hamburger Menu Script -->
-  <script>
-    const menuToggle = document.getElementById('menu-toggle');
-    const navMenu = document.getElementById('nav-menu');
-
-    menuToggle.addEventListener('click', () => {
-      navMenu.classList.toggle('active');
-      menuToggle.classList.toggle('active');
-    });
-
-    document.querySelectorAll('nav a').forEach(link => {
-      link.addEventListener('click', () => {
-        navMenu.classList.remove('active');
-        menuToggle.classList.remove('active');
-      });
-    });
-  </script>
-
-</body>
-</html>
+ 
