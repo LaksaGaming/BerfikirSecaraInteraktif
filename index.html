@@ -251,3 +251,124 @@
   </script>
 </body>
 </html>
+.parallax {
+  background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800');
+  height: 500px;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+<!-- Tambahkan link CSS Swiper -->
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+<!-- HTML Slider -->
+<div class="swiper-container">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide">\"Websitenya luar biasa, desain modern dan interaktif!\" – Klien A</div>
+    <div class="swiper-slide">\"Sangat mudah dinavigasi dan tampilannya keren.\" – Klien B</div>
+    <div class="swiper-slide">\"Profesional dan responsif, saya sangat merekomendasikan.\" – Klien C</div>
+  </div>
+  <!-- Jika ingin tombol navigasi -->
+  <div class="swiper-button-next"></div>
+  <div class="swiper-button-prev"></div>
+</div>
+
+<!-- Tambahkan JavaScript Swiper -->
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+  var swiper = new Swiper('.swiper-container', {
+    loop: true,
+    autoplay: { delay: 3000, disableOnInteraction: false },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+  });
+</script>
+<!-- Trigger Button -->
+<button id="openModal">Dapatkan Penawaran Spesial!</button>
+
+<!-- Modal Structure -->
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Langganan Newsletter</h2>
+    <p>Dapatkan update terbaru dari kami!</p>
+    <form>
+      <input type="email" placeholder="Email Anda" required>
+      <button type="submit">Langganan</button>
+    </form>
+  </div>
+</div>
+/* Style Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+}
+.modal-content {
+  background: white;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  cursor: pointer;
+}
+// JavaScript untuk Modal
+var modal = document.getElementById("myModal");
+var btn = document.getElementById("openModal");
+var span = document.getElementsByClassName("close")[0];
+
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+span.onclick = function() {
+  modal.style.display = "none";
+}
+window.onclick = function(event) {
+  if (event.target == modal) modal.style.display = "none";
+}
+<img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800" alt="Portfolio Project" loading="lazy">
+<section id="location">
+  <h2 style="text-align: center;">Lokasi Kami</h2>
+  <iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3...\" width=\"100%\" height=\"400\" style=\"border:0; border-radius: 10px;\" allowfullscreen=\"\" loading=\"lazy\"></iframe>
+</section>
+.cta-button {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.cta-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+window.addEventListener('scroll', function() {
+  var sections = document.querySelectorAll("section");
+  var navLinks = document.querySelectorAll("nav a");
+
+  sections.forEach((section) => {
+    var top = section.offsetTop - 100;
+    var bottom = top + section.offsetHeight;
+    var scroll = window.pageYOffset;
+
+    if (scroll >= top && scroll <= bottom) {
+      navLinks.forEach((link) => {
+        link.classList.remove("active");
+        if (link.getAttribute("href").substring(1) === section.getAttribute("id")) {
+          link.classList.add("active");
+        }
+      });
+    }
+  });
+});
+nav a.active {
+  color: var(--sky);
+  border-bottom: 2px solid var(--sky);
+}
