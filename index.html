@@ -7,7 +7,6 @@
   <title>InteraktifBerfikir | Portofolio</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-  <!-- Tambahan CSS Swiper untuk slider -->
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
   <style>
     :root {
@@ -46,6 +45,10 @@
       color: var(--sky);
     }
 
+    nav {
+      display: flex;
+    }
+
     nav a {
       margin: 0 1rem;
       text-decoration: none;
@@ -56,6 +59,34 @@
 
     nav a:hover {
       color: var(--sky);
+    }
+
+    .menu-toggle {
+      display: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: white;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        display: none;
+      }
+
+      nav.active {
+        display: flex;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
     }
 
     .hero {
@@ -164,7 +195,8 @@
 <body>
   <header>
     <div class="logo">Laksmana</div>
-    <nav>
+    <div class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></div>
+    <nav id="nav-menu">
       <a href="#about">Tentang</a>
       <a href="#portfolio">Portofolio</a>
       <a href="#skills">Skill</a>
@@ -226,7 +258,6 @@
     </div>
   </section>
 
-  <!-- Tambahan Slider Testimoni -->
   <section id="slider">
     <div class="swiper-container">
       <div class="swiper-wrapper">
@@ -234,7 +265,6 @@
         <div class="swiper-slide">"Sangat mudah dinavigasi dan tampilannya keren." – Klien B</div>
         <div class="swiper-slide">"Profesional dan responsif, saya sangat merekomendasikan." – Klien C</div>
       </div>
-      <!-- Navigasi Slider -->
       <div class="swiper-button-next"></div>
       <div class="swiper-button-prev"></div>
     </div>
@@ -257,7 +287,6 @@
     </div>
   </footer>
 
-  <!-- Tambahan Script: Typed.js untuk teks ketik -->
   <script>
     const typed = new Typed("#typed", {
       strings: ["Halo, saya Laksmana", "Web Developer", "Content Creator", "Pembuat Website Keren"],
@@ -267,7 +296,6 @@
     });
   </script>
 
-  <!-- Tambahan Script: Swiper Slider -->
   <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
   <script>
     var swiper = new Swiper('.swiper-container', {
@@ -279,9 +307,21 @@
       },
     });
   </script>
-  
-  <!-- Catatan: Jika ingin menambahkan fitur scrollspy atau modal popup, kode tersebut dapat ditambahkan tanpa merubah struktur utama. -->
-  
+
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const navMenu = document.getElementById('nav-menu');
+
+    menuToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+    });
+
+    document.querySelectorAll('nav a').forEach(link => {
+      link.addEventListener('click', () => {
+        navMenu.classList.remove('active');
+      });
+    });
+  </script>
 </body>
 
 </html>
