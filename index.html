@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,6 +46,7 @@
 
     nav {
       display: flex;
+      align-items: center;
     }
 
     nav a {
@@ -65,28 +65,47 @@
       display: none;
       font-size: 1.5rem;
       cursor: pointer;
+      color: #000;
     }
 
     @media (max-width: 768px) {
       nav {
         position: absolute;
         top: 70px;
-        left: 0;
         right: 0;
         background: white;
         flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-        display: none;
+        width: 100%;
+        text-align: center;
+        padding: 1rem 0;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-10px);
       }
 
       nav.active {
-        display: flex;
+        opacity: 1;
+        pointer-events: all;
+        transform: translateY(0);
       }
 
       .menu-toggle {
         display: block;
       }
+
+      nav a {
+        margin: 1rem 0;
+      }
+    }
+
+    .menu-toggle i {
+      transition: transform 0.3s ease;
+    }
+
+    .menu-toggle.active i {
+      transform: rotate(90deg);
     }
 
     .hero {
@@ -191,8 +210,8 @@
     }
   </style>
 </head>
-
 <body>
+
   <header>
     <div class="logo">Laksmana</div>
     <div class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></div>
@@ -234,16 +253,13 @@
     <div class="card">
       <h2>Skill Saya</h2>
       <div class="skills">
-        <div class="skill">
-          HTML & CSS
+        <div class="skill">HTML & CSS
           <div class="skill-bar" style="--level: 90%;"></div>
         </div>
-        <div class="skill">
-          JavaScript
+        <div class="skill">JavaScript
           <div class="skill-bar" style="--level: 80%;"></div>
         </div>
-        <div class="skill">
-          Git & GitHub
+        <div class="skill">Git & GitHub
           <div class="skill-bar" style="--level: 75%;"></div>
         </div>
       </div>
@@ -287,6 +303,7 @@
     </div>
   </footer>
 
+  <!-- Typed.js -->
   <script>
     const typed = new Typed("#typed", {
       strings: ["Halo, saya Laksmana", "Web Developer", "Content Creator", "Pembuat Website Keren"],
@@ -296,6 +313,7 @@
     });
   </script>
 
+  <!-- Swiper -->
   <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
   <script>
     var swiper = new Swiper('.swiper-container', {
@@ -308,20 +326,23 @@
     });
   </script>
 
+  <!-- Hamburger Menu Script -->
   <script>
     const menuToggle = document.getElementById('menu-toggle');
     const navMenu = document.getElementById('nav-menu');
 
     menuToggle.addEventListener('click', () => {
       navMenu.classList.toggle('active');
+      menuToggle.classList.toggle('active');
     });
 
     document.querySelectorAll('nav a').forEach(link => {
       link.addEventListener('click', () => {
         navMenu.classList.remove('active');
+        menuToggle.classList.remove('active');
       });
     });
   </script>
-</body>
 
+</body>
 </html>
