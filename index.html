@@ -7,6 +7,8 @@
   <title>InteraktifBerfikir | Portofolio</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <!-- Tambahan CSS Swiper untuk slider -->
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
   <style>
     :root {
       --sky: #57c7f1;
@@ -189,9 +191,9 @@
     <div class="card">
       <h2>Portofolio</h2>
       <div class="gallery">
-        <img src="https://source.unsplash.com/random/301x201" alt="Project 1">
-        <img src="https://source.unsplash.com/random/302x202" alt="Project 2">
-        <img src="https://source.unsplash.com/random/303x203" alt="Project 3">
+        <img src="https://source.unsplash.com/random/301x201" alt="Project 1" loading="lazy">
+        <img src="https://source.unsplash.com/random/302x202" alt="Project 2" loading="lazy">
+        <img src="https://source.unsplash.com/random/303x203" alt="Project 3" loading="lazy">
       </div>
     </div>
   </section>
@@ -224,6 +226,20 @@
     </div>
   </section>
 
+  <!-- Tambahan Slider Testimoni -->
+  <section id="slider">
+    <div class="swiper-container">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">"Websitenya luar biasa, desain modern dan interaktif!" – Klien A</div>
+        <div class="swiper-slide">"Sangat mudah dinavigasi dan tampilannya keren." – Klien B</div>
+        <div class="swiper-slide">"Profesional dan responsif, saya sangat merekomendasikan." – Klien C</div>
+      </div>
+      <!-- Navigasi Slider -->
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+    </div>
+  </section>
+
   <section id="contact">
     <div class="card">
       <h2>Kontak</h2>
@@ -241,6 +257,7 @@
     </div>
   </footer>
 
+  <!-- Tambahan Script: Typed.js untuk teks ketik -->
   <script>
     const typed = new Typed("#typed", {
       strings: ["Halo, saya Laksmana", "Web Developer", "Content Creator", "Pembuat Website Keren"],
@@ -249,50 +266,22 @@
       loop: true,
     });
   </script>
+
+  <!-- Tambahan Script: Swiper Slider -->
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  <script>
+    var swiper = new Swiper('.swiper-container', {
+      loop: true,
+      autoplay: { delay: 3000, disableOnInteraction: false },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
+  </script>
+  
+  <!-- Catatan: Jika ingin menambahkan fitur scrollspy atau modal popup, kode tersebut dapat ditambahkan tanpa merubah struktur utama. -->
+  
 </body>
+
 </html>
-<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
-<!-- HTML Slider -->
-<div class="swiper-container">
-  <div class="swiper-wrapper">
-    <div class="swiper-slide">\"Websitenya luar biasa, desain modern dan interaktif!\" – Klien A</div>
-    <div class="swiper-slide">\"Sangat mudah dinavigasi dan tampilannya keren.\" – Klien B</div>
-    <div class="swiper-slide">\"Profesional dan responsif, saya sangat merekomendasikan.\" – Klien C</div>
-  </div>
-  <!-- Jika ingin tombol navigasi -->
-  <div class="swiper-button-next"></div>
-  <div class="swiper-button-prev"></div>
-</div>
-
-<!-- Tambahkan JavaScript Swiper -->
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-<script>
-  var swiper = new Swiper('.swiper-container', {
-    loop: true,
-    autoplay: { delay: 3000, disableOnInteraction: false },
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-  });
-</script>
-<!-- Trigger Button -->
-<button id="openModal">Dapatkan Penawaran Spesial!</button>
-
-<!-- Modal Structure -->
-<div id="myModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h2>Langganan Newsletter</h2>
-    <p>Dapatkan update terbaru dari kami!</p>
-    <form>
-      <input type="email" placeholder="Email Anda" required>
-      <button type="submit">Langganan</button>
-    </form>
-  </div>
-</div>
-<img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800" alt="Portfolio Project" loading="lazy">
-<section id="location">
-  <h2 style="text-align: center;">Lokasi Kami</h2>
-  <iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3...\" width=\"100%\" height=\"400\" style=\"border:0; border-radius: 10px;\" allowfullscreen=\"\" loading=\"lazy\"></iframe>
-</section>
