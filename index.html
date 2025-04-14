@@ -89,6 +89,57 @@
       font-size: 3rem;
     }
 
+    section {
+      padding: 4rem 2rem;
+    }
+
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin: 1rem auto;
+      max-width: 800px;
+    }
+
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .gallery img {
+      max-width: 300px;
+      border-radius: 1rem;
+    }
+
+    .skills .skill {
+      margin-bottom: 1rem;
+    }
+
+    .skill-bar {
+      height: 20px;
+      background-color: var(--sky);
+      width: 0;
+      animation: growBar 2s forwards;
+    }
+
+    @keyframes growBar {
+      to {
+        width: var(--level);
+      }
+    }
+
+    .testimonial {
+      font-style: italic;
+      background-color: #f5f5f5;
+      padding: 1.5rem;
+      border-left: 5px solid var(--sky);
+      margin-bottom: 1rem;
+      border-radius: 1rem;
+    }
+
     footer {
       text-align: center;
       padding: 2rem;
@@ -114,6 +165,8 @@
     <nav>
       <a href="#about">Tentang</a>
       <a href="#portfolio">Portofolio</a>
+      <a href="#skills">Skill</a>
+      <a href="#testimoni">Testimoni</a>
       <a href="#contact">Kontak</a>
     </nav>
   </header>
@@ -125,22 +178,76 @@
     </div>
   </section>
 
+  <section id="about">
+    <div class="card">
+      <h2>Tentang Saya</h2>
+      <p>Halo! Saya Laksawl, seorang web developer dan kreator digital yang bersemangat membangun hal-hal keren di dunia maya.</p>
+    </div>
+  </section>
+
+  <section id="portfolio">
+    <div class="card">
+      <h2>Portofolio</h2>
+      <div class="gallery">
+        <img src="https://source.unsplash.com/random/301x201" alt="Project 1">
+        <img src="https://source.unsplash.com/random/302x202" alt="Project 2">
+        <img src="https://source.unsplash.com/random/303x203" alt="Project 3">
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="card">
+      <h2>Skill Saya</h2>
+      <div class="skills">
+        <div class="skill">
+          HTML & CSS
+          <div class="skill-bar" style="--level: 90%;"></div>
+        </div>
+        <div class="skill">
+          JavaScript
+          <div class="skill-bar" style="--level: 80%;"></div>
+        </div>
+        <div class="skill">
+          Git & GitHub
+          <div class="skill-bar" style="--level: 75%;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="testimoni">
+    <div class="card">
+      <h2>Testimoni</h2>
+      <div class="testimonial">"Laksawl sangat profesional dan kreatif! Website saya jadi luar biasa." – Klien A</div>
+      <div class="testimonial">"Desainnya clean, kece dan responsive. Mantap banget!" – Klien B</div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="card">
+      <h2>Kontak</h2>
+      <p>Email: laksawl@example.com</p>
+      <p>Instagram: <a href="https://instagram.com/laksawl" target="_blank">@laksawl</a></p>
+    </div>
+  </section>
+
   <footer>
     <p>&copy; 2025 Laksawl</p>
     <div class="socials">
       <a href="https://instagram.com/laksawl" target="_blank"><i class="fab fa-instagram"></i></a>
-      <!-- Tambah sosial media lainnya di sini -->
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-github"></i></a>
     </div>
   </footer>
 
   <script>
     const typed = new Typed("#typed", {
-      strings: ["Halo, saya Laksawl", "Web Developer", "Content Creator"],
+      strings: ["Halo, saya Laksmana", "Web Developer", "Content Creator", "Pembuat Website Keren"],
       typeSpeed: 60,
       backSpeed: 40,
       loop: true,
     });
   </script>
 </body>
-
 </html>
