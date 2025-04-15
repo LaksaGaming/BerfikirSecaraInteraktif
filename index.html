@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>InteraktifBerfikir | Portofolio</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" type="image/png">
+  <meta name="description" content="Portofolio Laksmana - Web Developer & Content Creator">
+  <meta name="keywords" content="Laksmana, Interaktif Berfikir, Web Developer, Portfolio, Digital Creator">
+  <meta name="author" content="Laksmana">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
@@ -208,157 +212,91 @@
     .socials a:hover {
       color: var(--sky);
     }
+
+    #backToTop {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: var(--sky);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      padding: 0.8rem 1rem;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
+
+    #backToTop:hover {
+      background-color: #3ba8d0;
+    }
+
+    [data-aos] {
+      opacity: 0;
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    [data-aos].aos-animate {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    [data-aos="fade-up"] {
+      transform: translateY(40px);
+    }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo">Laksmana</div>
-    <div class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></div>
-    <nav id="nav-menu">
-      <a href="#about">Tentang</a>
-      <a href="#portfolio">Portofolio</a>
-      <a href="#skills">Skill</a>
-      <a href="#testimoni">Testimoni</a>
-      <a href="#contact">Kontak</a>
-    </nav>
-  </header>
+<!-- ... existing content ... -->
 
-  <section class="hero">
-    <div class="hero-content">
-      <h1><span id="typed"></span></h1>
-      <p>Selamat datang di website pribadi saya</p>
-    </div>
-  </section>
-
-  <section id="about">
-    <div class="card">
-      <h2>Tentang Saya</h2>
-      <p>Halo! Saya Laksmana, seorang web developer dan kreator digital yang bersemangat membangun hal-hal keren di dunia maya.</p>
-    </div>
-  </section>
-
-  <section id="portfolio">
-  <div class="card">
-    <h2>Portofolio</h2>
-    <div class="gallery">
-      <img src="https://akcdn.detik.net.id/community/media/visual/2023/01/04/tebak-gambar-makna-hidup-1_169.jpeg?w=700&q=90" alt="Makna Waktu" loading="lazy">
-      <img src="https://akcdn.detik.net.id/community/media/visual/2023/01/04/tebak-gambar-makna-hidup-2_169.jpeg?w=700&q=90" alt="Makna Kehidupan" loading="lazy">
-      <img src="https://akcdn.detik.net.id/community/media/visual/2023/01/04/tebak-gambar-makna-hidup-3_169.jpeg?w=700&q=90" alt="Makna Harapan" loading="lazy">
-    </div>
+<section id="form-kontak">
+  <div class="card" data-aos="fade-up">
+    <h2>Form Kontak</h2>
+    <form action="mailto:prasatlaksmana@gmail.com" method="post" enctype="text/plain">
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <input type="text" name="nama" placeholder="Nama Anda" required style="padding: 0.5rem; border-radius: 0.5rem; border: 1px solid #ccc;">
+        <input type="email" name="email" placeholder="Email Anda" required style="padding: 0.5rem; border-radius: 0.5rem; border: 1px solid #ccc;">
+        <textarea name="pesan" placeholder="Pesan Anda" rows="5" required style="padding: 0.5rem; border-radius: 0.5rem; border: 1px solid #ccc;"></textarea>
+        <button type="submit" style="background: var(--sky); color: white; padding: 0.7rem; border: none; border-radius: 0.5rem; cursor: pointer;">Kirim</button>
+      </div>
+    </form>
   </div>
 </section>
 
-  <section id="skills">
-    <div class="card">
-      <h2>Skill Saya</h2>
-      <div class="skills">
-        <div class="skill">HTML & CSS
-          <div class="skill-bar" style="--level: 90%;"></div>
-        </div>
-        <div class="skill">JavaScript
-          <div class="skill-bar" style="--level: 80%;"></div>
-        </div>
-        <div class="skill">Git & GitHub
-          <div class="skill-bar" style="--level: 75%;"></div>
-        </div>
-      </div>
-    </div>
-  </section>
+<button id="backToTop" title="Kembali ke atas"><i class="fas fa-arrow-up"></i></button>
 
-  <section id="testimoni">
-    <div class="card">
-      <h2>Testimoni</h2>
-      <div class="testimonial">"Laksmana sangat profesional dan kreatif! Website saya jadi luar biasa." – Klien A</div>
-      <div class="testimonial">"Desainnya clean, kece dan responsive. Mantap banget!" – Klien B</div>
-    </div>
-  </section>
-
-  <section id="slider">
-    <div class="swiper-container">
-      <div class="swiper-wrapper">
-        <div class="swiper-slide">"Websitenya luar biasa, desain modern dan interaktif!" – Klien A</div>
-        <div class="swiper-slide">"Sangat mudah dinavigasi dan tampilannya keren." – Klien B</div>
-        <div class="swiper-slide">"Profesional dan responsif, saya sangat merekomendasikan." – Klien C</div>
-      </div>
-      <div class="swiper-button-next"></div>
-      <div class="swiper-button-prev"></div>
-    </div>
-  </section>
-
-  <section id="contact">
-    <div class="card">
-      <h2>Kontak</h2>
-      <p>Email: prasatlaksmana@gmail.com</p>
-      <p>Instagram: <a href="https://instagram.com/laksawl" target="_blank">@laksawl</a></p>
-    </div>
-  </section>
-
-<section id="lokasi">
-  <div class="card">
-    <h2>Lokasi Saya</h2>
-    <iframe 
-      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.6506576819577!2d106.8305931!3d-6.1783673!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f40b998eb14d%3A0x55f3b3d804de93cb!2sMonumen%20Nasional!5e0!3m2!1sid!2sid!4v1713099999999" 
-      width="100%" 
-      height="300" 
-      style="border:0;" 
-      allowfullscreen="" 
-      loading="lazy" 
-      referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
-  </div>
-</section>
-
-  <footer>
-    <p>&copy; 2025 Interaktif Berfikir</p>
-    <div class="socials">
-      <a href="https://instagram.com/laksawl" target="_blank"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-twitter"></i></a>
-      <a href="#"><i class="fab fa-github"></i></a>
-    </div>
-  </footer>
-
-  <!-- Typed.js -->
-  <script>
-    const typed = new Typed("#typed", {
-      strings: ["Halo, saya Laksmana", "Web Developer", "Content Creator", "Pembuat Website Keren"],
-      typeSpeed: 60,
-      backSpeed: 40,
-      loop: true,
+<script>
+  // Scroll animation AOS sederhana
+  const elements = document.querySelectorAll("[data-aos]");
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("aos-animate");
+      }
     });
-  </script>
+  }, {
+    threshold: 0.1,
+  });
 
-  <!-- Swiper -->
-  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-  <script>
-    var swiper = new Swiper('.swiper-container', {
-      loop: true,
-      autoplay: { delay: 3000, disableOnInteraction: false },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-    });
-  </script>
+  elements.forEach(el => observer.observe(el));
 
-  <!-- Hamburger Menu Script -->
-  <script>
-    const menuToggle = document.getElementById('menu-toggle');
-    const navMenu = document.getElementById('nav-menu');
+  // Back to top
+  const backToTop = document.getElementById("backToTop");
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 400) {
+      backToTop.style.display = "block";
+    } else {
+      backToTop.style.display = "none";
+    }
+  });
 
-    menuToggle.addEventListener('click', () => {
-      navMenu.classList.toggle('active');
-      menuToggle.classList.toggle('active');
-    });
-
-    document.querySelectorAll('nav a').forEach(link => {
-      link.addEventListener('click', () => {
-        navMenu.classList.remove('active');
-        menuToggle.classList.remove('active');
-      });
-    });
-  </script>
+  backToTop.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+</script>
 
 </body>
 </html>
-
