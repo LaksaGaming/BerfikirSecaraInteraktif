@@ -195,6 +195,27 @@
       </div>
     </div>
   </section>
+<!-- Tambahan setelah section Portofolio -->
+<section id="galeri-slider">
+  <div class="card">
+    <h2>Galeri Interaktif</h2>
+    <div class="swiper-container galeri-swiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <img src="https://source.unsplash.com/800x400/?technology" alt="Slide 1" style="width:100%; border-radius: 1rem;">
+        </div>
+        <div class="swiper-slide">
+          <img src="https://source.unsplash.com/800x400/?creative" alt="Slide 2" style="width:100%; border-radius: 1rem;">
+        </div>
+        <div class="swiper-slide">
+          <img src="https://source.unsplash.com/800x400/?digital" alt="Slide 3" style="width:100%; border-radius: 1rem;">
+        </div>
+      </div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+    </div>
+  </div>
+</section>
 
   <section id="skills">
     <div class="card">
@@ -249,6 +270,17 @@
       loop: true,
     });
   </script>
+<!-- Tambahan di akhir bagian script (paling bawah sebelum </body>) -->
+<script>
+  var galeriSwiper = new Swiper('.galeri-swiper', {
+    loop: true,
+    autoplay: { delay: 2500, disableOnInteraction: false },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+  });
+</script>
 </body>
 </html>
 <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
