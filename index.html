@@ -5,9 +5,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>InteraktifBerfikir | Portofolio</title>
+  <!-- Font Awesome & AOS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+  
   <style>
     :root {
       --sky: #57c7f1;
@@ -15,12 +17,19 @@
       --light: #ffffff;
     }
 
+    /* Global */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       background: var(--light);
       color: #333;
-      transition: background 0.3s, color 0.3s;
       scroll-behavior: smooth;
+      transition: background 0.3s, color 0.3s;
     }
 
     body.dark {
@@ -61,26 +70,27 @@
       color: var(--sky);
     }
 
+    #darkToggle {
+      cursor: pointer;
+      font-size: 1.5rem;
+    }
+
+    /* Hero */
     .hero {
       height: 100vh;
-      background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb');
-      background-size: cover;
-      background-position: center;
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb') center/cover no-repeat;
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
       color: white;
       text-align: center;
-      position: relative;
     }
 
     .hero::before {
       content: "";
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       background: rgba(0, 0, 0, 0.5);
       z-index: 1;
     }
@@ -94,6 +104,7 @@
       font-size: 3rem;
     }
 
+    /* Sections */
     section {
       padding: 4rem 2rem;
     }
@@ -111,6 +122,7 @@
       background: #1e1e1e;
     }
 
+    /* Gallery */
     .gallery {
       display: flex;
       flex-wrap: wrap;
@@ -129,6 +141,7 @@
       transform: scale(1.05);
     }
 
+    /* Skills */
     .skills .skill {
       margin-bottom: 1rem;
     }
@@ -146,6 +159,7 @@
       }
     }
 
+    /* Testimoni */
     .testimonial {
       font-style: italic;
       background-color: #f5f5f5;
@@ -159,6 +173,7 @@
       background-color: #2a2a2a;
     }
 
+    /* Footer */
     footer {
       text-align: center;
       padding: 2rem;
@@ -194,8 +209,7 @@
     /* Loader Spinner */
     #loader {
       position: fixed;
-      width: 100vw;
-      height: 100vh;
+      inset: 0;
       background: white;
       z-index: 9999;
       display: flex;
@@ -216,44 +230,14 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
-    /* Dark Mode Toggle */
-    #darkToggle {
-      cursor: pointer;
-      font-size: 1.5rem;
-    }
-
-    /* Parallax Effect */
-    .parallax {
-      background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb');
-      height: 500px;
-      background-attachment: fixed;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
-    }
-
-    /* Testimonial Carousel */
-    .swiper-container {
-      width: 100%;
-      height: 100%;
-    }
-    .swiper-slide {
-      text-align: center;
-      font-size: 1.5rem;
-      background-color: #fff;
-      padding: 20px;
-      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-    }
   </style>
 </head>
 
 <body>
   <!-- Loader -->
-  <div id="loader">
-    <div class="spinner"></div>
-  </div>
+  <div id="loader"><div class="spinner"></div></div>
 
+  <!-- Header -->
   <header>
     <div class="logo">Laksmana</div>
     <nav>
@@ -266,6 +250,7 @@
     </nav>
   </header>
 
+  <!-- Hero -->
   <section class="hero">
     <div class="hero-content">
       <h1><span id="typed"></span></h1>
@@ -273,6 +258,7 @@
     </div>
   </section>
 
+  <!-- Tentang -->
   <section id="about" data-aos="fade-up">
     <div class="card">
       <h2>Tentang Saya</h2>
@@ -280,44 +266,59 @@
     </div>
   </section>
 
-  <!-- Parallax Section -->
-  <section class="parallax"></section>
-
-  <!-- Form Kontak -->
-  <section id="contact">
-    <h2>Kontak Saya</h2>
-    <form id="contactForm">
-      <input type="text" id="name" placeholder="Nama" required>
-      <input type="email" id="email" placeholder="Email" required>
-      <textarea id="message" placeholder="Pesan" required></textarea>
-      <button type="submit">Kirim Pesan</button>
-    </form>
-  </section>
-
-  <!-- Galeri Portofolio dengan Infinite Scroll -->
-  <section id="portfolio">
-    <div id="gallery"></div>
-  </section>
-
-  <!-- Testimonial Carousel -->
-  <section id="testimoni">
-    <div class="swiper-container">
-      <div class="swiper-wrapper">
-        <div class="swiper-slide">"Keren, kerja sama yang sangat profesional!"</div>
-        <div class="swiper-slide">"Situs yang dibuat sangat modern dan responsif!"</div>
+  <!-- Portofolio -->
+  <section id="portfolio" data-aos="fade-up">
+    <div class="card">
+      <h2>Portofolio</h2>
+      <div class="gallery">
+        <img src="https://via.placeholder.com/300" alt="Proyek 1">
+        <img src="https://via.placeholder.com/300" alt="Proyek 2">
+        <img src="https://via.placeholder.com/300" alt="Proyek 3">
       </div>
     </div>
   </section>
 
-  <!-- Countdown Timer -->
-  <section id="countdownSection">
-    <h2>Waktu Tersisa</h2>
-    <div id="countdown"></div>
+  <!-- Skills -->
+  <section id="skills" class="skills" data-aos="fade-up">
+    <div class="card">
+      <h2>Skill</h2>
+      <div class="skill">
+        <p>HTML</p>
+        <div class="skill-bar" style="--level: 90%;"></div>
+      </div>
+      <div class="skill">
+        <p>CSS</p>
+        <div class="skill-bar" style="--level: 85%;"></div>
+      </div>
+      <div class="skill">
+        <p>JavaScript</p>
+        <div class="skill-bar" style="--level: 75%;"></div>
+      </div>
+    </div>
   </section>
 
-  <!-- Tombol kembali ke atas -->
+  <!-- Testimoni -->
+  <section id="testimoni" data-aos="fade-up">
+    <div class="card">
+      <h2>Testimoni</h2>
+      <div class="testimonial">"Kerja Laksmana sangat profesional dan cepat!"</div>
+      <div class="testimonial">"Website-nya keren dan modern, sesuai keinginan saya."</div>
+    </div>
+  </section>
+
+  <!-- Kontak -->
+  <section id="contact" data-aos="fade-up">
+    <div class="card">
+      <h2>Kontak</h2>
+      <p>Email: laksamana@example.com</p>
+      <p>Instagram: @laksawl</p>
+    </div>
+  </section>
+
+  <!-- Back to Top -->
   <button onclick="topFunction()" id="toTopBtn" title="Kembali ke atas">↑</button>
 
+  <!-- Footer -->
   <footer>
     <p>&copy; 2025 Interaktif Berfikir</p>
     <div class="socials">
@@ -327,13 +328,13 @@
     </div>
   </footer>
 
-  <!-- Script -->
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
   <script>
     AOS.init();
 
+    // Typed.js
     const typed = new Typed("#typed", {
       strings: ["Halo, saya Laksmana", "Web Developer", "Content Creator", "Pembuat Website Keren"],
       typeSpeed: 60,
@@ -362,46 +363,6 @@
       icon.classList.toggle("fa-sun");
       icon.classList.toggle("fa-moon");
     });
-
-    // Infinite Scroll untuk Galeri
-    let page = 1;
-    window.onscroll = function() {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        loadMoreImages();
-      }
-    };
-
-    function loadMoreImages() {
-      fetch(`https://api.example.com/gallery?page=${page}`)
-        .then(response => response.json())
-        .then(data => {
-          const gallery = document.getElementById('gallery');
-          data.images.forEach(image => {
-            const img = document.createElement('img');
-            img.src = image.url;
-            gallery.appendChild(img);
-          });
-          page++;
-        });
-    }
-
-    loadMoreImages(); // Memuat gambar pertama kali
-
-    // Countdown Timer
-    function updateCountdown() {
-      const eventDate = new Date("May 1, 2025 00:00:00").getTime();
-      const now = new Date().getTime();
-      const timeLeft = eventDate - now;
-
-      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-      document.getElementById("countdown").innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-    }
-    setInterval(updateCountdown, 1000);
   </script>
 </body>
-
 </html>
