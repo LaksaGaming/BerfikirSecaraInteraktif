@@ -15,6 +15,12 @@
       --light: #ffffff;
     }
 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       background: var(--light);
@@ -96,6 +102,8 @@
 
     section {
       padding: 4rem 2rem;
+      max-width: 1000px;
+      margin: auto;
     }
 
     .card {
@@ -103,8 +111,7 @@
       padding: 2rem;
       border-radius: 1rem;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      margin: 1rem auto;
-      max-width: 800px;
+      margin-bottom: 2rem;
     }
 
     body.dark .card {
@@ -211,8 +218,13 @@
     }
 
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
     }
 
     #darkToggle {
@@ -234,8 +246,6 @@
       <a href="#portfolio">Portofolio</a>
       <a href="#skills">Skill</a>
       <a href="#testimoni">Testimoni</a>
-      <a href="#layanan">Layanan</a>
-      <a href="#faq">FAQ</a>
       <a href="#contact">Kontak</a>
       <i id="darkToggle" class="fas fa-moon"></i>
     </nav>
@@ -255,40 +265,7 @@
     </div>
   </section>
 
-  <section id="layanan" data-aos="fade-up">
-    <div class="card">
-      <h2>Layanan</h2>
-      <ul>
-        <li>Desain & Pengembangan Website</li>
-        <li>Optimasi SEO</li>
-        <li>Manajemen Konten Digital</li>
-        <li>Konsultasi Teknologi</li>
-      </ul>
-    </div>
-  </section>
-
-  <section id="faq" data-aos="fade-up">
-    <div class="card">
-      <h2>Pertanyaan Umum</h2>
-      <p><strong>Q:</strong> Apakah kamu bisa membuat website toko online?<br><strong>A:</strong> Tentu! Saya bisa membangun e-commerce dari awal.</p>
-      <p><strong>Q:</strong> Berapa lama pengerjaan rata-rata?<br><strong>A:</strong> Tergantung kompleksitasnya, tapi biasanya 1-2 minggu.</p>
-    </div>
-  </section>
-
-  <section id="contact" data-aos="fade-up">
-    <div class="card">
-      <h2>Kontak Saya</h2>
-      <form>
-        <label>Nama:</label><br>
-        <input type="text" placeholder="Nama Anda" style="width:100%; padding:10px; margin:10px 0;"><br>
-        <label>Email:</label><br>
-        <input type="email" placeholder="Email Anda" style="width:100%; padding:10px; margin:10px 0;"><br>
-        <label>Pesan:</label><br>
-        <textarea placeholder="Tulis pesan..." style="width:100%; padding:10px; margin:10px 0;"></textarea><br>
-        <button type="submit" style="padding:10px 20px; background:var(--sky); color:white; border:none; border-radius:8px;">Kirim</button>
-      </form>
-    </div>
-  </section>
+  <!-- Tambahan portofolio, skills, testimoni, dan contact bisa dimasukkan di bawah ini dengan struktur serupa. -->
 
   <button onclick="topFunction()" id="toTopBtn" title="Kembali ke atas">↑</button>
 
@@ -305,22 +282,27 @@
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
     AOS.init();
+
     const typed = new Typed("#typed", {
       strings: ["Halo, saya Laksmana", "Web Developer", "Content Creator", "Pembuat Website Keren"],
       typeSpeed: 60,
       backSpeed: 40,
       loop: true,
     });
+
     window.addEventListener("load", () => {
       document.getElementById("loader").style.display = "none";
     });
+
     let btn = document.getElementById("toTopBtn");
     window.onscroll = function () {
       btn.style.display = document.documentElement.scrollTop > 300 ? "block" : "none";
     };
+
     function topFunction() {
       document.documentElement.scrollTop = 0;
     }
+
     document.getElementById("darkToggle").addEventListener("click", () => {
       document.body.classList.toggle("dark");
       const icon = document.getElementById("darkToggle");
@@ -329,4 +311,5 @@
     });
   </script>
 </body>
+
 </html>
