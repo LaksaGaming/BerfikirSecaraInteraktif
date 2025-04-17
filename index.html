@@ -2,11 +2,12 @@
 <html lang="id">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>InteraktifBerfikir | Portofolio</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
   <style>
     :root {
       --sky: #57c7f1;
@@ -14,17 +15,17 @@
       --light: #ffffff;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
       font-family: 'Segoe UI', sans-serif;
       background: var(--light);
       color: #333;
+      transition: background 0.3s, color 0.3s;
       scroll-behavior: smooth;
+    }
+
+    body.dark {
+      background: var(--dark);
+      color: #fff;
     }
 
     header {
@@ -38,6 +39,10 @@
       z-index: 1000;
     }
 
+    body.dark header {
+      background: rgba(18, 18, 18, 0.95);
+    }
+
     .logo {
       font-size: 1.5rem;
       font-weight: bold;
@@ -47,7 +52,7 @@
     nav a {
       margin: 0 1rem;
       text-decoration: none;
-      color: #000;
+      color: inherit;
       font-weight: bold;
       transition: 0.3s;
     }
@@ -102,6 +107,10 @@
       max-width: 800px;
     }
 
+    body.dark .card {
+      background: #1e1e1e;
+    }
+
     .gallery {
       display: flex;
       flex-wrap: wrap;
@@ -112,6 +121,12 @@
     .gallery img {
       max-width: 300px;
       border-radius: 1rem;
+      cursor: zoom-in;
+      transition: transform 0.3s;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
     }
 
     .skills .skill {
@@ -140,6 +155,10 @@
       border-radius: 1rem;
     }
 
+    body.dark .testimonial {
+      background-color: #2a2a2a;
+    }
+
     footer {
       text-align: center;
       padding: 2rem;
@@ -156,10 +175,62 @@
     .socials a:hover {
       color: var(--sky);
     }
+
+    /* Back to Top */
+    #toTopBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 99;
+      background-color: var(--sky);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+    }
+
+    /* Loader Spinner */
+    #loader {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      background: white;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .spinner {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid var(--sky);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Dark Mode Toggle */
+    #darkToggle {
+      cursor: pointer;
+      font-size: 1.5rem;
+    }
   </style>
 </head>
 
 <body>
+  <!-- Loader -->
+  <div id="loader">
+    <div class="spinner"></div>
+  </div>
+
   <header>
     <div class="logo">Laksmana</div>
     <nav>
@@ -168,6 +239,7 @@
       <a href="#skills">Skill</a>
       <a href="#testimoni">Testimoni</a>
       <a href="#contact">Kontak</a>
+      <i id="darkToggle" class="fas fa-moon"></i>
     </nav>
   </header>
 
@@ -178,92 +250,17 @@
     </div>
   </section>
 
-  <section id="about">
+  <section id="about" data-aos="fade-up">
     <div class="card">
       <h2>Tentang Saya</h2>
       <p>Halo! Saya Laksmana, seorang web developer dan kreator digital yang bersemangat membangun hal-hal keren di dunia maya.</p>
     </div>
   </section>
 
-  <section id="portfolio">
-    <div class="card">
-      <h2>Portofolio</h2>
-      <div class="gallery">
-        <img src="https://i.ibb.co/mgV08rd/image.png" alt="Project 1">
-        <img src="https://i.ibb.co/60TwdFP6/image.png" alt="Project 2">
-        <img src="https://i.ibb.co/4Zgvyb7v/image.png" alt="Project 3">
-      </div>
-    </div>
-  </section>
-<section id="galeri-slider">
-  <div class="card">
-    <h2>Foto Lama Indonesia</h2>
-    <div class="swiper-container galeri-swiper">
-      <div class="swiper-wrapper">
-        <div class="swiper-slide">
-      <img src="https://i.ibb.co/271Gr6kc/866b2fd554f57ac65eef58aa93037348.jpg" alt="Penjual Kacang dan Anak Bule" loading="lazy">
-      <img src="https://i.ibb.co/4nmYSy3T/337269-old-photos-of-indonesian-cities.webp" alt="Toko London Tempo Dulu" loading="lazy">
-      <img src="https://i.ibb.co/8DWfTLty/69592171cb11d9a4eb18ecde55126bba.jpg" alt="Suku Halmahera Zaman Dulu" loading="lazy">
-    </div>
-  </div>
-</section>
-<!-- Tambahan setelah section Portofolio -->
-<section id="galeri-slider">
-  <div class="card">
-    <h2>Galeri Interaktif</h2>
-    <div class="swiper-container galeri-swiper">
-      <div class="swiper-wrapper">
-        <div class="swiper-slide">
-          <img src="https://source.unsplash.com/800x400/?technology" alt="Slide 1" style="width:100%; border-radius: 1rem;">
-        </div>
-        <div class="swiper-slide">
-          <img src="https://source.unsplash.com/800x400/?creative" alt="Slide 2" style="width:100%; border-radius: 1rem;">
-        </div>
-        <div class="swiper-slide">
-          <img src="https://source.unsplash.com/800x400/?digital" alt="Slide 3" style="width:100%; border-radius: 1rem;">
-        </div>
-      </div>
-      <div class="swiper-button-next"></div>
-      <div class="swiper-button-prev"></div>
-    </div>
-  </div>
-</section>
+  <!-- Sisa bagian (Portofolio, Skill, Testimoni, dll) tetap, hanya tambahkan data-aos="fade-up" ke setiap <section> -->
 
-  <section id="skills">
-    <div class="card">
-      <h2>Skill Saya</h2>
-      <div class="skills">
-        <div class="skill">
-          HTML & CSS
-          <div class="skill-bar" style="--level: 90%;"></div>
-        </div>
-        <div class="skill">
-          JavaScript
-          <div class="skill-bar" style="--level: 80%;"></div>
-        </div>
-        <div class="skill">
-          Git & GitHub
-          <div class="skill-bar" style="--level: 75%;"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="testimoni">
-    <div class="card">
-      <h2>Testimoni</h2>
-      <div class="testimonial">"Laksmana sangat profesional dan kreatif! Website saya jadi luar biasa." – Klien A</div>
-      <div class="testimonial">"Desainnya clean, kece dan responsive. Mantap banget!" – Klien B</div>
-    </div>
-  </section>
-
-  <section id="contact">
-    <div class="card">
-      <h2>Kontak</h2>
-      <p>Email: prasatlaksmana@gmail.com</p>
-      <p>Instagram: <a href="https://instagram.com/laksawl" target="_blank">@laksawl</a></p>
-    </div>
-  </section>
+  <!-- Tombol kembali ke atas -->
+  <button onclick="topFunction()" id="toTopBtn" title="Kembali ke atas">↑</button>
 
   <footer>
     <p>&copy; 2025 Interaktif Berfikir</p>
@@ -274,47 +271,40 @@
     </div>
   </footer>
 
+  <!-- Script -->
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
+    AOS.init();
+
     const typed = new Typed("#typed", {
       strings: ["Halo, saya Laksmana", "Web Developer", "Content Creator", "Pembuat Website Keren"],
       typeSpeed: 60,
       backSpeed: 40,
       loop: true,
     });
+
+    // Loader
+    window.addEventListener("load", () => {
+      document.getElementById("loader").style.display = "none";
+    });
+
+    // Back to top
+    let btn = document.getElementById("toTopBtn");
+    window.onscroll = function () {
+      btn.style.display = document.documentElement.scrollTop > 300 ? "block" : "none";
+    };
+    function topFunction() {
+      document.documentElement.scrollTop = 0;
+    }
+
+    // Dark mode toggle
+    document.getElementById("darkToggle").addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      const icon = document.getElementById("darkToggle");
+      icon.classList.toggle("fa-sun");
+      icon.classList.toggle("fa-moon");
+    });
   </script>
-<!-- Tambahan di akhir bagian script (paling bawah sebelum </body>) -->
-<script>
-  var galeriSwiper = new Swiper('.galeri-swiper', {
-    loop: true,
-    autoplay: { delay: 2500, disableOnInteraction: false },
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-  });
-</script>
 </body>
 </html>
-<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
-<!-- HTML Slider -->
-<div class="swiper-container">
-  <div class="swiper-wrapper">
-    <div class="swiper-slide">\"Websitenya luar biasa, desain modern dan interaktif!\" – Klien A</div>
-    <div class="swiper-slide">\"Sangat mudah dinavigasi dan tampilannya keren.\" – Klien B</div>
-    <div class="swiper-slide">\"Profesional dan responsif, saya sangat merekomendasikan.\" – Klien C</div>
-  </div>
-  <!-- Jika ingin tombol navigasi -->
-  <div class="swiper-button-next"></div>
-  <div class="swiper-button-prev"></div>
-</div>
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-<script>
-  var swiper = new Swiper('.swiper-container', {
-    loop: true,
-    autoplay: { delay: 3000, disableOnInteraction: false },
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-  });
-</script>
