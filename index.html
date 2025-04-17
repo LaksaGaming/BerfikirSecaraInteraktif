@@ -15,12 +15,6 @@
       --light: #ffffff;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
       font-family: 'Segoe UI', sans-serif;
       background: var(--light);
@@ -102,8 +96,6 @@
 
     section {
       padding: 4rem 2rem;
-      max-width: 1000px;
-      margin: auto;
     }
 
     .card {
@@ -111,7 +103,8 @@
       padding: 2rem;
       border-radius: 1rem;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      margin-bottom: 2rem;
+      margin: 1rem auto;
+      max-width: 800px;
     }
 
     body.dark .card {
@@ -218,13 +211,8 @@
     }
 
     @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     #darkToggle {
@@ -265,7 +253,54 @@
     </div>
   </section>
 
-  <!-- Tambahan portofolio, skills, testimoni, dan contact bisa dimasukkan di bawah ini dengan struktur serupa. -->
+  <section id="portfolio" data-aos="fade-up">
+    <div class="card">
+      <h2>Portofolio</h2>
+      <div class="gallery">
+        <img src="https://source.unsplash.com/random/301x200" alt="Galeri 1">
+        <img src="https://source.unsplash.com/random/302x200" alt="Galeri 2">
+        <img src="https://source.unsplash.com/random/303x200" alt="Galeri 3">
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" class="skills" data-aos="fade-up">
+    <div class="card">
+      <h2>Skill</h2>
+      <div class="skill">
+        <p>HTML</p>
+        <div class="skill-bar" style="--level: 90%"></div>
+      </div>
+      <div class="skill">
+        <p>CSS</p>
+        <div class="skill-bar" style="--level: 80%"></div>
+      </div>
+      <div class="skill">
+        <p>JavaScript</p>
+        <div class="skill-bar" style="--level: 70%"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="testimoni" data-aos="fade-up">
+    <div class="card">
+      <h2>Testimoni</h2>
+      <div class="testimonial">"Laksmana sangat profesional dan komunikatif dalam bekerja!"</div>
+      <div class="testimonial">"Website yang dibuatnya keren banget dan cepat responsif."</div>
+    </div>
+  </section>
+
+  <section id="contact" data-aos="fade-up">
+    <div class="card">
+      <h2>Kontak Saya</h2>
+      <form>
+        <input type="text" placeholder="Nama" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;">
+        <input type="email" placeholder="Email" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;">
+        <textarea placeholder="Pesan" rows="5" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;"></textarea>
+        <button type="submit" style="background-color: var(--sky); color: white; border: none; padding: 0.75rem 2rem; border-radius: 5px; cursor: pointer;">Kirim</button>
+      </form>
+    </div>
+  </section>
 
   <button onclick="topFunction()" id="toTopBtn" title="Kembali ke atas">↑</button>
 
@@ -298,7 +333,6 @@
     window.onscroll = function () {
       btn.style.display = document.documentElement.scrollTop > 300 ? "block" : "none";
     };
-
     function topFunction() {
       document.documentElement.scrollTop = 0;
     }
