@@ -234,6 +234,8 @@
       <a href="#portfolio">Portofolio</a>
       <a href="#skills">Skill</a>
       <a href="#testimoni">Testimoni</a>
+      <a href="#layanan">Layanan</a>
+      <a href="#faq">FAQ</a>
       <a href="#contact">Kontak</a>
       <i id="darkToggle" class="fas fa-moon"></i>
     </nav>
@@ -253,40 +255,23 @@
     </div>
   </section>
 
-  <section id="portfolio" data-aos="fade-up">
+  <section id="layanan" data-aos="fade-up">
     <div class="card">
-      <h2>Portofolio</h2>
-      <div class="gallery">
-        <img src="https://source.unsplash.com/random/301x200" alt="Galeri 1">
-        <img src="https://source.unsplash.com/random/302x200" alt="Galeri 2">
-        <img src="https://source.unsplash.com/random/303x200" alt="Galeri 3">
-      </div>
+      <h2>Layanan</h2>
+      <ul>
+        <li>Desain & Pengembangan Website</li>
+        <li>Optimasi SEO</li>
+        <li>Manajemen Konten Digital</li>
+        <li>Konsultasi Teknologi</li>
+      </ul>
     </div>
   </section>
 
-  <section id="skills" class="skills" data-aos="fade-up">
+  <section id="faq" data-aos="fade-up">
     <div class="card">
-      <h2>Skill</h2>
-      <div class="skill">
-        <p>HTML</p>
-        <div class="skill-bar" style="--level: 90%"></div>
-      </div>
-      <div class="skill">
-        <p>CSS</p>
-        <div class="skill-bar" style="--level: 80%"></div>
-      </div>
-      <div class="skill">
-        <p>JavaScript</p>
-        <div class="skill-bar" style="--level: 70%"></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="testimoni" data-aos="fade-up">
-    <div class="card">
-      <h2>Testimoni</h2>
-      <div class="testimonial">"Laksmana sangat profesional dan komunikatif dalam bekerja!"</div>
-      <div class="testimonial">"Website yang dibuatnya keren banget dan cepat responsif."</div>
+      <h2>Pertanyaan Umum</h2>
+      <p><strong>Q:</strong> Apakah kamu bisa membuat website toko online?<br><strong>A:</strong> Tentu! Saya bisa membangun e-commerce dari awal.</p>
+      <p><strong>Q:</strong> Berapa lama pengerjaan rata-rata?<br><strong>A:</strong> Tergantung kompleksitasnya, tapi biasanya 1-2 minggu.</p>
     </div>
   </section>
 
@@ -294,10 +279,13 @@
     <div class="card">
       <h2>Kontak Saya</h2>
       <form>
-        <input type="text" placeholder="Nama" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;">
-        <input type="email" placeholder="Email" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;">
-        <textarea placeholder="Pesan" rows="5" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;"></textarea>
-        <button type="submit" style="background-color: var(--sky); color: white; border: none; padding: 0.75rem 2rem; border-radius: 5px; cursor: pointer;">Kirim</button>
+        <label>Nama:</label><br>
+        <input type="text" placeholder="Nama Anda" style="width:100%; padding:10px; margin:10px 0;"><br>
+        <label>Email:</label><br>
+        <input type="email" placeholder="Email Anda" style="width:100%; padding:10px; margin:10px 0;"><br>
+        <label>Pesan:</label><br>
+        <textarea placeholder="Tulis pesan..." style="width:100%; padding:10px; margin:10px 0;"></textarea><br>
+        <button type="submit" style="padding:10px 20px; background:var(--sky); color:white; border:none; border-radius:8px;">Kirim</button>
       </form>
     </div>
   </section>
@@ -317,18 +305,15 @@
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
     AOS.init();
-
     const typed = new Typed("#typed", {
       strings: ["Halo, saya Laksmana", "Web Developer", "Content Creator", "Pembuat Website Keren"],
       typeSpeed: 60,
       backSpeed: 40,
       loop: true,
     });
-
     window.addEventListener("load", () => {
       document.getElementById("loader").style.display = "none";
     });
-
     let btn = document.getElementById("toTopBtn");
     window.onscroll = function () {
       btn.style.display = document.documentElement.scrollTop > 300 ? "block" : "none";
@@ -336,7 +321,6 @@
     function topFunction() {
       document.documentElement.scrollTop = 0;
     }
-
     document.getElementById("darkToggle").addEventListener("click", () => {
       document.body.classList.toggle("dark");
       const icon = document.getElementById("darkToggle");
@@ -345,5 +329,4 @@
     });
   </script>
 </body>
-
 </html>
