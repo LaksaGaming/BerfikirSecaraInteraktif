@@ -5,12 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>InteraktifBerfikir | Portofolio</title>
-  <meta name="description" content="Laksmana | Web Developer & Creator Digital. Temukan portofolio, skill dan galeri di sini.">
-  <meta name="keywords" content="Laksmana, Web Developer, Portofolio, Website Interaktif">
-  <meta name="author" content="Laksmana">
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
   <style>
     :root {
@@ -165,8 +160,77 @@
 </head>
 
 <body>
-  <!-- Isi website tetap -->
-  <!-- ... (seluruh body tidak diubah) ... -->
+  <header>
+    <div class="logo">Laksmana</div>
+    <nav>
+      <a href="#about">Tentang</a>
+      <a href="#portfolio">Portofolio</a>
+      <a href="#skills">Skill</a>
+      <a href="#testimoni">Testimoni</a>
+      <a href="#contact">Kontak</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1><span id="typed"></span></h1>
+      <p>Selamat datang di website pribadi saya</p>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="card">
+      <h2>Tentang Saya</h2>
+      <p>Halo! Saya Laksmana, seorang web developer dan kreator digital yang bersemangat membangun hal-hal keren di dunia maya.</p>
+    </div>
+  </section>
+
+  <section id="portfolio">
+    <div class="card">
+      <h2>Portofolio</h2>
+      <div class="gallery">
+        <img src="https://source.unsplash.com/random/301x201" alt="Project 1">
+        <img src="https://source.unsplash.com/random/302x202" alt="Project 2">
+        <img src="https://source.unsplash.com/random/303x203" alt="Project 3">
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="card">
+      <h2>Skill Saya</h2>
+      <div class="skills">
+        <div class="skill">
+          HTML & CSS
+          <div class="skill-bar" style="--level: 90%;"></div>
+        </div>
+        <div class="skill">
+          JavaScript
+          <div class="skill-bar" style="--level: 80%;"></div>
+        </div>
+        <div class="skill">
+          Git & GitHub
+          <div class="skill-bar" style="--level: 75%;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="testimoni">
+    <div class="card">
+      <h2>Testimoni</h2>
+      <div class="testimonial">"Laksmana sangat profesional dan kreatif! Website saya jadi luar biasa." – Klien A</div>
+      <div class="testimonial">"Desainnya clean, kece dan responsive. Mantap banget!" – Klien B</div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="card">
+      <h2>Kontak</h2>
+      <p>Email: prasatlaksmana@gmail.com</p>
+      <p>Instagram: <a href="https://instagram.com/laksawl" target="_blank">@laksawl</a></p>
+    </div>
+  </section>
 
   <footer>
     <p>&copy; 2025 Interaktif Berfikir</p>
@@ -177,16 +241,6 @@
     </div>
   </footer>
 
-  <!-- Google Analytics (ganti ID kalau punya akun sendiri) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXXXX-X"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'UA-XXXXXXX-X');
-  </script>
-
-  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
   <script>
     const typed = new Typed("#typed", {
       strings: ["Halo, saya Laksmana", "Web Developer", "Content Creator", "Pembuat Website Keren"],
@@ -194,25 +248,29 @@
       backSpeed: 40,
       loop: true,
     });
-
-    var galeriSwiper = new Swiper('.galeri-swiper', {
-      loop: true,
-      autoplay: { delay: 2500, disableOnInteraction: false },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-    });
-
-    var testimonialSwiper = new Swiper('.swiper-container', {
-      loop: true,
-      autoplay: { delay: 3000, disableOnInteraction: false },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-    });
   </script>
 </body>
-
 </html>
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+<!-- HTML Slider -->
+<div class="swiper-container">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide">\"Websitenya luar biasa, desain modern dan interaktif!\" – Klien A</div>
+    <div class="swiper-slide">\"Sangat mudah dinavigasi dan tampilannya keren.\" – Klien B</div>
+    <div class="swiper-slide">\"Profesional dan responsif, saya sangat merekomendasikan.\" – Klien C</div>
+  </div>
+  <!-- Jika ingin tombol navigasi -->
+  <div class="swiper-button-next"></div>
+  <div class="swiper-button-prev"></div>
+</div>
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+  var swiper = new Swiper('.swiper-container', {
+    loop: true,
+    autoplay: { delay: 3000, disableOnInteraction: false },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+  });
+</script>
