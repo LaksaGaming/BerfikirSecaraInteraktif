@@ -4,7 +4,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>InteraktifBerfikir | Portofolio</title>
+  <meta name="description" content="Portofolio web developer Laksmana. Menampilkan proyek, keterampilan, dan testimoni." />
+  <meta name="keywords" content="web developer, portofolio, konten kreator, Laksmana" />
+  <meta property="og:title" content="InteraktifBerfikir | Portofolio" />
+  <meta property="og:description" content="Website portofolio pribadi Laksmana - Web Developer, Content Creator, dan Pembuat Website Keren." />
+  <meta property="og:image" content="path-to-image.jpg" />
+  <meta property="og:url" content="your-website-url" />
+  <link rel="icon" href="path-to-your-favicon.ico" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
@@ -47,6 +53,12 @@
       font-size: 1.5rem;
       font-weight: bold;
       color: var(--sky);
+      animation: slideDown 1s ease-out;
+    }
+
+    @keyframes slideDown {
+      0% { transform: translateY(-50px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
     }
 
     nav a {
@@ -176,7 +188,6 @@
       color: var(--sky);
     }
 
-    /* Back to Top */
     #toTopBtn {
       position: fixed;
       bottom: 20px;
@@ -191,7 +202,6 @@
       display: none;
     }
 
-    /* Loader Spinner */
     #loader {
       position: fixed;
       width: 100vw;
@@ -217,10 +227,37 @@
       100% { transform: rotate(360deg); }
     }
 
-    /* Dark Mode Toggle */
     #darkToggle {
       cursor: pointer;
       font-size: 1.5rem;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .close {
+      font-size: 1.5rem;
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 10px;
     }
   </style>
 </head>
@@ -231,6 +268,21 @@
     <div class="spinner"></div>
   </div>
 
+  <!-- Modal Kontak -->
+  <div id="contactModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Kontak Saya</h2>
+      <form action="mailto:email@example.com" method="POST" enctype="multipart/form-data">
+        <label for="name">Nama:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="message">Pesan:</label>
+        <textarea id="message" name="message" required></textarea>
+        <button type="submit">Kirim Pesan</button>
+      </form>
+    </div>
+  </div>
+
   <header>
     <div class="logo">Laksmana</div>
     <nav>
@@ -238,7 +290,7 @@
       <a href="#portfolio">Portofolio</a>
       <a href="#skills">Skill</a>
       <a href="#testimoni">Testimoni</a>
-      <a href="#contact">Kontak</a>
+      <a href="#contact" onclick="document.getElementById('contactModal').style.display = 'block'">Kontak</a>
       <i id="darkToggle" class="fas fa-moon"></i>
     </nav>
   </header>
@@ -257,9 +309,6 @@
     </div>
   </section>
 
-  <!-- Sisa bagian (Portofolio, Skill, Testimoni, dll) tetap, hanya tambahkan data-aos="fade-up" ke setiap <section> -->
-
-  <!-- Tombol kembali ke atas -->
   <button onclick="topFunction()" id="toTopBtn" title="Kembali ke atas">↑</button>
 
   <footer>
@@ -305,6 +354,12 @@
       icon.classList.toggle("fa-sun");
       icon.classList.toggle("fa-moon");
     });
+
+    // Modal Kontak
+    document.getElementsByClassName("close")[0].onclick = function() {
+      document.getElementById("contactModal").style.display = "none";
+    };
   </script>
 </body>
+
 </html>
