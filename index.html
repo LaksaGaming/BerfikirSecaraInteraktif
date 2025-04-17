@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>InteraktifBerfikir | Portofolio</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
   <style>
     :root {
@@ -109,8 +110,11 @@
       gap: 1rem;
     }
 
-    .gallery img {
+    .gallery img,
+    .swiper-slide img {
+      width: 100%;
       max-width: 300px;
+      height: auto;
       border-radius: 1rem;
     }
 
@@ -195,56 +199,44 @@
       </div>
     </div>
   </section>
-<section id="galeri-slider">
-  <div class="card">
-    <h2>Foto Lama Indonesia</h2>
-    <div class="swiper-container galeri-swiper">
-      <div class="swiper-wrapper">
-        <div class="swiper-slide">
-      <img src="https://i.ibb.co/271Gr6kc/866b2fd554f57ac65eef58aa93037348.jpg" alt="Penjual Kacang dan Anak Bule" loading="lazy">
-      <img src="https://i.ibb.co/4nmYSy3T/337269-old-photos-of-indonesian-cities.webp" alt="Toko London Tempo Dulu" loading="lazy">
-      <img src="https://i.ibb.co/8DWfTLty/69592171cb11d9a4eb18ecde55126bba.jpg" alt="Suku Halmahera Zaman Dulu" loading="lazy">
-    </div>
-  </div>
-</section>
-<!-- Tambahan setelah section Portofolio -->
-<section id="galeri-slider">
-  <div class="card">
-    <h2>Galeri Interaktif</h2>
-    <div class="swiper-container galeri-swiper">
-      <div class="swiper-wrapper">
-        <div class="swiper-slide">
-          <img src="https://source.unsplash.com/800x400/?technology" alt="Slide 1" style="width:100%; border-radius: 1rem;">
+
+  <section id="foto-lama">
+    <div class="card">
+      <h2>Foto Lama Indonesia</h2>
+      <div class="swiper-container foto-swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide"><img src="https://i.ibb.co/271Gr6kc/866b2fd554f57ac65eef58aa93037348.jpg" alt="Penjual Kacang dan Anak Bule"></div>
+          <div class="swiper-slide"><img src="https://i.ibb.co/4nmYSy3T/337269-old-photos-of-indonesian-cities.webp" alt="Toko London Tempo Dulu"></div>
+          <div class="swiper-slide"><img src="https://i.ibb.co/8DWfTLty/69592171cb11d9a4eb18ecde55126bba.jpg" alt="Suku Halmahera Zaman Dulu"></div>
         </div>
-        <div class="swiper-slide">
-          <img src="https://source.unsplash.com/800x400/?creative" alt="Slide 2" style="width:100%; border-radius: 1rem;">
-        </div>
-        <div class="swiper-slide">
-          <img src="https://source.unsplash.com/800x400/?digital" alt="Slide 3" style="width:100%; border-radius: 1rem;">
-        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
       </div>
-      <div class="swiper-button-next"></div>
-      <div class="swiper-button-prev"></div>
     </div>
-  </div>
-</section>
+  </section>
+
+  <section id="galeri-slider">
+    <div class="card">
+      <h2>Galeri Interaktif</h2>
+      <div class="swiper-container galeri-swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide"><img src="https://source.unsplash.com/800x400/?technology" alt="Slide 1"></div>
+          <div class="swiper-slide"><img src="https://source.unsplash.com/800x400/?creative" alt="Slide 2"></div>
+          <div class="swiper-slide"><img src="https://source.unsplash.com/800x400/?digital" alt="Slide 3"></div>
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+      </div>
+    </div>
+  </section>
 
   <section id="skills">
     <div class="card">
       <h2>Skill Saya</h2>
       <div class="skills">
-        <div class="skill">
-          HTML & CSS
-          <div class="skill-bar" style="--level: 90%;"></div>
-        </div>
-        <div class="skill">
-          JavaScript
-          <div class="skill-bar" style="--level: 80%;"></div>
-        </div>
-        <div class="skill">
-          Git & GitHub
-          <div class="skill-bar" style="--level: 75%;"></div>
-        </div>
+        <div class="skill">HTML & CSS<div class="skill-bar" style="--level: 90%;"></div></div>
+        <div class="skill">JavaScript<div class="skill-bar" style="--level: 80%;"></div></div>
+        <div class="skill">Git & GitHub<div class="skill-bar" style="--level: 75%;"></div></div>
       </div>
     </div>
   </section>
@@ -252,8 +244,15 @@
   <section id="testimoni">
     <div class="card">
       <h2>Testimoni</h2>
-      <div class="testimonial">"Laksmana sangat profesional dan kreatif! Website saya jadi luar biasa." – Klien A</div>
-      <div class="testimonial">"Desainnya clean, kece dan responsive. Mantap banget!" – Klien B</div>
+      <div class="swiper-container testimonial-swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">"Websitenya luar biasa, desain modern dan interaktif!" – Klien A</div>
+          <div class="swiper-slide">"Sangat mudah dinavigasi dan tampilannya keren." – Klien B</div>
+          <div class="swiper-slide">"Profesional dan responsif, saya sangat merekomendasikan." – Klien C</div>
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+      </div>
     </div>
   </section>
 
@@ -274,6 +273,8 @@
     </div>
   </footer>
 
+  <!-- Scripts -->
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
   <script>
     const typed = new Typed("#typed", {
       strings: ["Halo, saya Laksmana", "Web Developer", "Content Creator", "Pembuat Website Keren"],
@@ -281,40 +282,34 @@
       backSpeed: 40,
       loop: true,
     });
+
+    new Swiper('.galeri-swiper', {
+      loop: true,
+      autoplay: { delay: 2500, disableOnInteraction: false },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
+
+    new Swiper('.foto-swiper', {
+      loop: true,
+      autoplay: { delay: 3000, disableOnInteraction: false },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
+
+    new Swiper('.testimonial-swiper', {
+      loop: true,
+      autoplay: { delay: 4000, disableOnInteraction: false },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
   </script>
-<!-- Tambahan di akhir bagian script (paling bawah sebelum </body>) -->
-<script>
-  var galeriSwiper = new Swiper('.galeri-swiper', {
-    loop: true,
-    autoplay: { delay: 2500, disableOnInteraction: false },
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-  });
-</script>
 </body>
+
 </html>
-<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
-<!-- HTML Slider -->
-<div class="swiper-container">
-  <div class="swiper-wrapper">
-    <div class="swiper-slide">\"Websitenya luar biasa, desain modern dan interaktif!\" – Klien A</div>
-    <div class="swiper-slide">\"Sangat mudah dinavigasi dan tampilannya keren.\" – Klien B</div>
-    <div class="swiper-slide">\"Profesional dan responsif, saya sangat merekomendasikan.\" – Klien C</div>
-  </div>
-  <!-- Jika ingin tombol navigasi -->
-  <div class="swiper-button-next"></div>
-  <div class="swiper-button-prev"></div>
-</div>
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-<script>
-  var swiper = new Swiper('.swiper-container', {
-    loop: true,
-    autoplay: { delay: 3000, disableOnInteraction: false },
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-  });
-</script>
