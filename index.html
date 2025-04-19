@@ -5,27 +5,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>InteraktifBerfikir | Portofolio</title>
-
-  <!-- SEO -->
-  <meta name="description" content="Laksmana | Web Developer & Digital Creator - Portofolio Interaktif dan Profesional">
-  <meta name="keywords" content="Web Developer, Portofolio, Interaktif, Laksmana, Frontend, Digital Creator">
-  <meta name="author" content="Laksmana">
-
-  <!-- Social Share -->
-  <meta property="og:title" content="Interaktif Berfikir | Laksmana Portofolio">
-  <meta property="og:description" content="Jelajahi karya, keahlian, dan kontak dari Laksmana, web developer & digital creator.">
-  <meta property="og:image" content="https://yourdomain.com/preview.jpg">
-  <meta property="og:url" content="https://yourdomain.com">
-  <meta name="twitter:card" content="summary_large_image">
-
-  <!-- Favicon -->
-  <link rel="icon" href="https://yourdomain.com/favicon.ico" type="image/x-icon" />
-
-  <!-- Styles & Libs -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-
   <style>
     :root {
       --sky: #57c7f1;
@@ -194,7 +176,6 @@
       color: var(--sky);
     }
 
-    /* Back to Top */
     #toTopBtn {
       position: fixed;
       bottom: 20px;
@@ -209,21 +190,6 @@
       display: none;
     }
 
-    /* WhatsApp Button */
-    .wa-float {
-      position: fixed;
-      bottom: 25px;
-      left: 25px;
-      background-color: #25d366;
-      color: white;
-      border-radius: 50%;
-      padding: 15px;
-      font-size: 24px;
-      z-index: 100;
-      text-align: center;
-    }
-
-    /* Loader Spinner */
     #loader {
       position: fixed;
       width: 100vw;
@@ -249,30 +215,17 @@
       100% { transform: rotate(360deg); }
     }
 
-    /* Dark Mode Toggle */
     #darkToggle {
       cursor: pointer;
       font-size: 1.5rem;
-    }
-
-    /* Translate */
-    #google_translate_element {
-      position: fixed;
-      top: 10px;
-      right: 20px;
-      z-index: 1000;
     }
   </style>
 </head>
 
 <body>
-  <!-- Loader -->
   <div id="loader">
     <div class="spinner"></div>
   </div>
-
-  <!-- Translate -->
-  <div id="google_translate_element"></div>
 
   <header>
     <div class="logo">Laksmana</div>
@@ -282,7 +235,7 @@
       <a href="#skills">Skill</a>
       <a href="#testimoni">Testimoni</a>
       <a href="#contact">Kontak</a>
-      <i id="darkToggle" class="fas fa-moon" aria-label="Toggle dark mode"></i>
+      <i id="darkToggle" class="fas fa-moon"></i>
     </nav>
   </header>
 
@@ -300,15 +253,57 @@
     </div>
   </section>
 
-  <!-- WhatsApp Contact -->
-  <a href="https://wa.me/082146585275" class="wa-float" target="_blank" aria-label="Chat via WhatsApp">
-    <i class="fab fa-whatsapp"></i>
-  </a>
+  <section id="portfolio" data-aos="fade-up">
+    <div class="card">
+      <h2>Portofolio</h2>
+      <div class="gallery">
+        <img src="https://source.unsplash.com/random/301x200" alt="Galeri 1">
+        <img src="https://source.unsplash.com/random/302x200" alt="Galeri 2">
+        <img src="https://source.unsplash.com/random/303x200" alt="Galeri 3">
+      </div>
+    </div>
+  </section>
 
-  <!-- Back to Top -->
+  <section id="skills" class="skills" data-aos="fade-up">
+    <div class="card">
+      <h2>Skill</h2>
+      <div class="skill">
+        <p>HTML</p>
+        <div class="skill-bar" style="--level: 90%"></div>
+      </div>
+      <div class="skill">
+        <p>CSS</p>
+        <div class="skill-bar" style="--level: 80%"></div>
+      </div>
+      <div class="skill">
+        <p>JavaScript</p>
+        <div class="skill-bar" style="--level: 70%"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="testimoni" data-aos="fade-up">
+    <div class="card">
+      <h2>Testimoni</h2>
+      <div class="testimonial">"Laksmana sangat profesional dan komunikatif dalam bekerja!"</div>
+      <div class="testimonial">"Website yang dibuatnya keren banget dan cepat responsif."</div>
+    </div>
+  </section>
+
+  <section id="contact" data-aos="fade-up">
+    <div class="card">
+      <h2>Kontak Saya</h2>
+      <form>
+        <input type="text" placeholder="Nama" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;">
+        <input type="email" placeholder="Email" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;">
+        <textarea placeholder="Pesan" rows="5" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;"></textarea>
+        <button type="submit" style="background-color: var(--sky); color: white; border: none; padding: 0.75rem 2rem; border-radius: 5px; cursor: pointer;">Kirim</button>
+      </form>
+    </div>
+  </section>
+
   <button onclick="topFunction()" id="toTopBtn" title="Kembali ke atas">↑</button>
 
-  <!-- Footer -->
   <footer>
     <p>&copy; 2025 Interaktif Berfikir</p>
     <div class="socials">
@@ -318,7 +313,6 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
@@ -331,12 +325,10 @@
       loop: true,
     });
 
-    // Loader
     window.addEventListener("load", () => {
       document.getElementById("loader").style.display = "none";
     });
 
-    // Back to top
     let btn = document.getElementById("toTopBtn");
     window.onscroll = function () {
       btn.style.display = document.documentElement.scrollTop > 300 ? "block" : "none";
@@ -345,28 +337,13 @@
       document.documentElement.scrollTop = 0;
     }
 
-    // Dark mode toggle
     document.getElementById("darkToggle").addEventListener("click", () => {
       document.body.classList.toggle("dark");
       const icon = document.getElementById("darkToggle");
       icon.classList.toggle("fa-sun");
       icon.classList.toggle("fa-moon");
     });
-
-    // Google Translate
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({ pageLanguage: 'id' }, 'google_translate_element');
-    }
-  </script>
-  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX');
   </script>
 </body>
+
 </html>
