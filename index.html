@@ -220,27 +220,17 @@
       font-size: 1.5rem;
     }
 
-    #toast {
+    #clock {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      background-color: var(--sky);
+      bottom: 10px;
+      left: 20px;
+      background: var(--sky);
       color: white;
-      padding: 1rem 2rem;
+      padding: 8px 16px;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      display: none;
-      z-index: 9999;
-    }
-
-    #scrollProgress {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 5px;
-      background-color: var(--sky);
-      width: 0%;
-      z-index: 999;
+      font-weight: bold;
+      z-index: 1001;
+      font-size: 0.9rem;
     }
   </style>
 </head>
@@ -250,35 +240,23 @@
     <div class="spinner"></div>
   </div>
 
-  <div id="scrollProgress"></div>
-  <div id="toast">Selamat datang di situs Interaktif Berfikir!</div>
+  <div id="clock"></div>
 
-  <!-- Existing HTML content remains unchanged, and scripts added below -->
+  <!-- sisanya tetap sama -->
+  <!-- lanjut dari HTML kamu sebelumnya -->
 
-  <script>
-    window.addEventListener("load", () => {
-      document.getElementById("loader").style.display = "none";
-      const toast = document.getElementById("toast");
-      toast.style.display = "block";
-      setTimeout(() => toast.style.display = "none", 3000);
-    });
-
-    window.onscroll = function () {
-      document.getElementById("toTopBtn").style.display = document.documentElement.scrollTop > 300 ? "block" : "none";
-      let scrolled = (document.documentElement.scrollTop / (document.documentElement.scrollHeight - document.documentElement.clientHeight)) * 100;
-      document.getElementById("scrollProgress").style.width = scrolled + "%";
-    };
-
-    function topFunction() {
-      document.documentElement.scrollTop = 0;
-    }
-
-    document.getElementById("darkToggle").addEventListener("click", () => {
-      document.body.classList.toggle("dark");
-      const icon = document.getElementById("darkToggle");
-      icon.classList.toggle("fa-sun");
-      icon.classList.toggle("fa-moon");
-    });
-  </script>
 </body>
+
+<script>
+  function updateClock() {
+    const now = new Date();
+    const jam = String(now.getHours()).padStart(2, '0');
+    const menit = String(now.getMinutes()).padStart(2, '0');
+    const detik = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById("clock").textContent = `Jam: ${jam}:${menit}:${detik}`;
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+</script>
+
 </html>
