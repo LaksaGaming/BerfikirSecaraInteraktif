@@ -240,26 +240,41 @@
     <div class="spinner"></div>
   </div>
 
+  <header>
+    <div class="logo">Laksmana</div>
+    <nav>
+      <a href="#about">Tentang</a>
+      <a href="#portfolio">Portofolio</a>
+      <a href="#skills">Skill</a>
+      <a href="#testimoni">Testimoni</a>
+      <a href="#contact">Kontak</a>
+      <i id="darkToggle" class="fas fa-moon"></i>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1><span id="typed"></span></h1>
+      <p>Selamat datang di website pribadi saya</p>
+    </div>
+  </section>
+
+  <!-- Other sections -->
+
   <div id="clock"></div>
 
-  <button id="darkToggle" style="position: absolute; top: 10px; right: 10px;">🌙</button>
-
-  <!-- sisanya tetap sama -->
-  <!-- lanjut dari HTML kamu sebelumnya -->
-
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
-    // Menghilangkan Loader setelah halaman selesai dimuat
-    window.onload = function() {
-      document.getElementById('loader').style.display = 'none';
-    };
+    AOS.init();
 
-    // Toggle Dark Mode
-    const darkToggle = document.getElementById('darkToggle');
-    darkToggle.addEventListener('click', function() {
-      document.body.classList.toggle('dark');
+    const typed = new Typed("#typed", {
+      strings: ["Halo, saya Laksmana", "Web Developer", "Content Creator", "Pembuat Website Keren"],
+      typeSpeed: 60,
+      backSpeed: 40,
+      loop: true,
     });
 
-    // Fitur Jam berjalan
     function updateClock() {
       const now = new Date();
       const jam = String(now.getHours()).padStart(2, '0');
@@ -268,9 +283,8 @@
       document.getElementById("clock").textContent = `Jam: ${jam}:${menit}:${detik}`;
     }
     setInterval(updateClock, 1000);
-    updateClock();
+    updateClock(); // Initial call to show the clock immediately
   </script>
-
 </body>
 
 </html>
