@@ -38,14 +38,6 @@
       align-items: center;
       z-index: 1000;
     }
-#search-container {
-  max-width: 800px;
-  margin: 2rem auto;
-  display: flex;
-  justify-content: center;
-  padding: 0 1rem;
-}
-
 
     body.dark header {
       background: rgba(18, 18, 18, 0.95);
@@ -167,6 +159,12 @@
       background-color: #2a2a2a;
     }
 
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: #eee;
+    }
+
     .socials a {
       margin: 0 0.5rem;
       color: #333;
@@ -222,7 +220,7 @@
       font-size: 1.5rem;
     }
 
-    /* ⏰ Style untuk jam digital */
+    /* ⏰ Style untuk jam, hari, tanggal */
     #clock {
       position: fixed;
       bottom: 20px;
@@ -331,7 +329,7 @@
     </div>
   </footer>
 
-  <!-- ⏰ Jam, Hari, dan Tanggal -->
+  <!-- ⏰ Jam, Hari, Tanggal -->
   <div id="clock"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
@@ -365,22 +363,12 @@
       icon.classList.toggle("fa-moon");
     });
 
-    // ⏰ Jam, Hari, dan Tanggal
+    // ⏰ Jam digital + Hari dan Tanggal
     function updateClock() {
       const now = new Date();
-
-      const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-      const day = days[now.getDay()];
-
-      const date = now.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      });
-
       const time = now.toLocaleTimeString('id-ID', { hour12: false });
-
-      document.getElementById("clock").textContent = `${day}, ${date} | ${time}`;
+      const date = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      document.getElementById("clock").textContent = `${time} | ${date}`;
     }
     setInterval(updateClock, 1000);
     updateClock();
