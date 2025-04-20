@@ -220,7 +220,7 @@
       font-size: 1.5rem;
     }
 
-    /* ⏰ Style untuk jam, hari, tanggal */
+    /* ⏰ Style untuk jam digital */
     #clock {
       position: fixed;
       bottom: 20px;
@@ -325,13 +325,11 @@
     <div class="socials">
       <a href="https://instagram.com/laksawl" target="_blank"><i class="fab fa-instagram"></i></a>
       <a href="#"><i class="fab fa-twitter"></i></a>
-      <a href="#"><i class="https://github.com/LaksaGaming"></i></a>
-  <a href="https://wa.me/082146585275" class="wa-float" target="_blank" aria-label="Chat via WhatsApp">
-    <i class="fab fa-whatsapp"></i>
+      <a href="#"><i class="fab fa-github"></i></a>
     </div>
-</section>
-
   </footer>
+
+  <!-- ⏰ Jam digital -->
   <div id="clock"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
@@ -365,12 +363,11 @@
       icon.classList.toggle("fa-moon");
     });
 
-    // ⏰ Jam digital + Hari dan Tanggal
+    // ⏰ Jam digital real-time
     function updateClock() {
       const now = new Date();
       const time = now.toLocaleTimeString('id-ID', { hour12: false });
-      const date = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-      document.getElementById("clock").textContent = `${time} | ${date}`;
+      document.getElementById("clock").textContent = time;
     }
     setInterval(updateClock, 1000);
     updateClock();
