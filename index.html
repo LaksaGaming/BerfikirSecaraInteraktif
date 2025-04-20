@@ -363,28 +363,15 @@
       icon.classList.toggle("fa-moon");
     });
 
-    <script>
-  // ⏰ Jam, Hari, Tanggal real-time
-  function updateClock() {
-    const now = new Date();
-
-    const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-    const day = days[now.getDay()];
-
-    const date = now.toLocaleDateString('id-ID', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
-
-    const time = now.toLocaleTimeString('id-ID', { hour12: false });
-
-    document.getElementById("clock").textContent = `${day}, ${date} | ${time}`;
-  }
-
-  setInterval(updateClock, 1000);
-  updateClock();
-</script>
+    // ⏰ Jam digital real-time
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString('id-ID', { hour12: false });
+      document.getElementById("clock").textContent = time;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
 </body>
 
 </html>
