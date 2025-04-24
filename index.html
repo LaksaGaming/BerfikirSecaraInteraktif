@@ -8,6 +8,20 @@
   <link rel="icon" type="image/png" href="https://i.ibb.co/hJ24JGZs/Chat-GPT-Image-21-Apr-2025-06-32-08.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
+  <!-- 🔍 SEO Meta Tags -->
+  <meta name="description" content="Website resmi Laksmana - Web developer dan kreator digital. Lihat portofolio, skill, dan cara menghubungi saya.">
+  <meta name="keywords" content="Laksmana, Web Developer, Portofolio, HTML, CSS, JavaScript, Kreator Digital">
+  <meta name="author" content="Laksmana">
+  <meta name="robots" content="index, follow">
+
+  <!-- 🌐 Open Graph / Twitter Meta Tags -->
+  <meta property="og:title" content="Interaktif Berfikir | Laksmana Portofolio">
+  <meta property="og:description" content="Website pribadi Laksmana - Web Developer & Digital Creator.">
+  <meta property="og:image" content="https://i.ibb.co/hJ24JGZs/Chat-GPT-Image-21-Apr-2025-06-32-08.png">
+  <meta property="og:url" content="https://laksagaming.github.io/BerfikirSecaraInteraktif/">
+  <meta name="twitter:card" content="summary_large_image">
+
   <style>
     :root {
       --sky: #57c7f1;
@@ -220,7 +234,6 @@
       font-size: 1.5rem;
     }
 
-    /* ⏰ Style untuk jam digital */
     #clock {
       position: fixed;
       bottom: 20px;
@@ -238,150 +251,5 @@
   </style>
 </head>
 
-<body>
-  <div id="loader">
-    <div class="spinner"></div>
-  </div>
+<!-- Body lanjut... -->
 
-  <header>
-    <div class="logo">Laksmana</div>
-    <nav>
-      <a href="#about">Tentang</a>
-      <a href="#portfolio">Portofolio</a>
-      <a href="#skills">Skill</a>
-      <a href="#testimoni">Testimoni</a>
-      <a href="#contact">Kontak</a>
-      <i id="darkToggle" class="fas fa-moon"></i>
-    </nav>
-  </header>
-
-  <section class="hero">
-    <div class="hero-content">
-      <h1><span id="typed"></span></h1>
-      <p>Selamat datang di website pribadi saya</p>
-    </div>
-  </section>
-
-  <section id="about" data-aos="fade-up">
-    <div class="card">
-      <h2>Tentang Saya</h2>
-      <p>Halo! Saya Laksmana, seorang web developer dan kreator digital yang bersemangat membangun hal-hal keren di dunia maya.</p>
-    </div>
-  </section>
-
-  <section id="portfolio" data-aos="fade-up">
-    <div class="card">
-      <h2>Portofolio</h2>
-      <div class="gallery">
-        <img src="https://i.ibb.co/d4D5TFbg/Chat-GPT-Image-21-Apr-2025-06-20-11.png" alt="Galeri 1">
-        <img src="https://i.ibb.co/1JwQW9c9/Chat-GPT-Image-21-Apr-2025-06-44-23.png" alt="Galeri 2">
-      </div>
-    </div>
-  </section>
-
-  <section id="skills" class="skills" data-aos="fade-up">
-    <div class="card">
-      <h2>Skill</h2>
-      <div class="skill">
-        <p>HTML</p>
-        <div class="skill-bar" style="--level: 90%"></div>
-      </div>
-      <div class="skill">
-        <p>CSS</p>
-        <div class="skill-bar" style="--level: 80%"></div>
-      </div>
-      <div class="skill">
-        <p>JavaScript</p>
-        <div class="skill-bar" style="--level: 70%"></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="testimoni" data-aos="fade-up">
-    <div class="card">
-      <h2>Testimoni</h2>
-      <div class="testimonial">"Laksmana sangat profesional dan komunikatif dalam bekerja!"</div>
-      <div class="testimonial">"Website yang dibuatnya keren banget dan cepat responsif."</div>
-    </div>
-  </section>
-
-  <section id="contact" data-aos="fade-up">
-    <div class="card">
-      <h2>Kontak Saya</h2>
-      <form>
-        <input type="text" placeholder="Nama" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;">
-        <input type="email" placeholder="Email" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;">
-        <textarea placeholder="Pesan" rows="5" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;"></textarea>
-        <button type="submit" style="background-color: var(--sky); color: white; border: none; padding: 0.75rem 2rem; border-radius: 5px; cursor: pointer;">Kirim</button>
-      </form>
-    </div>
-  </section>
-
-  <button onclick="topFunction()" id="toTopBtn" title="Kembali ke atas">↑</button>
-
-  <footer>
-    <p>&copy; 2025 Interaktif Berfikir</p>
-    <div class="socials">
-      <a href="https://instagram.com/laksawl" target="_blank"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-twitter"></i></a>
-      <a href="https://github.com/LaksaGaming" target="_blank"><i class="fab fa-github"></i></a>
-      <a href="https://wa.me/082146585275" class="wa-float" target="_blank" aria-label="Chat via WhatsApp">
-      <i class="fab fa-whatsapp"></i>
-  </a>
-  <!-- ⏰ Jam, Hari, dan Tanggal -->
-  <div id="clock"></div>
-
-  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>
-    AOS.init();
-
-    const typed = new Typed("#typed", {
-      strings: ["Halo, saya Laksmana", "Web Developer", "Content Creator", "Pembuat Website Keren"],
-      typeSpeed: 60,
-      backSpeed: 40,
-      loop: true,
-    });
-
-    window.addEventListener("load", () => {
-      document.getElementById("loader").style.display = "none";
-    });
-
-    let btn = document.getElementById("toTopBtn");
-    window.onscroll = function () {
-      btn.style.display = document.documentElement.scrollTop > 300 ? "block" : "none";
-    };
-    function topFunction() {
-      document.documentElement.scrollTop = 0;
-    }
-
-    document.getElementById("darkToggle").addEventListener("click", () => {
-      document.body.classList.toggle("dark");
-      const icon = document.getElementById("darkToggle");
-      icon.classList.toggle("fa-sun");
-      icon.classList.toggle("fa-moon");
-    });
-
-    // ⏰ Jam, Hari, dan Tanggal
-    function updateClock() {
-      const now = new Date();
-
-      const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-      const day = days[now.getDay()];
-
-      const date = now.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      });
-
-      const time = now.toLocaleTimeString('id-ID', { hour12: false });
-
-      document.getElementById("clock").textContent = `${day}, ${date} | ${time}`;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-  </script>
-</body>
-
-</html>
