@@ -9,21 +9,20 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: url('https://i.ibb.co/Y4j0X1g9/lakaka.jpg') no-repeat center center fixed;
-      background-size: cover;
+      background-color: #000000;
       color: #FFFFFF;
     }
     .containeras {
       max-width: 800px;
       margin: 20px auto;
       padding: 20px;
-      background-color: rgba(66, 60, 60, 0.85); /* Warna hitam transparan */
+      background-color: #423C3C;
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
-    h2, h3, h4 {
+    h2, h3 {
       text-align: center;
-      color: #06EE18;
+      color: #F0F0F0;
     }
     p {
       margin: 0 0 10px;
@@ -37,7 +36,7 @@
       text-align: center;
       margin: 20px 0;
     }
-    table {
+    .table {
       width: 100%;
       border-collapse: collapse;
       margin: 20px 0;
@@ -54,7 +53,7 @@
     }
     .btn {
       cursor: pointer;
-      background-color: #FF5722;
+      background-color: #2196F3;
       color: white;
       padding: 10px 15px;
       border: none;
@@ -63,17 +62,76 @@
       display: block;
       margin: 20px auto;
       text-decoration: none;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+      animation: pulse 2s infinite;
     }
     .btn:hover {
-      background-color: #E64A19;
+      background-color: #1976D2;
+      box-shadow: 0 0 15px #2196F3, 0 0 25px #2196F3;
+      transform: scale(1.05);
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.7);
+      }
+      70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 10px 10px rgba(33, 150, 243, 0);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(33, 150, 243, 0);
+      }
+    }
+    /* Modal + Overlay */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .modal-overlay.active {
+      display: block;
+      opacity: 1;
     }
     .terms-modal {
       display: none;
       background: #333;
       padding: 20px;
       border-radius: 8px;
-      margin-top: 20px;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      z-index: 1000;
+      color: #fff;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80%;
+      overflow-y: auto;
+      opacity: 0;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .terms-modal.active {
+      display: block;
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
     }
     @media (max-width: 600px) {
       .containeras {
@@ -83,80 +141,46 @@
   </style>
 </head>
 <body>
-  <div class="containeras">
-    <h2>Daily Wins Mega Gacor</h2>
-    <h3><strong>24 MARET 2024 – 30 MARET 2026</strong></h3>
-    <h4><strong>Turnamen Slot Harian</strong></h4>
-    <h4><strong>Level 2: Jumlah Dari Semua Pengganda Kemenangan</strong></h4>
-    <p><font color="#F5EA09">Mulai: Senin, 28 April 2025, 14:00 (WIB)<br>
-      Sampai: Senin, 26 Mei 2025, 02:00 (WIB)</font></p>
-    <h3>Tournamen Harian<br>Jumlah Dari Semua Pengganda Kemenangan<br>Rp 235,200,000 / harian</h3>
 
-    <div class="green-box">Berakhir 4 Minggu</div>
+<div class="containeras">
+  <h2><font color="#06EE18">Daily Wins Mega Gacor</font></h2>
+  <h3><strong><font color="#06EE18">24 MARET 2024 &#8211; 30 MARET 2026</font></strong></h3>
+  <h4><strong>Turnamen Slot Harian</strong></h4>
+  <h4><strong>Level 2: Jumlah Dari Semua Pengganda Kemenangan</strong></h4>
+  <p><font color="#F5EA09">Mulai: Senin, 28 April 2025, 14:00 (WIB)<br>
+  Sampai: Senin, 26 Mei 2025, 02:00 (WIB)</font></p>
+  <h3>Tournamen Harian<br>Jumlah Dari Semua Pengganda Kemenangan<br>Rp 235,200,000 / harian</h3>
+  <div class="green-box">Berakhir 4 Minggu</div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>Total Hadiah</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>Rp 3,000,000</td>
-        </tr>
-        <tr>
-          <td>2 - 3</td>
-          <td>Rp 500,000</td>
-        </tr>
-        <tr>
-          <td>4 - 8</td>
-          <td>Rp 200,000</td>
-        </tr>
-        <tr>
-          <td>9 - 50</td>
-          <td>Rp 100,000</td>
-        </tr>
-        <tr>
-          <td>51 - 300</td>
-          <td>Rp 50,000</td>
-        </tr>
-        <tr>
-          <td>301 - 1,000</td>
-          <td>Rp 25,000</td>
-        </tr>
-      </tbody>
-    </table>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Total Hadiah</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Rp 3,000,000</td></tr>
+      <tr><td>2 - 3</td><td>Rp 500,000</td></tr>
+      <tr><td>4 - 8</td><td>Rp 200,000</td></tr>
+      <tr><td>9 - 50</td><td>Rp 100,000</td></tr>
+      <tr><td>51 - 300</td><td>Rp 50,000</td></tr>
+      <tr><td>301 - 1,000</td><td>Rp 25,000</td></tr>
+    </tbody>
+  </table>
 
-    <div class="btn" onclick="toggleTermsModal()">Syarat & Ketentuan Umum</div>
+  <div class="btn" onclick="toggleTermsModal()">Syarat & Ketentuan Umum</div>
 
-    <div class="terms-modal" id="termsModal">
-      <h3>Syarat & Ketentuan Umum</h3>
-      <p><strong>Daily Wins Mega Gacor akan berlangsung mulai 24 Maret 2025 hingga 30 Maret 2026 dengan Total Hadiah sebesar Rp 88,000,000,000 dalam 12 Level.</strong></p>
-      <p>1. 168,000 pemenang akan memenangkan uang tunai senilai Rp 6,585,600,000 dari 28 April 2025, 14:00 WIB hingga 26 Mei 2025, 02:00 WIB untuk Level 2.</p>
-      <p>2. Turnamen akan berlangsung 6x dalam sehari dengan 1,000 pemenang dan hadiah senilai Rp 39,200,000 setiap turnamen. Akan ada total 168 turnamen selama periode promosi.<br>
-        Jadwal Turnamen:<br>
-        14:00 – 15:59 (WIB)<br>
-        16:00 – 17:59 (WIB)<br>
-        18:00 – 19:59 (WIB)<br>
-        20:00 – 21:59 (WIB)<br>
-        22:00 – 23:59 (WIB)<br>
-        00:00 – 02:00 (WIB)</p>
-        <p>3. Pemenang Turnamen ditentukan berdasarkan Skor pada Papan Peringkat. Skor dihitung berdasarkan jumlah dari semua pengganda kemenangan (Kemenangan/Taruhan).</p>
-        <p>4. Skor = Total dari (tiap kemenangan/nilai setiap taruhan * 100)<br>
-        Contoh perhitungan:<br>
-        Spin 1: bertaruh Rp 1,000 -> menang Rp 50,000 (skor = Rp 50,000 / Rp 1,000 x 100 = 5,000)<br>
-        Spin 2: bertaruh Rp 1,000 -> menang Rp 5,000 (skor = Rp 5,000 / Rp 1,000 x 100 = 500)<br>
-        Skor total = 5,500</p>
-        <p>5. Tidak ada taruhan minimum diperlukan dalam promosi ini.</p>
-        <p>6. Hadiah akan diberikan secara cash dan tidak dikenakan persyaratan turnover.</p>
-        <p>7. Hanya 1,000 taruhan pertama terkualifikasi setiap turnamenya yang dihitung untuk mengikuti promosi ini. Semua taruhan yang dipasang setelah mencapai limit taruhan tidak dihitung dalam perhitungan promosi.</p>
-        <p>8. Game yang terkualifikasi: Semua game Pragmatic Play kecuali Money Roll, Irish Charms, Diamonds Forever 3 lines, Gates of Olympus Super Scatter, Table Games, Video Poker, dan Scratch Cards.</p>
-        <p>9. Jika ada dua atau lebih pemain dengan skor yang sama di papan peringkat turnamen, pemain yang mencetak skor pertama akan mendapatkan posisi yang lebih tinggi di papan peringkat.</p>
-        <p>10. Papan peringkat turnamen akan diperbaharui di kualifikasi game secara langsung.</p>
-        <p>11. Pragmatic Play berhak meninjau aktivitas pemain secara menyeluruh untuk mengidentifikasi adanya potensi penyalahgunaan guna memastikan permainan yang adil dalam Promosi Jaringan kami. Jika ditemukan adanya penyalahgunaan, Pragmatic Play berhak membatalkan jumlah berapapun yang telah dibayarkan kepada pemenang.</p>
-        <p>12. Pragmatic Play berhak untuk mengubah, menangguhkan, atau membatalkan promosi kapan saja dan tanpa pemberitahuan sebelumnya.</p>
+</div>
+
+<!-- Modal dan Overlay -->
+<div class="modal-overlay" id="modalOverlay" onclick="toggleTermsModal()"></div>
+<div class="terms-modal" id="termsModal">
+  <button class="close-btn" onclick="toggleTermsModal()">&times;</button>
+  <h3>Syarat & Ketentuan Umum</h3>
+  <p><strong>Daily Wins Mega Gacor akan berlangsung mulai 24 Maret 2025 hingga 30 Maret 2026 dengan Total Hadiah sebesar Rp 88,000,000,000 dalam 12 Level.</strong></p>
+  <p>1. 168,000 pemenang akan memenangkan uang tunai senilai Rp 6,585,600,000 dari 28 April 2025, 14:00 WIB hingga 26 Mei 2025, 02:00 WIB untuk Level 2.</p>
+  <p>2. Turnamen akan berlangsung 6x dalam sehari dengan 1,000 pemenang dan hadiah senilai Rp 39,200,000 setiap turnamen...</p>
   <button class="btn" onclick="toggleTermsModal()">Tutup</button>
 </div>
 
