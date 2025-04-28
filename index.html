@@ -1,387 +1,176 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>InteraktifBerfikir | Portofolio</title>
-  <link rel="icon" type="image/png" href="https://i.ibb.co/hJ24JGZs/Chat-GPT-Image-21-Apr-2025-06-32-08.png">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-  <style>
-    :root {
-      --sky: #57c7f1;
-      --dark: #121212;
-      --light: #ffffff;
-    }
-
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: var(--light);
-      color: #333;
-      transition: background 0.3s, color 0.3s;
-      scroll-behavior: smooth;
-    }
-
-    body.dark {
-      background: var(--dark);
-      color: #fff;
-    }
-
-    header {
-      position: sticky;
-      top: 0;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    body.dark header {
-      background: rgba(18, 18, 18, 0.95);
-    }
-
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: var(--sky);
-    }
-
-    nav a {
-      margin: 0 1rem;
-      text-decoration: none;
-      color: inherit;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    nav a:hover {
-      color: var(--sky);
-    }
-
-    .hero {
-      height: 100vh;
-      background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb');
-      background-size: cover;
-      background-position: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      text-align: center;
-      position: relative;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-    }
-
-    .hero h1 {
-      font-size: 3rem;
-    }
-
-    section {
-      padding: 4rem 2rem;
-    }
-
-    .card {
-      background: white;
-      padding: 2rem;
-      border-radius: 1rem;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      margin: 1rem auto;
-      max-width: 800px;
-    }
-
-    body.dark .card {
-      background: #1e1e1e;
-    }
-
-    .gallery {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-    }
-
-    .gallery img {
-      max-width: 300px;
-      border-radius: 1rem;
-      cursor: zoom-in;
-      transition: transform 0.3s;
-    }
-
-    .gallery img:hover {
-      transform: scale(1.05);
-    }
-
-    .skills .skill {
-      margin-bottom: 1rem;
-    }
-
-    .skill-bar {
-      height: 20px;
-      background-color: var(--sky);
-      width: 0;
-      animation: growBar 2s forwards;
-    }
-
-    @keyframes growBar {
-      to {
-        width: var(--level);
-      }
-    }
-
-    .testimonial {
-      font-style: italic;
-      background-color: #f5f5f5;
-      padding: 1.5rem;
-      border-left: 5px solid var(--sky);
-      margin-bottom: 1rem;
-      border-radius: 1rem;
-    }
-
-    body.dark .testimonial {
-      background-color: #2a2a2a;
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem;
-      background: #eee;
-    }
-
-    .socials a {
-      margin: 0 0.5rem;
-      color: #333;
-      font-size: 1.2rem;
-      transition: 0.3s;
-    }
-
-    .socials a:hover {
-      color: var(--sky);
-    }
-
-    #toTopBtn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 99;
-      background-color: var(--sky);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: none;
-    }
-
-    #loader {
-      position: fixed;
-      width: 100vw;
-      height: 100vh;
-      background: white;
-      z-index: 9999;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .spinner {
-      border: 8px solid #f3f3f3;
-      border-top: 8px solid var(--sky);
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    #darkToggle {
-      cursor: pointer;
-      font-size: 1.5rem;
-    }
-
-    /* ⏰ Style untuk jam digital */
-    #clock {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: var(--sky);
-      color: white;
-      padding: 8px 12px;
-      border-radius: 10px;
-      font-weight: bold;
-      font-size: 14px;
-      font-family: monospace;
-      z-index: 999;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Wins Mega Gacor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            color: #FFFFFF;
+        }
+        .containeras {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #423C3C;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        h2, h3 {
+            text-align: center;
+            color: #F0F0F0;
+        }
+        p {
+            margin: 0 0 10px;
+            line-height: 1.5;
+        }
+        .green-box {
+            background-color: #4CAF50; /* Warna hijau */
+            color: white; /* Teks putih */
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center; /* Teks di tengah */
+            margin: 20px 0; /* Margin atas dan bawah */
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #555; /* Latar belakang tabel */
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd; /* Garis batas untuk semua sisi */
+            text-align: center; /* Teks di tengah */
+        }
+        th {
+            background-color: #777; /* Warna header */
+            color: #FFFFFF; /* Teks header */
+        }
+        .terms-modal {
+            display: none;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            color: #fff;
+            width: 90%;  /* Membuat modal responsif */
+            max-width: 600px;  /* Lebar maksimum untuk layar besar */
+            overflow-y: auto;
+            max-height: 80%;  /* Mencegah overflow pada layar */
+        }
+        .btn {
+            cursor: pointer;
+            background-color: #FF5722; /* Warna baru tombol (misalnya oranye) */
+            color: white; /* Teks tombol */
+            padding: 10px 15px; /* Padding untuk tombol */
+            border: none; /* Hapus garis batas */
+            border-radius: 5px; /* Sudut membulat */
+            text-align: center;
+            display: block;
+            margin: 20px auto; /* Margin untuk memusatkan tombol */
+            text-decoration: none; /* Hapus garis bawah */
+            transition: background-color 0.3s; /* Efek transisi */
+        }
+        .btn:hover {
+            background-color: #E64A19; /* Warna saat hover */
+        }
+        @media (max-width: 600px) {
+            .containeras {
+                padding: 10px;
+            }
+        }
+    </style>
 </head>
-
 <body>
-  <div id="loader">
-    <div class="spinner"></div>
-  </div>
-
-  <header>
-    <div class="logo">Laksmana</div>
-    <nav>
-      <a href="#about">Tentang</a>
-      <a href="#portfolio">Portofolio</a>
-      <a href="#skills">Skill</a>
-      <a href="#testimoni">Testimoni</a>
-      <a href="#contact">Kontak</a>
-      <i id="darkToggle" class="fas fa-moon"></i>
-    </nav>
-  </header>
-
-  <section class="hero">
-    <div class="hero-content">
-      <h1><span id="typed"></span></h1>
-      <p>Selamat datang di website pribadi saya</p>
+<div class="containeras">
+    <h2><font color="#06EE18">Daily Wins Mega Gacor</font></h2>
+    <h3><strong><font color="#06EE18">24 MARET 2024 &#8211; 30 MARET 2026</font></strong></h3>
+    <h4><strong>Turnamen Slot Harian</strong></h4>
+    <h4><strong>Level 2: Jumlah Dari Semua Pengganda Kemenangan</strong></h4>
+    <p><font color="#F5EA09">Mulai: Senin, 28 April 2025, 14:00 (WIB)<br>
+    Sampai: Senin, 26 Mei 2025, 02:00 (WIB)</font></p>
+    <h3>Tournamen Harian<br>Jumlah Dari Semua Pengganda Kemenangan<br>Rp 235,200,000 / harian</h3>
+    <div class="green-box">Berakhir 4 Minggu</div> <!-- Kotak hijau untuk kalimat -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Total Hadiah</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Rp 3,000,000</td>
+            </tr>
+            <tr>
+                <td>2 - 3</td>
+                <td>Rp 500,000</td>
+            </tr>
+            <tr>
+                <td>4 - 8</td>
+                <td>Rp 200,000</td>
+            </tr>
+            <tr>
+                <td>9 - 50</td>
+                <td>Rp 100,000</td>
+            </tr>
+            <tr>
+                <td>51 - 300</td>
+                <td>Rp 50,000</td>
+            </tr>
+            <tr>
+                <td>301 - 1,000</td>
+                <td>Rp 25,000</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="btn" onclick="toggleTermsModal()">Syarat & Ketentuan Umum</div>
+    <div class="terms-modal" id="termsModal">
+        <h3>Syarat & Ketentuan Umum</h3>
+        <p><strong>Daily Wins Mega Gacor akan berlangsung mulai 24 Maret 2025 hingga 30 Maret 2026 dengan Total Hadiah sebesar Rp 88,000,000,000 dalam 12 Level.</strong></p>
+        <p>1. 168,000 pemenang akan memenangkan uang tunai senilai Rp 6,585,600,000 dari 28 April 2025, 14:00 WIB hingga 26 Mei 2025, 02:00 WIB untuk Level 2.</p>
+        <p>2. Turnamen akan berlangsung 6x dalam sehari dengan 1,000 pemenang dan hadiah senilai Rp 39,200,000 setiap turnamen. Akan ada total 168 turnamen selama periode promosi.<br>
+        Jadwal Turnamen:<br>
+        14:00 – 15:59 (WIB)<br>
+        16:00 – 17:59 (WIB)<br>
+        18:00 – 19:59 (WIB)<br>
+        20:00 – 21:59 (WIB)<br>
+        22:00 – 23:59 (WIB)<br>
+        00:00 – 02:00 (WIB)</p>
+        <p>3. Pemenang Turnamen ditentukan berdasarkan Skor pada Papan Peringkat. Skor dihitung berdasarkan jumlah dari semua pengganda kemenangan (Kemenangan/Taruhan).</p>
+        <p>4. Skor = Total dari (tiap kemenangan/nilai setiap taruhan * 100)<br>
+        Contoh perhitungan:<br>
+        Spin 1: bertaruh Rp 1,000 -> menang Rp 50,000 (skor = Rp 50,000 / Rp 1,000 x 100 = 5,000)<br>
+        Spin 2: bertaruh Rp 1,000 -> menang Rp 5,000 (skor = Rp 5,000 / Rp 1,000 x 100 = 500)<br>
+        Skor total = 5,500</p>
+        <p>5. Tidak ada taruhan minimum diperlukan dalam promosi ini.</p>
+        <p>6. Hadiah akan diberikan secara cash dan tidak dikenakan persyaratan turnover.</p>
+        <p>7. Hanya 1,000 taruhan pertama terkualifikasi setiap turnamenya yang dihitung untuk mengikuti promosi ini. Semua taruhan yang dipasang setelah mencapai limit taruhan tidak dihitung dalam perhitungan promosi.</p>
+        <p>8. Game yang terkualifikasi: Semua game Pragmatic Play kecuali Money Roll, Irish Charms, Diamonds Forever 3 lines, Gates of Olympus Super Scatter, Table Games, Video Poker, dan Scratch Cards.</p>
+        <p>9. Jika ada dua atau lebih pemain dengan skor yang sama di papan peringkat turnamen, pemain yang mencetak skor pertama akan mendapatkan posisi yang lebih tinggi di papan peringkat.</p>
+        <p>10. Papan peringkat turnamen akan diperbaharui di kualifikasi game secara langsung.</p>
+        <p>11. Pragmatic Play berhak meninjau aktivitas pemain secara menyeluruh untuk mengidentifikasi adanya potensi penyalahgunaan guna memastikan permainan yang adil dalam Promosi Jaringan kami. Jika ditemukan adanya penyalahgunaan, Pragmatic Play berhak membatalkan jumlah berapapun yang telah dibayarkan kepada pemenang.</p>
+        <p>12. Pragmatic Play berhak untuk mengubah, menangguhkan, atau membatalkan promosi kapan saja dan tanpa pemberitahuan sebelumnya.</p>
+        <button class="btn" onclick="toggleTermsModal()">Tutup</button>
     </div>
-  </section>
-
-  <section id="about" data-aos="fade-up">
-    <div class="card">
-      <h2>Tentang Saya</h2>
-      <p>Halo! Saya Laksmana, seorang web developer dan kreator digital yang bersemangat membangun hal-hal keren di dunia maya.</p>
-    </div>
-  </section>
-
-  <section id="portfolio" data-aos="fade-up">
-    <div class="card">
-      <h2>Portofolio</h2>
-      <div class="gallery">
-        <img src="https://i.ibb.co/d4D5TFbg/Chat-GPT-Image-21-Apr-2025-06-20-11.png" alt="Galeri 1">
-        <img src="https://i.ibb.co/1JwQW9c9/Chat-GPT-Image-21-Apr-2025-06-44-23.png" alt="Galeri 2">
-      </div>
-    </div>
-  </section>
-
-  <section id="skills" class="skills" data-aos="fade-up">
-    <div class="card">
-      <h2>Skill</h2>
-      <div class="skill">
-        <p>HTML</p>
-        <div class="skill-bar" style="--level: 90%"></div>
-      </div>
-      <div class="skill">
-        <p>CSS</p>
-        <div class="skill-bar" style="--level: 80%"></div>
-      </div>
-      <div class="skill">
-        <p>JavaScript</p>
-        <div class="skill-bar" style="--level: 70%"></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="testimoni" data-aos="fade-up">
-    <div class="card">
-      <h2>Testimoni</h2>
-      <div class="testimonial">"Laksmana sangat profesional dan komunikatif dalam bekerja!"</div>
-      <div class="testimonial">"Website yang dibuatnya keren banget dan cepat responsif."</div>
-    </div>
-  </section>
-
-  <section id="contact" data-aos="fade-up">
-    <div class="card">
-      <h2>Kontak Saya</h2>
-      <form>
-        <input type="text" placeholder="Nama" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;">
-        <input type="email" placeholder="Email" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;">
-        <textarea placeholder="Pesan" rows="5" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;"></textarea>
-        <button type="submit" style="background-color: var(--sky); color: white; border: none; padding: 0.75rem 2rem; border-radius: 5px; cursor: pointer;">Kirim</button>
-      </form>
-    </div>
-  </section>
-
-  <button onclick="topFunction()" id="toTopBtn" title="Kembali ke atas">↑</button>
-
-  <footer>
-    <p>&copy; 2025 Interaktif Berfikir</p>
-    <div class="socials">
-      <a href="https://instagram.com/laksawl" target="_blank"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-twitter"></i></a>
-      <a href="https://github.com/LaksaGaming" target="_blank"><i class="fab fa-github"></i></a>
-      <a href="https://wa.me/082146585275" class="wa-float" target="_blank" aria-label="Chat via WhatsApp">
-      <i class="fab fa-whatsapp"></i>
-  </a>
-  <!-- ⏰ Jam, Hari, dan Tanggal -->
-  <div id="clock"></div>
-
-  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>
-    AOS.init();
-
-    const typed = new Typed("#typed", {
-      strings: ["Halo, saya Laksmana", "Web Developer", "Content Creator", "Pembuat Website Keren"],
-      typeSpeed: 60,
-      backSpeed: 40,
-      loop: true,
-    });
-
-    window.addEventListener("load", () => {
-      document.getElementById("loader").style.display = "none";
-    });
-
-    let btn = document.getElementById("toTopBtn");
-    window.onscroll = function () {
-      btn.style.display = document.documentElement.scrollTop > 300 ? "block" : "none";
-    };
-    function topFunction() {
-      document.documentElement.scrollTop = 0;
+</div>
+<script>
+    function toggleTermsModal() {
+        const modal = document.getElementById('termsModal');
+        modal.style.display = modal.style.display === 'none' || modal.style.display === '' ? 'block' : 'none';
     }
-
-    document.getElementById("darkToggle").addEventListener("click", () => {
-      document.body.classList.toggle("dark");
-      const icon = document.getElementById("darkToggle");
-      icon.classList.toggle("fa-sun");
-      icon.classList.toggle("fa-moon");
-    });
-
-    // ⏰ Jam, Hari, dan Tanggal
-    function updateClock() {
-      const now = new Date();
-
-      const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-      const day = days[now.getDay()];
-
-      const date = now.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      });
-
-      const time = now.toLocaleTimeString('id-ID', { hour12: false });
-
-      document.getElementById("clock").textContent = `${day}, ${date} | ${time}`;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-  </script>
+</script>
+<br>
+<center><img class="tab logo" src="resources/images/logo.png" alt="logo" style="max-width: 100%; height: auto;"></center>
 </body>
-
 </html>
