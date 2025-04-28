@@ -51,22 +51,6 @@
       background-color: #777;
       color: #FFFFFF;
     }
-    .terms-modal {
-      display: none;
-      background: rgba(0, 0, 0, 0.9);
-      padding: 20px;
-      border-radius: 8px;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 1000;
-      color: #fff;
-      width: 90%;
-      max-width: 600px;
-      overflow-y: auto;
-      max-height: 80%;
-    }
     .btn {
       cursor: pointer;
       background-color: #2196F3;
@@ -100,6 +84,55 @@
         box-shadow: 0 0 0 0 rgba(33, 150, 243, 0);
       }
     }
+    /* Modal + Overlay */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .modal-overlay.active {
+      display: block;
+      opacity: 1;
+    }
+    .terms-modal {
+      display: none;
+      background: #333;
+      padding: 20px;
+      border-radius: 8px;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      z-index: 1000;
+      color: #fff;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80%;
+      overflow-y: auto;
+      opacity: 0;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .terms-modal.active {
+      display: block;
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
     @media (max-width: 600px) {
       .containeras {
         padding: 10px;
@@ -108,6 +141,7 @@
   </style>
 </head>
 <body>
+
 <div class="containeras">
   <h2><font color="#06EE18">Daily Wins Mega Gacor</font></h2>
   <h3><strong><font color="#06EE18">24 MARET 2024 &#8211; 30 MARET 2026</font></strong></h3>
@@ -117,6 +151,7 @@
   Sampai: Senin, 26 Mei 2025, 02:00 (WIB)</font></p>
   <h3>Tournamen Harian<br>Jumlah Dari Semua Pengganda Kemenangan<br>Rp 235,200,000 / harian</h3>
   <div class="green-box">Berakhir 4 Minggu</div>
+
   <table class="table">
     <thead>
       <tr>
@@ -133,23 +168,53 @@
       <tr><td>301 - 1,000</td><td>Rp 25,000</td></tr>
     </tbody>
   </table>
+
   <div class="btn" onclick="toggleTermsModal()">Syarat & Ketentuan Umum</div>
-  <div class="terms-modal" id="termsModal">
-    <h3>Syarat & Ketentuan Umum</h3>
-    <p><strong>Daily Wins Mega Gacor akan berlangsung mulai 24 Maret 2025 hingga 30 Maret 2026 dengan Total Hadiah sebesar Rp 88,000,000,000 dalam 12 Level.</strong></p>
-    <p>1. 168,000 pemenang akan memenangkan uang tunai senilai Rp 6,585,600,000 dari 28 April 2025, 14:00 WIB hingga 26 Mei 2025, 02:00 WIB untuk Level 2.</p>
-    <p>2. Turnamen akan berlangsung 6x dalam sehari dengan 1,000 pemenang dan hadiah senilai Rp 39,200,000 setiap turnamen...</p>
-    <!-- (Potongan untuk mempercepat) -->
-    <button class="btn" onclick="toggleTermsModal()">Tutup</button>
-  </div>
+
 </div>
+
+<!-- Modal dan Overlay -->
+<div class="modal-overlay" id="modalOverlay" onclick="toggleTermsModal()"></div>
+<div class="terms-modal" id="termsModal">
+  <button class="close-btn" onclick="toggleTermsModal()">&times;</button>
+  <h3>Syarat & Ketentuan Umum</h3>
+  <p><strong>Daily Wins Mega Gacor akan berlangsung mulai 24 Maret 2025 hingga 30 Maret 2026 dengan Total Hadiah sebesar Rp 88,000,000,000 dalam 12 Level.</strong></p>
+  <p>1. 168,000 pemenang akan memenangkan uang tunai senilai Rp 6,585,600,000 dari 28 April 2025, 14:00 WIB hingga 26 Mei 2025, 02:00 WIB untuk Level 2.</p>
+  <p>2. Turnamen akan berlangsung 6x dalam sehari dengan 1,000 pemenang dan hadiah senilai Rp 39,200,000 setiap turnamen...</p>
+  <button class="btn" onclick="toggleTermsModal()">Tutup</button>
+</div>
+
 <script>
   function toggleTermsModal() {
     const modal = document.getElementById('termsModal');
-    modal.style.display = modal.style.display === 'none' || modal.style.display === '' ? 'block' : 'none';
+    const overlay = document.getElementById('modalOverlay');
+    if (modal.classList.contains('active')) {
+      modal.classList.remove('active');
+      overlay.classList.remove('active');
+      setTimeout(() => {
+        modal.style.display = 'none';
+        overlay.style.display = 'none';
+      }, 500);
+    } else {
+      modal.style.display = 'block';
+      overlay.style.display = 'block';
+      setTimeout(() => {
+        modal.classList.add('active');
+        overlay.classList.add('active');
+      }, 10);
+    }
   }
+
+  // Close modal when pressing ESC key
+  document.addEventListener('keydown', function(event) {
+    if (event.key === "Escape") {
+      toggleTermsModal();
+    }
+  });
 </script>
+
 <br>
 <center><img class="tab logo" src="resources/images/logo.png" alt="logo" style="max-width: 100%; height: auto;"></center>
+
 </body>
 </html>
