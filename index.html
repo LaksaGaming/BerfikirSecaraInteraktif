@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #87CEEB; /* Warna biru langit */
+            background-color: #87CEEB; /* Warna Biru Langit */
             color: #FFFFFF;
         }
         .containeras {
@@ -20,23 +20,23 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
-        h2, h3, h4 {
+        h2, h3 {
             text-align: center;
-            color: #06EE18;
+            color: #F0F0F0;
         }
         p {
             margin: 0 0 10px;
             line-height: 1.5;
         }
         .green-box {
-            background-color: #4CAF50;
+            background-color: #4CAF50; /* Warna hijau */
             color: white;
             padding: 10px;
             border-radius: 5px;
             text-align: center;
             margin: 20px 0;
         }
-        table {
+        .table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
@@ -67,13 +67,6 @@
         .btn:hover {
             background-color: #E64A19;
         }
-        .terms-modal {
-            display: none;
-            background: #333;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
         @media (max-width: 600px) {
             .containeras {
                 padding: 10px;
@@ -83,17 +76,15 @@
 </head>
 <body>
     <div class="containeras">
-        <h2>Daily Wins Mega Gacor</h2>
-        <h3><strong>24 MARET 2024 – 30 MARET 2026</strong></h3>
+        <h2><font color="#06EE18">Daily Wins Mega Gacor</font></h2>
+        <h3><strong><font color="#06EE18">24 MARET 2024 &#8211; 30 MARET 2026</font></strong></h3>
         <h4><strong>Turnamen Slot Harian</strong></h4>
         <h4><strong>Level 2: Jumlah Dari Semua Pengganda Kemenangan</strong></h4>
         <p><font color="#F5EA09">Mulai: Senin, 28 April 2025, 14:00 (WIB)<br>
         Sampai: Senin, 26 Mei 2025, 02:00 (WIB)</font></p>
         <h3>Tournamen Harian<br>Jumlah Dari Semua Pengganda Kemenangan<br>Rp 235,200,000 / harian</h3>
-
         <div class="green-box">Berakhir 4 Minggu</div>
-
-        <table>
+        <table class="table">
             <thead>
                 <tr>
                     <th>Rank</th>
@@ -127,9 +118,7 @@
                 </tr>
             </tbody>
         </table>
-
         <div class="btn" onclick="toggleTermsModal()">Syarat & Ketentuan Umum</div>
-
         <div class="terms-modal" id="termsModal">
             <h3>Syarat & Ketentuan Umum</h3>
             <p><strong>Daily Wins Mega Gacor akan berlangsung mulai 24 Maret 2025 hingga 30 Maret 2026 dengan Total Hadiah sebesar Rp 88,000,000,000 dalam 12 Level.</strong></p>
@@ -145,7 +134,6 @@
             <button class="btn" onclick="toggleTermsModal()">Tutup</button>
         </div>
     </div>
-
     <script>
         function toggleTermsModal() {
             const modal = document.getElementById('termsModal');
