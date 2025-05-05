@@ -8,6 +8,8 @@
   <link rel="icon" type="image/png" href="https://i.ibb.co/hJ24JGZs/Chat-GPT-Image-21-Apr-2025-06-32-08.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.1/css/lightgallery.min.css">
   <style>
     :root {
       --sky: #57c7f1;
@@ -15,12 +17,21 @@
       --light: #ffffff;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       background: var(--light);
       color: #333;
       transition: background 0.3s, color 0.3s;
-      scroll-behavior: smooth;
     }
 
     body.dark {
@@ -37,6 +48,7 @@
       justify-content: space-between;
       align-items: center;
       z-index: 1000;
+      transition: background 0.3s;
     }
 
     body.dark header {
@@ -74,14 +86,12 @@
       position: relative;
     }
 
-    .hero::before {
-      content: "";
+    #particles-js {
       position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      top: 0;
+      left: 0;
       z-index: 1;
     }
 
@@ -92,6 +102,13 @@
 
     .hero h1 {
       font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
     }
 
     section {
@@ -105,10 +122,12 @@
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       margin: 1rem auto;
       max-width: 800px;
+      transition: background 0.3s, box-shadow 0.3s;
     }
 
     body.dark .card {
       background: #1e1e1e;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
 
     .gallery {
@@ -121,7 +140,7 @@
     .gallery img {
       max-width: 300px;
       border-radius: 1rem;
-      cursor: zoom-in;
+      cursor: pointer;
       transition: transform 0.3s;
     }
 
@@ -130,20 +149,31 @@
     }
 
     .skills .skill {
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .skill p {
+      margin-bottom: 0.5rem;
+    }
+
+    .skill-bar-container {
+      width: 100%;
+      height: 20px;
+      background-color: #f0f0f0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    body.dark .skill-bar-container {
+      background-color: #2a2a2a;
     }
 
     .skill-bar {
-      height: 20px;
+      height: 100%;
       background-color: var(--sky);
       width: 0;
-      animation: growBar 2s forwards;
-    }
-
-    @keyframes growBar {
-      to {
-        width: var(--level);
-      }
+      border-radius: 10px;
+      transition: width 1.5s ease-out;
     }
 
     .testimonial {
@@ -152,7 +182,8 @@
       padding: 1.5rem;
       border-left: 5px solid var(--sky);
       margin-bottom: 1rem;
-      border-radius: 1rem;
+      border-radius: 0.5rem;
+      transition: background-color 0.3s;
     }
 
     body.dark .testimonial {
@@ -163,6 +194,11 @@
       text-align: center;
       padding: 2rem;
       background: #eee;
+      transition: background 0.3s;
+    }
+
+    body.dark footer {
+      background: #1a1a1a;
     }
 
     .socials a {
@@ -170,6 +206,10 @@
       color: #333;
       font-size: 1.2rem;
       transition: 0.3s;
+    }
+
+    body.dark .socials a {
+      color: #fff;
     }
 
     .socials a:hover {
@@ -184,29 +224,46 @@
       background-color: var(--sky);
       color: white;
       border: none;
-      padding: 10px;
+      padding: 12px;
       border-radius: 50%;
       cursor: pointer;
       display: none;
+      font-size: 1.2rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s;
+    }
+
+    #toTopBtn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     #loader {
       position: fixed;
       width: 100vw;
       height: 100vh;
-      background: white;
+      background: var(--dark);
       z-index: 9999;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
+      transition: opacity 0.5s, visibility 0.5s;
+    }
+
+    .loader-content {
+      text-align: center;
+      margin-top: 20px;
+      color: white;
+      font-size: 1.2rem;
     }
 
     .spinner {
-      border: 8px solid #f3f3f3;
-      border-top: 8px solid var(--sky);
+      border: 5px solid rgba(255, 255, 255, 0.3);
       border-radius: 50%;
-      width: 60px;
-      height: 60px;
+      border-top: 5px solid var(--sky);
+      width: 50px;
+      height: 50px;
       animation: spin 1s linear infinite;
     }
 
@@ -218,9 +275,13 @@
     #darkToggle {
       cursor: pointer;
       font-size: 1.5rem;
+      transition: transform 0.3s;
     }
 
-    /* ⏰ Style untuk jam digital */
+    #darkToggle:hover {
+      transform: rotate(30deg);
+    }
+
     #clock {
       position: fixed;
       bottom: 20px;
@@ -235,12 +296,124 @@
       z-index: 999;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     }
+
+    .wa-float {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      background-color: #25D366;
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: all 0.3s ease;
+      z-index: 999;
+      text-decoration: none;
+    }
+
+    .wa-float:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
+
+    /* Form styles */
+    form input,
+    form textarea {
+      display: block;
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    body.dark form input,
+    body.dark form textarea {
+      background-color: #2a2a2a;
+      border-color: #444;
+      color: #fff;
+    }
+
+    form input:focus,
+    form textarea:focus {
+      outline: none;
+      border-color: var(--sky);
+      box-shadow: 0 0 0 2px rgba(87, 199, 241, 0.2);
+    }
+
+    form button {
+      background-color: var(--sky);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    form button:hover {
+      background-color: #3ab7e8;
+      transform: translateY(-2px);
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        padding: 1rem;
+      }
+      
+      nav {
+        margin-top: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    
+      nav a {
+        margin: 0.5rem;
+        font-size: 0.9rem;
+      }
+      
+      .hero h1 {
+        font-size: 2rem;
+      }
+      
+      section {
+        padding: 2rem 1rem;
+      }
+      
+      .card {
+        padding: 1.5rem;
+      }
+      
+      .gallery img {
+        max-width: 100%;
+      }
+
+      #clock {
+        position: static;
+        display: inline-block;
+        margin-top: 1rem;
+      }
+    }
   </style>
 </head>
 
 <body>
   <div id="loader">
     <div class="spinner"></div>
+    <div class="loader-content">Memuat Portofolio...</div>
   </div>
 
   <header>
@@ -256,132 +429,258 @@
   </header>
 
   <section class="hero">
+    <div id="particles-js"></div>
     <div class="hero-content">
       <h1><span id="typed"></span></h1>
       <p>Selamat datang di website pribadi saya</p>
     </div>
   </section>
 
-  <section id="about" data-aos="fade-up">
+  <section id="about" data-aos="fade-up" data-aos-delay="100">
     <div class="card">
       <h2>Tentang Saya</h2>
-      <p>Halo! Saya Laksmana, seorang web developer dan kreator digital yang bersemangat membangun hal-hal keren di dunia maya.</p>
+      <p>Halo! Saya Laksmana, seorang web developer dan kreator digital yang bersemangat membangun hal-hal keren di dunia maya. Saya memiliki pengalaman lebih dari 3 tahun dalam pengembangan website dan aplikasi web.</p>
+      <p>Saya ahli dalam HTML, CSS, JavaScript, dan berbagai framework modern. Saya selalu berusaha menciptakan pengalaman pengguna yang menarik dan solusi teknologi yang inovatif.</p>
     </div>
   </section>
 
-  <section id="portfolio" data-aos="fade-up">
+  <section id="portfolio" data-aos="fade-up" data-aos-delay="150">
     <div class="card">
       <h2>Portofolio</h2>
       <div class="gallery">
-        <img src="https://i.ibb.co/d4D5TFbg/Chat-GPT-Image-21-Apr-2025-06-20-11.png" alt="Galeri 1">
-        <img src="https://i.ibb.co/1JwQW9c9/Chat-GPT-Image-21-Apr-2025-06-44-23.png" alt="Galeri 2">
+        <img src="https://i.ibb.co/d4D5TFbg/Chat-GPT-Image-21-Apr-2025-06-20-11.png" alt="Proyek Website E-commerce">
+        <img src="https://i.ibb.co/1JwQW9c9/Chat-GPT-Image-21-Apr-2025-06-44-23.png" alt="Aplikasi Web Dashboard">
+        <img src="https://i.ibb.co/4Yf1L2Y/portfolio3.jpg" alt="Desain Landing Page">
+        <img src="https://i.ibb.co/0jQHhB3/portfolio4.jpg" alt="Aplikasi Mobile UI">
       </div>
     </div>
   </section>
 
-  <section id="skills" class="skills" data-aos="fade-up">
+  <section id="skills" class="skills" data-aos="fade-up" data-aos-delay="200">
     <div class="card">
       <h2>Skill</h2>
       <div class="skill">
         <p>HTML</p>
-        <div class="skill-bar" style="--level: 90%"></div>
+        <div class="skill-bar-container">
+          <div class="skill-bar" data-level="90%"></div>
+        </div>
       </div>
       <div class="skill">
         <p>CSS</p>
-        <div class="skill-bar" style="--level: 80%"></div>
+        <div class="skill-bar-container">
+          <div class="skill-bar" data-level="85%"></div>
+        </div>
       </div>
       <div class="skill">
         <p>JavaScript</p>
-        <div class="skill-bar" style="--level: 70%"></div>
+        <div class="skill-bar-container">
+          <div class="skill-bar" data-level="80%"></div>
+        </div>
+      </div>
+      <div class="skill">
+        <p>React</p>
+        <div class="skill-bar-container">
+          <div class="skill-bar" data-level="75%"></div>
+        </div>
+      </div>
+      <div class="skill">
+        <p>Node.js</p>
+        <div class="skill-bar-container">
+          <div class="skill-bar" data-level="70%"></div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="testimoni" data-aos="fade-up">
+  <section id="testimoni" data-aos="fade-up" data-aos-delay="250">
     <div class="card">
       <h2>Testimoni</h2>
-      <div class="testimonial">"Laksmana sangat profesional dan komunikatif dalam bekerja!"</div>
-      <div class="testimonial">"Website yang dibuatnya keren banget dan cepat responsif."</div>
+      <div class="testimonial">
+        <p>"Laksmana sangat profesional dan komunikatif dalam bekerja! Dia memberikan solusi yang tepat untuk kebutuhan website perusahaan kami."</p>
+        <p><strong>- Budi, CEO PT. Maju Jaya</strong></p>
+      </div>
+      <div class="testimonial">
+        <p>"Website yang dibuatnya keren banget dan cepat responsif. Proyek selesai tepat waktu dengan hasil melebihi ekspektasi."</p>
+        <p><strong>- Ani, Marketing Manager</strong></p>
+      </div>
     </div>
   </section>
 
-  <section id="contact" data-aos="fade-up">
+  <section id="contact" data-aos="fade-up" data-aos-delay="300">
     <div class="card">
       <h2>Kontak Saya</h2>
-      <form>
-        <input type="text" placeholder="Nama" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;">
-        <input type="email" placeholder="Email" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;">
-        <textarea placeholder="Pesan" rows="5" required style="display:block; margin-bottom:1rem; width:100%; padding:0.5rem;"></textarea>
-        <button type="submit" style="background-color: var(--sky); color: white; border: none; padding: 0.75rem 2rem; border-radius: 5px; cursor: pointer;">Kirim</button>
+      <form id="contactForm">
+        <input type="text" id="name" placeholder="Nama" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <textarea id="message" placeholder="Pesan" rows="5" required></textarea>
+        <button type="submit">Kirim Pesan</button>
       </form>
     </div>
   </section>
 
-  <button onclick="topFunction()" id="toTopBtn" title="Kembali ke atas">↑</button>
+  <button onclick="topFunction()" id="toTopBtn" title="Kembali ke atas"><i class="fas fa-arrow-up"></i></button>
+
+  <a href="https://wa.me/082146585275" class="wa-float" target="_blank" aria-label="Chat via WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <div id="clock"></div>
 
   <footer>
-    <p>&copy; 2025 Interaktif Berfikir</p>
+    <p>&copy; 2025 Interaktif Berfikir. All Rights Reserved.</p>
     <div class="socials">
-      <a href="https://instagram.com/laksawl" target="_blank"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-twitter"></i></a>
-      <a href="https://github.com/LaksaGaming" target="_blank"><i class="fab fa-github"></i></a>
-      <a href="https://wa.me/082146585275" class="wa-float" target="_blank" aria-label="Chat via WhatsApp">
-      <i class="fab fa-whatsapp"></i>
-  </a>
-  <!-- ⏰ Jam, Hari, dan Tanggal -->
-  <div id="clock"></div>
+      <a href="https://instagram.com/laksawl" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+      <a href="https://github.com/LaksaGaming" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+      <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+    </div>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.1/lightgallery.min.js"></script>
   <script>
-    AOS.init();
+    // Inisialisasi AOS (Animate On Scroll)
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true
+    });
 
+    // Typed.js untuk efek mengetik
     const typed = new Typed("#typed", {
-      strings: ["Halo, saya Laksmana", "Web Developer", "Content Creator", "Pembuat Website Keren"],
+      strings: ["Halo, saya Laksmana", "Web Developer", "Frontend Specialist", "Pembuat Website Keren"],
       typeSpeed: 60,
       backSpeed: 40,
       loop: true,
+      showCursor: true,
+      cursorChar: '|'
     });
 
+    // Preloader
     window.addEventListener("load", () => {
-      document.getElementById("loader").style.display = "none";
+      setTimeout(() => {
+        document.getElementById("loader").style.opacity = '0';
+        document.getElementById("loader").style.visibility = 'hidden';
+      }, 500);
     });
 
-    let btn = document.getElementById("toTopBtn");
-    window.onscroll = function () {
-      btn.style.display = document.documentElement.scrollTop > 300 ? "block" : "none";
+    // Tombol kembali ke atas
+    let toTopBtn = document.getElementById("toTopBtn");
+    window.onscroll = function() {
+      toTopBtn.style.display = document.documentElement.scrollTop > 300 ? "block" : "none";
     };
+    
     function topFunction() {
-      document.documentElement.scrollTop = 0;
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     }
 
-    document.getElementById("darkToggle").addEventListener("click", () => {
-      document.body.classList.toggle("dark");
-      const icon = document.getElementById("darkToggle");
-      icon.classList.toggle("fa-sun");
-      icon.classList.toggle("fa-moon");
+    // Dark/Light mode toggle dengan localStorage
+    document.addEventListener('DOMContentLoaded', () => {
+      const darkToggle = document.getElementById('darkToggle');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const storedTheme = localStorage.getItem('theme');
+      
+      // Set initial theme
+      if (storedTheme === 'dark' || (!storedTheme && prefersDark)) {
+        document.body.classList.add('dark');
+        darkToggle.classList.add('fa-sun');
+        darkToggle.classList.remove('fa-moon');
+      }
+      
+      darkToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark');
+        const isDark = document.body.classList.contains('dark');
+        darkToggle.classList.toggle('fa-sun', isDark);
+        darkToggle.classList.toggle('fa-moon', !isDark);
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      });
     });
 
-    // ⏰ Jam, Hari, dan Tanggal
+    // Jam digital
     function updateClock() {
       const now = new Date();
-
       const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
       const day = days[now.getDay()];
-
       const date = now.toLocaleDateString('id-ID', {
         day: 'numeric',
         month: 'long',
         year: 'numeric'
       });
-
       const time = now.toLocaleTimeString('id-ID', { hour12: false });
-
       document.getElementById("clock").textContent = `${day}, ${date} | ${time}`;
     }
     setInterval(updateClock, 1000);
     updateClock();
+
+    // Animasi skill bar saat muncul di viewport
+    document.addEventListener('DOMContentLoaded', () => {
+      const skills = document.querySelectorAll('.skill-bar');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.width = entry.target.getAttribute('data-level');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.7 });
+      
+      skills.forEach(skill => {
+        observer.observe(skill);
+      });
+    });
+
+    // Inisialisasi lightGallery
+    document.addEventListener('DOMContentLoaded', () => {
+      lightGallery(document.querySelector('.gallery'), {
+        selector: 'img',
+        download: false,
+        counter: false,
+        enableDrag: false
+      });
+    });
+
+    // Form submission handler
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const message = document.getElementById('message').value;
+      
+      // Di sini Anda bisa menambahkan kode untuk mengirim form
+      // Contoh menggunakan Formspree atau EmailJS
+      console.log('Form submitted:', { name, email, message });
+      
+      // Tampilkan pesan sukses
+      alert('Terima kasih! Pesan Anda telah terkirim. Saya akan segera menghubungi Anda.');
+      document.getElementById('contactForm').reset();
+    });
+
+    // Inisialisasi particles.js
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 80, density: { enable: true, value_area: 800 } },
+        color: { value: "#ffffff" },
+        shape: { type: "circle" },
+        opacity: { value: 0.5, random: true },
+        size: { value: 3, random: true },
+        line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+        move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+      },
+      interactivity: {
+        detect_on: "canvas",
+        events: {
+          onhover: { enable: true, mode: "repulse" },
+          onclick: { enable: true, mode: "push" }
+        }
+      }
+    });
   </script>
 </body>
-
 </html>
