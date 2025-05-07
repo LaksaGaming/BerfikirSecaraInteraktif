@@ -10,11 +10,15 @@
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.1/css/lightgallery.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css">
   <style>
     :root {
       --sky: #57c7f1;
       --dark: #121212;
       --light: #ffffff;
+      --success: #4CAF50;
+      --danger: #f44336;
+      --warning: #ff9800;
     }
 
     html {
@@ -383,6 +387,208 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Finance Section Styles */
+    .finance-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .summary-card {
+      padding: 1.5rem;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+
+    .summary-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .summary-card h3 {
+      margin-top: 0;
+      font-size: 1rem;
+      color: #666;
+    }
+
+    body.dark .summary-card h3 {
+      color: #aaa;
+    }
+
+    .summary-card p {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 0;
+    }
+
+    .income-card {
+      background: rgba(76, 175, 80, 0.1);
+      border-left: 4px solid var(--success);
+    }
+
+    .expense-card {
+      background: rgba(244, 67, 54, 0.1);
+      border-left: 4px solid var(--danger);
+    }
+
+    .balance-card {
+      background: rgba(87, 199, 241, 0.1);
+      border-left: 4px solid var(--sky);
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 1.5rem;
+    }
+
+    body.dark .tabs {
+      border-bottom-color: #444;
+    }
+
+    .tab {
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tab.active {
+      border-bottom-color: var(--sky);
+      color: var(--sky);
+      font-weight: bold;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .finance-controls {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-group button {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: #f0f0f0;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    body.dark .filter-group button {
+      background: #333;
+      color: #fff;
+    }
+
+    .filter-group button.active {
+      background: var(--sky);
+      color: white;
+    }
+
+    .month-filter {
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      background: white;
+    }
+
+    body.dark .month-filter {
+      background: #2a2a2a;
+      border-color: #444;
+      color: #fff;
+    }
+
+    .transaction-list {
+      margin-top: 2rem;
+    }
+
+    .transaction-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+      transition: background 0.3s;
+    }
+
+    body.dark .transaction-item {
+      border-bottom-color: #333;
+    }
+
+    .transaction-item:hover {
+      background: rgba(0,0,0,0.03);
+    }
+
+    body.dark .transaction-item:hover {
+      background: rgba(255,255,255,0.03);
+    }
+
+    .transaction-details {
+      flex: 1;
+    }
+
+    .transaction-amount {
+      font-weight: bold;
+    }
+
+    .income {
+      color: var(--success);
+    }
+
+    .expense {
+      color: var(--danger);
+    }
+
+    .transaction-date {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    body.dark .transaction-date {
+      color: #aaa;
+    }
+
+    .transaction-category {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      background: #f0f0f0;
+      margin-right: 0.5rem;
+    }
+
+    body.dark .transaction-category {
+      background: #333;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 300px;
+      margin-top: 2rem;
+    }
+
+    .delete-btn {
+      color: var(--danger);
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-left: 1rem;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+    }
+
+    .delete-btn:hover {
+      opacity: 1;
+    }
+
     /* Responsive styles */
     @media (max-width: 768px) {
       header {
@@ -423,6 +629,15 @@
         display: inline-block;
         margin-top: 1rem;
       }
+
+      .finance-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .finance-controls {
+        flex-direction: column;
+        gap: 1rem;
+      }
     }
   </style>
 </head>
@@ -439,6 +654,7 @@
       <a href="#about">Tentang</a>
       <a href="#portfolio">Portofolio</a>
       <a href="#skills">Skill</a>
+      <a href="#finance">Keuangan</a>
       <a href="#testimoni">Testimoni</a>
       <a href="#contact">Kontak</a>
       <i id="darkToggle" class="fas fa-moon"></i>
@@ -509,6 +725,115 @@
     </div>
   </section>
 
+  <section id="finance" data-aos="fade-up" data-aos-delay="225">
+    <div class="card">
+      <h2>Keuangan Pribadi</h2>
+      
+      <div class="finance-summary">
+        <div class="summary-card income-card">
+          <h3>Total Pemasukan</h3>
+          <p id="total-income">Rp0</p>
+        </div>
+        <div class="summary-card expense-card">
+          <h3>Total Pengeluaran</h3>
+          <p id="total-expense">Rp0</p>
+        </div>
+        <div class="summary-card balance-card">
+          <h3>Saldo</h3>
+          <p id="total-balance">Rp0</p>
+        </div>
+      </div>
+      
+      <div class="tabs">
+        <div class="tab active" data-tab="transactions">Transaksi</div>
+        <div class="tab" data-tab="stats">Statistik</div>
+        <div class="tab" data-tab="add">Tambah Transaksi</div>
+      </div>
+      
+      <div class="tab-content active" id="transactions-tab">
+        <div class="finance-controls">
+          <div class="filter-group">
+            <button id="filter-all" class="active">Semua</button>
+            <button id="filter-income">Pemasukan</button>
+            <button id="filter-expense">Pengeluaran</button>
+          </div>
+          <div>
+            <select id="month-filter" class="month-filter">
+              <option value="all">Semua Bulan</option>
+              <option value="1">Januari</option>
+              <option value="2">Februari</option>
+              <option value="3">Maret</option>
+              <option value="4">April</option>
+              <option value="5">Mei</option>
+              <option value="6">Juni</option>
+              <option value="7">Juli</option>
+              <option value="8">Agustus</option>
+              <option value="9">September</option>
+              <option value="10">Oktober</option>
+              <option value="11">November</option>
+              <option value="12">Desember</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="transaction-list" id="transaction-list">
+          <!-- Transaksi akan dimuat di sini -->
+        </div>
+      </div>
+      
+      <div class="tab-content" id="stats-tab">
+        <div class="chart-container">
+          <canvas id="finance-chart"></canvas>
+        </div>
+      </div>
+      
+      <div class="tab-content" id="add-tab">
+        <form id="transaction-form">
+          <div>
+            <label for="transaction-type">Jenis Transaksi</label>
+            <select id="transaction-type" name="type" required>
+              <option value="income">Pemasukan</option>
+              <option value="expense">Pengeluaran</option>
+            </select>
+          </div>
+          
+          <div>
+            <label for="transaction-amount">Jumlah (Rp)</label>
+            <input type="number" id="transaction-amount" name="amount" min="0" required>
+          </div>
+          
+          <div>
+            <label for="transaction-category">Kategori</label>
+            <select id="transaction-category" name="category" required>
+              <option value="gaji">Gaji</option>
+              <option value="freelance">Freelance</option>
+              <option value="investasi">Investasi</option>
+              <option value="lainnya">Lainnya (Pemasukan)</option>
+              <option value="makanan">Makanan</option>
+              <option value="transportasi">Transportasi</option>
+              <option value="hiburan">Hiburan</option>
+              <option value="belanja">Belanja</option>
+              <option value="tagihan">Tagihan</option>
+              <option value="lainnya">Lainnya (Pengeluaran)</option>
+            </select>
+          </div>
+          
+          <div>
+            <label for="transaction-date">Tanggal</label>
+            <input type="date" id="transaction-date" name="date" required>
+          </div>
+          
+          <div>
+            <label for="transaction-description">Deskripsi (Opsional)</label>
+            <textarea id="transaction-description" name="description" rows="3"></textarea>
+          </div>
+          
+          <button type="submit">Simpan Transaksi</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
   <section id="testimoni" data-aos="fade-up" data-aos-delay="250">
     <div class="card">
       <h2>Testimoni</h2>
@@ -561,10 +886,11 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.1/lightgallery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
   <script>
     // Inisialisasi AOS (Animate On Scroll)
     AOS.init({
@@ -623,6 +949,20 @@
         darkToggle.classList.toggle('fa-sun', isDark);
         darkToggle.classList.toggle('fa-moon', !isDark);
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        
+        // Update chart theme if it exists
+        if (window.financeChart) {
+          const isDarkMode = document.body.classList.contains('dark');
+          const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+          const textColor = isDarkMode ? '#fff' : '#666';
+          
+          window.financeChart.options.scales.x.grid.color = gridColor;
+          window.financeChart.options.scales.y.grid.color = gridColor;
+          window.financeChart.options.scales.x.ticks.color = textColor;
+          window.financeChart.options.scales.y.ticks.color = textColor;
+          window.financeChart.options.plugins.legend.labels.color = textColor;
+          window.financeChart.update();
+        }
       });
     });
 
@@ -698,6 +1038,288 @@
           onclick: { enable: true, mode: "push" }
         }
       }
+    });
+
+    // Finance App Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize transactions from localStorage or empty array
+      let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+      
+      // DOM Elements
+      const transactionForm = document.getElementById('transaction-form');
+      const transactionList = document.getElementById('transaction-list');
+      const totalIncomeElement = document.getElementById('total-income');
+      const totalExpenseElement = document.getElementById('total-expense');
+      const totalBalanceElement = document.getElementById('total-balance');
+      const tabs = document.querySelectorAll('.tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      const filterButtons = document.querySelectorAll('.filter-group button');
+      const monthFilter = document.getElementById('month-filter');
+      
+      // Chart initialization
+      const ctx = document.getElementById('finance-chart').getContext('2d');
+      let financeChart;
+      
+      // Format currency
+      function formatCurrency(amount) {
+        return new Intl.NumberFormat('id-ID', { 
+          style: 'currency', 
+          currency: 'IDR', 
+          minimumFractionDigits: 0 
+        }).format(amount);
+      }
+      
+      // Calculate totals
+      function calculateTotals() {
+        const income = transactions
+          .filter(t => t.type === 'income')
+          .reduce((sum, t) => sum + t.amount, 0);
+        
+        const expense = transactions
+          .filter(t => t.type === 'expense')
+          .reduce((sum, t) => sum + t.amount, 0);
+        
+        const balance = income - expense;
+        
+        totalIncomeElement.textContent = formatCurrency(income);
+        totalExpenseElement.textContent = formatCurrency(expense);
+        totalBalanceElement.textContent = formatCurrency(balance);
+      }
+      
+      // Render transactions
+      function renderTransactions(filter = 'all', month = 'all') {
+        transactionList.innerHTML = '';
+        
+        const filteredTransactions = transactions.filter(t => {
+          const matchesFilter = filter === 'all' || t.type === filter;
+          const transactionMonth = new Date(t.date).getMonth() + 1;
+          const matchesMonth = month === 'all' || transactionMonth.toString() === month;
+          return matchesFilter && matchesMonth;
+        });
+        
+        if (filteredTransactions.length === 0) {
+          transactionList.innerHTML = '<p style="padding: 1rem; text-align: center;">Tidak ada transaksi yang ditemukan</p>';
+          return;
+        }
+        
+        // Sort by date (newest first)
+        filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        filteredTransactions.forEach((transaction, index) => {
+          const transactionElement = document.createElement('div');
+          transactionElement.className = 'transaction-item';
+          
+          const date = new Date(transaction.date);
+          const formattedDate = date.toLocaleDateString('id-ID', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+          });
+          
+          transactionElement.innerHTML = `
+            <div class="transaction-details">
+              <span class="transaction-category">${transaction.category}</span>
+              <span>${transaction.description || 'Tidak ada deskripsi'}</span>
+              <span class="transaction-date">${formattedDate}</span>
+            </div>
+            <div class="transaction-amount ${transaction.type}">
+              ${transaction.type === 'income' ? '+' : '-'}${formatCurrency(transaction.amount)}
+              <button class="delete-btn" data-index="${index}">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          `;
+          
+          transactionList.appendChild(transactionElement);
+        });
+        
+        // Add event listeners to delete buttons
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            transactions.splice(index, 1);
+            saveTransactions();
+            renderTransactions(getCurrentFilter(), monthFilter.value);
+            calculateTotals();
+            updateChart();
+          });
+        });
+      }
+      
+      // Get current active filter
+      function getCurrentFilter() {
+        const activeFilter = document.querySelector('.filter-group button.active');
+        return activeFilter ? activeFilter.id.replace('filter-', '') : 'all';
+      }
+      
+      // Save transactions to localStorage
+      function saveTransactions() {
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+      }
+      
+      // Initialize chart
+      function initChart() {
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+        const currentMonth = new Date().getMonth();
+        const displayMonths = months.slice(Math.max(0, currentMonth - 5), currentMonth + 1);
+        
+        const incomeData = new Array(displayMonths.length).fill(0);
+        const expenseData = new Array(displayMonths.length).fill(0);
+        
+        transactions.forEach(t => {
+          const month = new Date(t.date).getMonth();
+          const monthIndex = displayMonths.indexOf(months[month]);
+          
+          if (monthIndex !== -1) {
+            if (t.type === 'income') {
+              incomeData[monthIndex] += t.amount;
+            } else {
+              expenseData[monthIndex] += t.amount;
+            }
+          }
+        });
+        
+        const isDark = document.body.classList.contains('dark');
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+        const textColor = isDark ? '#fff' : '#666';
+        
+        if (financeChart) {
+          financeChart.destroy();
+        }
+        
+        financeChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: displayMonths,
+            datasets: [
+              {
+                label: 'Pemasukan',
+                data: incomeData,
+                backgroundColor: '#4CAF50',
+                borderRadius: 5
+              },
+              {
+                label: 'Pengeluaran',
+                data: expenseData,
+                backgroundColor: '#f44336',
+                borderRadius: 5
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                grid: {
+                  color: gridColor
+                },
+                ticks: {
+                  color: textColor
+                }
+              },
+              y: {
+                grid: {
+                  color: gridColor
+                },
+                ticks: {
+                  color: textColor,
+                  callback: function(value) {
+                    return 'Rp' + value.toLocaleString('id-ID');
+                  }
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                labels: {
+                  color: textColor
+                }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return context.dataset.label + ': Rp' + context.raw.toLocaleString('id-ID');
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+      
+      // Update chart data
+      function updateChart() {
+        initChart();
+      }
+      
+      // Tab switching
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          const tabId = this.getAttribute('data-tab');
+          
+          tabs.forEach(t => t.classList.remove('active'));
+          tabContents.forEach(c => c.classList.remove('active'));
+          
+          this.classList.add('active');
+          document.getElementById(`${tabId}-tab`).classList.add('active');
+          
+          if (tabId === 'stats') {
+            updateChart();
+          }
+        });
+      });
+      
+      // Filter buttons
+      filterButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          filterButtons.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          
+          const filter = this.id.replace('filter-', '');
+          const month = monthFilter.value;
+          renderTransactions(filter, month);
+        });
+      });
+      
+      // Month filter
+      monthFilter.addEventListener('change', function() {
+        const activeFilter = document.querySelector('.filter-group button.active');
+        const filter = activeFilter ? activeFilter.id.replace('filter-', '') : 'all';
+        renderTransactions(filter, this.value);
+      });
+      
+      // Form submission
+      transactionForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const transaction = {
+          type: formData.get('type'),
+          amount: parseFloat(formData.get('amount')),
+          category: formData.get('category'),
+          date: formData.get('date'),
+          description: formData.get('description')
+        };
+        
+        transactions.push(transaction);
+        saveTransactions();
+        
+        this.reset();
+        document.getElementById('transaction-date').valueAsDate = new Date();
+        renderTransactions();
+        calculateTotals();
+        
+        // Switch back to transactions tab
+        document.querySelector('.tab[data-tab="transactions"]').click();
+      });
+      
+      // Set default date to today
+      document.getElementById('transaction-date').valueAsDate = new Date();
+      
+      // Initialize
+      calculateTotals();
+      renderTransactions();
     });
   </script>
 </body>
