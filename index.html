@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ANGKABET TRUSTED</title>
+    <title>Scatter Claim Processor (Realtime)</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -129,11 +129,34 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+        .currency-input {
+            text-align: right;
+        }
+        .connection-status {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        .connected {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .disconnected {
+            background-color: #f44336;
+            color: white;
+        }
     </style>
+    
+    <!-- Tambahkan Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
     <div class="header">
-        <h1>SCATTER MAHYONG WAYS 1 & 2 ANGKABET</h1>
+        <h1>SCATTER MAHYONG WAYS 1 & 2 ANGKABET (Realtime)</h1>
         <button onclick="addNewRow()">+ Tambah Baris</button>
     </div>
 
@@ -183,22 +206,22 @@
             <tbody>
                 <tr>
                     <td>🎰 3 Scatter</td>
-                    <td>Rp.30.000</td>
-                    <td>Rp.50.000</td>
+                    <td>Rp.8.000</td>
+                    <td>Rp.20.000</td>
                     <td>Rp.80.000</td>
                     <td>Rp.100.000</td>
                 </tr>
                 <tr>
                     <td>🎰 4 Scatter</td>
-                    <td>Rp.60.000</td>
-                    <td>Rp.100.000</td>
+                    <td>Rp.15.000</td>
+                    <td>Rp.30.000</td>
                     <td>Rp.160.000</td>
                     <td>Rp.300.000</td>
                 </tr>
                 <tr>
                     <td>🎰 5 Scatter</td>
-                    <td>Rp.150.000</td>
-                    <td>Rp.200.000</td>
+                    <td>Rp.50.000</td>
+                    <td>Rp.80.000</td>
                     <td>Rp.300.000</td>
                     <td>Rp.500.000</td>
                 </tr>
@@ -239,57 +262,143 @@
         <button onclick="calculateTotals()">Hitung Total</button>
     </div>
 
+    <div id="connectionStatus" class="connection-status disconnected">Disconnected</div>
+
     <script>
+        // Konfigurasi Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyABCDEFGHIJKLMNOPQRSTUVWXYZ12345678",
+            authDomain: "your-project-id.firebaseapp.com",
+            databaseURL: "https://your-project-id.firebaseio.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project-id.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdefghijklmnopqrstuv"
+        };
+
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
         // Track claim counts per user per channel
         let userClaimStats = {};
         const MAX_CLAIMS_PER_CHANNEL = 3;
+        let currentRows = {}; // Untuk menyimpan referensi row berdasarkan ID
+        let isInitialLoad = true;
+        
+        // Format currency untuk input
+        function formatCurrency(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value === '') value = '0';
+            
+            let rupiah = '';
+            while (value.length > 3) {
+                rupiah = '.' + value.substr(value.length - 3) + rupiah;
+                value = value.substr(0, value.length - 3);
+            }
+            rupiah = 'Rp.' + value + rupiah;
+            
+            input.value = rupiah;
+        }
+        
+        // Konversi dari format currency ke angka
+        function currencyToNumber(currency) {
+            return parseInt(currency.replace(/\D/g, '')) || 0;
+        }
+        
+        // Generate ID unik untuk setiap row
+        function generateRowId() {
+            return 'row-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+        }
         
         // Tambah baris baru
-        function addNewRow() {
+        function addNewRow(rowData = null) {
             const tbody = document.querySelector('#claimsTable tbody');
+            const rowId = rowData ? rowData.id : generateRowId();
             const newRow = document.createElement('tr');
+            newRow.setAttribute('data-id', rowId);
+            
             newRow.innerHTML = `
-                <td><input type="date" style="width: 120px;"></td>
-                <td><input type="text" placeholder="USER123" oninput="validateUserClaims(); calculateTotals();"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text" oninput="checkDuplicateTickets()"></td>
-                <td><input type="number" min="400"></td>
-                <td><input type="number"></td>
+                <td><input type="date" style="width: 120px;" value="${rowData ? rowData.date || '' : ''}"></td>
+                <td><input type="text" placeholder="USER123" value="${rowData ? rowData.userId || '' : ''}" oninput="validateUserClaims(); calculateTotals(); updateRowData('${rowId}')"></td>
+                <td><input type="text" value="${rowData ? rowData.accountName || '' : ''}" oninput="updateRowData('${rowId}')"></td>
+                <td><input type="text" value="${rowData ? rowData.accountNumber || '' : ''}" oninput="updateRowData('${rowId}')"></td>
+                <td><input type="text" value="${rowData ? rowData.ticketCode || '' : ''}" oninput="checkDuplicateTickets(); updateRowData('${rowId}')"></td>
+                <td><input type="text" class="currency-input" placeholder="Rp.0" value="${rowData ? rowData.betAmount || '' : ''}" onfocus="this.value=''" onblur="formatCurrency(this)" oninput="calculateClaimAmount(this); updateRowData('${rowId}')"></td>
+                <td><input type="text" class="currency-input" placeholder="Rp.0" value="${rowData ? rowData.claimAmount || '' : ''}" readonly></td>
                 <td>
-                    <select onchange="updateRowStatus(this); validateUserClaims(); calculateTotals()">
-                        <option value="Waiting" selected>Waiting</option>
-                        <option value="Done">Done</option>
+                    <select onchange="updateRowStatus(this); validateUserClaims(); calculateTotals(); updateRowData('${rowId}')">
+                        <option value="Waiting" ${rowData && rowData.status === 'Waiting' ? 'selected' : ''}>Waiting</option>
+                        <option value="Done" ${rowData && rowData.status === 'Done' ? 'selected' : ''}>Done</option>
                     </select>
                 </td>
                 <td>
-                    <select onchange="validateUserClaims(); calculateTotals();">
-                        <option value="Livechat">Livechat</option>
-                        <option value="LINE">LINE</option>
+                    <select onchange="validateUserClaims(); calculateTotals(); updateRowData('${rowId}')">
+                        <option value="Livechat" ${rowData && rowData.claimVia === 'Livechat' ? 'selected' : ''}>Livechat</option>
+                        <option value="LINE" ${rowData && rowData.claimVia === 'LINE' ? 'selected' : ''}>LINE</option>
                     </select>
                 </td>
                 <td>
-                    <input type="file" accept="image/*" onchange="previewImage(this)">
-                    <img src="" class="image-preview" style="display: none;">
+                    <input type="file" accept="image/*" onchange="previewImage(this); updateRowData('${rowId}')">
+                    <img src="${rowData && rowData.scatterImage ? rowData.scatterImage : ''}" class="image-preview" style="display: ${rowData && rowData.scatterImage ? 'block' : 'none'};">
                 </td>
                 <td>
-                    <input type="file" accept="image/*" onchange="previewImage(this)">
-                    <img src="" class="image-preview" style="display: none;">
+                    <input type="file" accept="image/*" onchange="previewImage(this); updateRowData('${rowId}')">
+                    <img src="${rowData && rowData.winImage ? rowData.winImage : ''}" class="image-preview" style="display: ${rowData && rowData.winImage ? 'block' : 'none'};">
                 </td>
-                <td><input type="number" value="0" readonly></td>
-                <td><input type="number" value="0" readonly></td>
-                <td><button onclick="deleteRow(this)" style="background-color: #f44336;">Hapus</button></td>
+                <td><input type="number" value="${rowData ? rowData.totalLivechat || '0' : '0'}" readonly></td>
+                <td><input type="number" value="${rowData ? rowData.totalLine || '0' : '0'}" readonly></td>
+                <td><button onclick="deleteRow('${rowId}')" style="background-color: #f44336;">Hapus</button></td>
             `;
+            
             tbody.appendChild(newRow);
+            currentRows[rowId] = newRow;
+            
+            if (!rowData) {
+                // Jika row baru, simpan ke Firebase
+                saveRowData(rowId);
+            }
+            
+            return rowId;
         }
 
-        // Validasi claim count per user per channel (untuk semua status)
+        // Hitung nominal claim berdasarkan betting
+        function calculateClaimAmount(input) {
+            formatCurrency(input);
+            const row = input.closest('tr');
+            const betAmount = currencyToNumber(input.value);
+            const claimVia = row.querySelector('td:nth-child(9) select').value;
+            const claimInput = row.querySelector('td:nth-child(7) input');
+            
+            let claimAmount = 0;
+            
+            if (claimVia === 'LINE') {
+                if (betAmount >= 400 && betAmount <= 800) {
+                    claimAmount = 8000;
+                } else if (betAmount >= 1200 && betAmount <= 1400) {
+                    claimAmount = 20000;
+                }
+            } else if (claimVia === 'Livechat') {
+                if (betAmount >= 1600 && betAmount <= 1800) {
+                    claimAmount = 8000;
+                } else if (betAmount >= 2000 && betAmount <= 8000) {
+                    claimAmount = 20000;
+                } else if (betAmount >= 10000 && betAmount <= 18000) {
+                    claimAmount = 80000;
+                } else if (betAmount >= 20000 && betAmount <= 100000) {
+                    claimAmount = 100000;
+                }
+            }
+            
+            claimInput.value = 'Rp.' + claimAmount.toLocaleString('id-ID');
+        }
+
+        // Validasi claim count per user per channel
         function validateUserClaims() {
             const rows = document.querySelectorAll('#claimsTable tbody tr');
             userClaimStats = {};
             let warningMessage = '';
             
-            // Hitung claim per user per channel
             rows.forEach(row => {
                 const userId = row.querySelector('td:nth-child(2) input').value.trim();
                 const claimVia = row.querySelector('td:nth-child(9) select').value;
@@ -302,18 +411,15 @@
                 }
             });
 
-            // Update highlight untuk yang melebihi limit
             rows.forEach(row => {
                 const userIdCell = row.querySelector('td:nth-child(2)');
                 const userIdInput = userIdCell.querySelector('input');
                 const userId = userIdInput.value.trim();
                 const claimVia = row.querySelector('td:nth-child(9) select').value;
 
-                // Reset highlight
                 userIdCell.classList.remove('exceed-limit');
                 userIdInput.classList.remove('exceed-limit');
                 
-                // Beri warna merah jika melebihi limit
                 if (userId && userClaimStats[userId]) {
                     if (userClaimStats[userId][claimVia] > MAX_CLAIMS_PER_CHANNEL) {
                         userIdCell.classList.add('exceed-limit');
@@ -342,14 +448,12 @@
                 }
             });
 
-            // Reset semua highlight duplikat
             rows.forEach(row => {
                 const ticketCell = row.querySelector('td:nth-child(5)');
                 ticketCell.classList.remove('duplicate-ticket');
                 ticketCell.querySelector('input').classList.remove('duplicate-ticket');
             });
 
-            // Highlight duplikat
             for (const code in ticketCodes) {
                 if (ticketCodes[code].length > 1) {
                     ticketCodes[code].forEach(row => {
@@ -386,7 +490,6 @@
             } else {
                 row.classList.add('status-done');
             }
-            // Reset highlight input juga
             const userIdInput = row.querySelector('td:nth-child(2) input');
             userIdInput.classList.remove('exceed-limit');
             
@@ -394,39 +497,43 @@
         }
 
         // Hapus baris
-        function deleteRow(button) {
-            const row = button.closest('tr');
-            row.remove();
+        function deleteRow(rowId) {
+            const row = currentRows[rowId];
+            if (row) {
+                row.remove();
+                delete currentRows[rowId];
+                
+                // Hapus dari Firebase
+                database.ref('claims/' + rowId).remove();
+            }
+            
             validateUserClaims();
             calculateTotals();
             checkDuplicateTickets();
         }
 
-        // Hitung total claim (termasuk yang status Waiting)
+        // Hitung total claim
         function calculateTotals() {
             const rows = document.querySelectorAll('#claimsTable tbody tr');
             let totalLivechat = 0;
             let totalLine = 0;
-            let userClaims = {}; // Untuk melacak claim per user
+            let userClaims = {};
             
-            // Reset semua total claim terlebih dahulu
             rows.forEach(row => {
                 row.querySelector('td:nth-child(12) input').value = 0;
                 row.querySelector('td:nth-child(13) input').value = 0;
             });
             
-            // Hitung ulang semua claim
             rows.forEach(row => {
                 const userId = row.querySelector('td:nth-child(2) input').value.trim();
                 const claimVia = row.querySelector('td:nth-child(9) select').value;
                 
-                if (!userId) return; // Skip jika user ID kosong
+                if (!userId) return;
                 
                 if (!userClaims[userId]) {
                     userClaims[userId] = { Livechat: 0, LINE: 0 };
                 }
                 
-                // Hitung claim per user (maksimal 3 per channel)
                 if (userClaims[userId][claimVia] < MAX_CLAIMS_PER_CHANNEL) {
                     if (claimVia === 'Livechat') {
                         totalLivechat++;
@@ -439,34 +546,37 @@
                     }
                 }
             });
-            
-            console.log(`Total Livechat: ${totalLivechat}, Total LINE: ${totalLine}`);
         }
 
-        // Simpan data ke localStorage
-        function saveData() {
-            const rows = document.querySelectorAll('#claimsTable tbody tr');
-            const data = [];
+        // Simpan data row ke Firebase
+        function saveRowData(rowId) {
+            const row = currentRows[rowId];
+            if (!row) return;
             
-            rows.forEach(row => {
-                const rowData = {
-                    date: row.querySelector('td:nth-child(1) input').value,
-                    userId: row.querySelector('td:nth-child(2) input').value,
-                    accountName: row.querySelector('td:nth-child(3) input').value,
-                    accountNumber: row.querySelector('td:nth-child(4) input').value,
-                    ticketCode: row.querySelector('td:nth-child(5) input').value,
-                    betAmount: row.querySelector('td:nth-child(6) input').value,
-                    claimAmount: row.querySelector('td:nth-child(7) input').value,
-                    status: row.querySelector('td:nth-child(8) select').value,
-                    claimVia: row.querySelector('td:nth-child(9) select').value,
-                    scatterImage: row.querySelector('td:nth-child(10) img').src,
-                    winImage: row.querySelector('td:nth-child(11) img').src
-                };
-                data.push(rowData);
-            });
+            const rowData = {
+                id: rowId,
+                date: row.querySelector('td:nth-child(1) input').value,
+                userId: row.querySelector('td:nth-child(2) input').value,
+                accountName: row.querySelector('td:nth-child(3) input').value,
+                accountNumber: row.querySelector('td:nth-child(4) input').value,
+                ticketCode: row.querySelector('td:nth-child(5) input').value,
+                betAmount: row.querySelector('td:nth-child(6) input').value,
+                claimAmount: row.querySelector('td:nth-child(7) input').value,
+                status: row.querySelector('td:nth-child(8) select').value,
+                claimVia: row.querySelector('td:nth-child(9) select').value,
+                scatterImage: row.querySelector('td:nth-child(10) img').src,
+                winImage: row.querySelector('td:nth-child(11) img').src,
+                totalLivechat: row.querySelector('td:nth-child(12) input').value,
+                totalLine: row.querySelector('td:nth-child(13) input').value
+            };
             
-            localStorage.setItem('scatterClaimsData', JSON.stringify(data));
-            alert('Data berhasil disimpan!');
+            database.ref('claims/' + rowId).set(rowData);
+        }
+
+        // Update row data dan simpan ke Firebase
+        function updateRowData(rowId) {
+            if (isInitialLoad) return;
+            saveRowData(rowId);
         }
 
         // Export ke Excel
@@ -507,47 +617,51 @@
             document.body.removeChild(link);
         }
 
-        // Inisialisasi
+        // Inisialisasi Firebase dan load data
         document.addEventListener('DOMContentLoaded', function() {
-            addNewRow(); // Tambah baris kosong pertama
+            // Status koneksi
+            const connectionStatus = document.getElementById('connectionStatus');
             
-            // Load saved data if exists
-            const savedData = localStorage.getItem('scatterClaimsData');
-            if (savedData) {
-                const data = JSON.parse(savedData);
-                data.forEach(item => {
-                    addNewRow();
-                    const rows = document.querySelectorAll('#claimsTable tbody tr');
-                    const lastRow = rows[rows.length - 1];
-                    
-                    lastRow.querySelector('td:nth-child(1) input').value = item.date;
-                    lastRow.querySelector('td:nth-child(2) input').value = item.userId;
-                    lastRow.querySelector('td:nth-child(3) input').value = item.accountName;
-                    lastRow.querySelector('td:nth-child(4) input').value = item.accountNumber;
-                    lastRow.querySelector('td:nth-child(5) input').value = item.ticketCode;
-                    lastRow.querySelector('td:nth-child(6) input').value = item.betAmount;
-                    lastRow.querySelector('td:nth-child(7) input').value = item.claimAmount;
-                    lastRow.querySelector('td:nth-child(8) select').value = item.status;
-                    lastRow.querySelector('td:nth-child(9) select').value = item.claimVia;
-                    
-                    if (item.scatterImage) {
-                        lastRow.querySelector('td:nth-child(10) img').src = item.scatterImage;
-                        lastRow.querySelector('td:nth-child(10) img').style.display = 'block';
-                    }
-                    
-                    if (item.winImage) {
-                        lastRow.querySelector('td:nth-child(11) img').src = item.winImage;
-                        lastRow.querySelector('td:nth-child(11) img').style.display = 'block';
-                    }
-                    
-                    updateRowStatus(lastRow.querySelector('td:nth-child(8) select'));
-                });
+            firebase.database().ref('.info/connected').on('value', function(snapshot) {
+                if (snapshot.val() === true) {
+                    connectionStatus.textContent = 'Connected';
+                    connectionStatus.className = 'connection-status connected';
+                } else {
+                    connectionStatus.textContent = 'Disconnected';
+                    connectionStatus.className = 'connection-status disconnected';
+                }
+            });
+            
+            // Load data dari Firebase
+            database.ref('claims').on('value', (snapshot) => {
+                const data = snapshot.val();
+                const tbody = document.querySelector('#claimsTable tbody');
+                
+                // Kosongkan tabel kecuali sedang initial load
+                if (!isInitialLoad) {
+                    tbody.innerHTML = '';
+                    currentRows = {};
+                }
+                
+                if (data) {
+                    Object.keys(data).forEach(rowId => {
+                        if (!currentRows[rowId]) {
+                            addNewRow(data[rowId]);
+                        }
+                    });
+                } else if (isInitialLoad) {
+                    addNewRow(); // Tambah baris kosong pertama jika tidak ada data
+                }
+                
+                if (isInitialLoad) {
+                    isInitialLoad = false;
+                }
                 
                 validateUserClaims();
                 calculateTotals();
                 checkDuplicateTickets();
-            }
-
+            });
+            
             // Tambahkan event listener untuk perubahan data
             document.querySelector('#claimsTable').addEventListener('input', function(e) {
                 if (e.target.matches('td:nth-child(2) input') || // User ID
