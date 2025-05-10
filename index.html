@@ -250,7 +250,7 @@
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
                 <td><input type="date" style="width: 120px;"></td>
-                <td><input type="text" placeholder="USER123" oninput="validateUserClaims()"></td>
+                <td><input type="text" placeholder="USER123" oninput="validateUserClaims(); calculateTotals();"></td>
                 <td><input type="text"></td>
                 <td><input type="text"></td>
                 <td><input type="text" oninput="checkDuplicateTickets()"></td>
@@ -263,7 +263,7 @@
                     </select>
                 </td>
                 <td>
-                    <select onchange="validateUserClaims()">
+                    <select onchange="validateUserClaims(); calculateTotals();">
                         <option value="Livechat">Livechat</option>
                         <option value="LINE">LINE</option>
                     </select>
@@ -283,19 +283,18 @@
             tbody.appendChild(newRow);
         }
 
-        // Validasi claim count per user per channel
+        // Validasi claim count per user per channel (untuk semua status)
         function validateUserClaims() {
             const rows = document.querySelectorAll('#claimsTable tbody tr');
             userClaimStats = {};
             let warningMessage = '';
             
-            // Hitung claim per user per channel (hanya yang status Done)
+            // Hitung claim per user per channel
             rows.forEach(row => {
                 const userId = row.querySelector('td:nth-child(2) input').value.trim();
                 const claimVia = row.querySelector('td:nth-child(9) select').value;
-                const status = row.querySelector('td:nth-child(8) select').value;
                 
-                if (userId && status === 'Done') {
+                if (userId) {
                     if (!userClaimStats[userId]) {
                         userClaimStats[userId] = { Livechat: 0, LINE: 0 };
                     }
@@ -309,14 +308,13 @@
                 const userIdInput = userIdCell.querySelector('input');
                 const userId = userIdInput.value.trim();
                 const claimVia = row.querySelector('td:nth-child(9) select').value;
-                const status = row.querySelector('td:nth-child(8) select').value;
 
                 // Reset highlight
                 userIdCell.classList.remove('exceed-limit');
                 userIdInput.classList.remove('exceed-limit');
                 
-                // Hanya beri warna merah jika status Done dan melebihi limit
-                if (userId && status === 'Done' && userClaimStats[userId]) {
+                // Beri warna merah jika melebihi limit
+                if (userId && userClaimStats[userId]) {
                     if (userClaimStats[userId][claimVia] > MAX_CLAIMS_PER_CHANNEL) {
                         userIdCell.classList.add('exceed-limit');
                         userIdInput.classList.add('exceed-limit');
@@ -404,29 +402,41 @@
             checkDuplicateTickets();
         }
 
-        // Hitung total claim (hanya yang status Done)
+        // Hitung total claim (termasuk yang status Waiting)
         function calculateTotals() {
             const rows = document.querySelectorAll('#claimsTable tbody tr');
             let totalLivechat = 0;
             let totalLine = 0;
+            let userClaims = {}; // Untuk melacak claim per user
             
+            // Reset semua total claim terlebih dahulu
             rows.forEach(row => {
+                row.querySelector('td:nth-child(12) input').value = 0;
+                row.querySelector('td:nth-child(13) input').value = 0;
+            });
+            
+            // Hitung ulang semua claim
+            rows.forEach(row => {
+                const userId = row.querySelector('td:nth-child(2) input').value.trim();
                 const claimVia = row.querySelector('td:nth-child(9) select').value;
-                const status = row.querySelector('td:nth-child(8) select').value;
                 
-                if (status === 'Done') {
+                if (!userId) return; // Skip jika user ID kosong
+                
+                if (!userClaims[userId]) {
+                    userClaims[userId] = { Livechat: 0, LINE: 0 };
+                }
+                
+                // Hitung claim per user (maksimal 3 per channel)
+                if (userClaims[userId][claimVia] < MAX_CLAIMS_PER_CHANNEL) {
                     if (claimVia === 'Livechat') {
                         totalLivechat++;
+                        userClaims[userId].Livechat++;
                         row.querySelector('td:nth-child(12) input').value = 1;
-                        row.querySelector('td:nth-child(13) input').value = 0;
                     } else {
                         totalLine++;
-                        row.querySelector('td:nth-child(12) input').value = 0;
+                        userClaims[userId].LINE++;
                         row.querySelector('td:nth-child(13) input').value = 1;
                     }
-                } else {
-                    row.querySelector('td:nth-child(12) input').value = 0;
-                    row.querySelector('td:nth-child(13) input').value = 0;
                 }
             });
             
@@ -537,6 +547,15 @@
                 calculateTotals();
                 checkDuplicateTickets();
             }
+
+            // Tambahkan event listener untuk perubahan data
+            document.querySelector('#claimsTable').addEventListener('input', function(e) {
+                if (e.target.matches('td:nth-child(2) input') || // User ID
+                    e.target.matches('td:nth-child(9) select')) { // Claim Via
+                    validateUserClaims();
+                    calculateTotals();
+                }
+            });
         });
     </script>
 </body>
