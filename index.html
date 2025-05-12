@@ -1,332 +1,506 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Scatter Claim Processor (Realtime)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scatter Claim Processor 2.0</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+        :root {
+            --primary-color: #4CAF50;
+            --danger-color: #f44336;
+            --warning-color: #FFC107;
+            --dark-color: #2c3e50;
+            --light-color: #f8f9fa;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #121212;
+            color: #f1f1f1;
+        }
+        body.dark-mode .note-container,
+        body.dark-mode #claimsTable,
+        body.dark-mode input,
+        body.dark-mode select {
+            background-color: #1e1e1e;
+            color: #f1f1f1;
+            border-color: #444;
+        }
+        
         .header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
             align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
-        /* Note Section Styles */
+        /* Login Form */
+        #loginForm {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 25px;
+            background: var(--light-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        #loginForm h2 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        /* Note Container */
         .note-container {
-            background-color: #f8f9fa;
-            border-left: 6px solid #4CAF50;
+            background-color: var(--light-color);
+            border-left: 6px solid var(--primary-color);
             padding: 15px;
             margin-bottom: 20px;
             border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .note-title {
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #2c3e50;
-            font-size: 18px;
-        }
-        .rewards-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .rewards-table th {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            text-align: center;
-        }
-        .rewards-table td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: center;
-        }
-        .rewards-table tr:nth-child(even) {
-            background-color: #f2f2f2;
+            box-shadow: var(--shadow);
         }
         
-        /* Spreadsheet Styles */
-        .spreadsheet-container {
-            overflow-x: auto;
-            margin-top: 20px;
-        }
-        #claimsTable {
-            border-collapse: collapse;
+        /* Tables */
+        .rewards-table, #claimsTable {
             width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
         }
-        #claimsTable th, #claimsTable td {
-            border: 1px solid #ddd;
-            padding: 8px 12px;
+        .rewards-table th, #claimsTable th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px;
             text-align: center;
-            min-width: 120px;
         }
-        #claimsTable th {
-            background-color: #F2F2F2;
-            position: sticky;
-            top: 0;
-        }
-        #claimsTable tr:nth-child(even) {
-            background-color: #F9F9F9;
+        .rewards-table td, #claimsTable td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
         }
         
         /* Status Styles */
-        .status-waiting {
-            background-color: #FFF3CD;
-        }
-        .status-done {
-            background-color: #D4EDDA;
-        }
-        .duplicate-ticket {
-            background-color: #FFCCCC !important;
-            font-weight: bold;
-        }
-        .exceed-limit {
-            background-color: #FF6666 !important;
-            color: white;
-            font-weight: bold;
-        }
-        input.exceed-limit {
-            background-color: #FF6666 !important;
-            color: white;
-            font-weight: bold;
-        }
+        .status-waiting { background-color: #FFF3CD; }
+        .status-done { background-color: #D4EDDA; }
+        .duplicate-ticket { background-color: #FFCCCC !important; }
+        .exceed-limit { background-color: var(--danger-color) !important; color: white; }
         
-        /* Other Styles */
+        /* Action Buttons */
         .action-buttons {
-            margin-top: 20px;
             display: flex;
             gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
         }
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        button.primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        button.danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        /* Image Preview */
         .image-preview {
             max-width: 100px;
             max-height: 60px;
             cursor: pointer;
-        }
-        .warning-message {
-            color: red;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-        button {
-            padding: 8px 16px;
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
             border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        input, select {
-            padding: 6px;
-            width: 100%;
-            box-sizing: border-box;
             border: 1px solid #ddd;
-            border-radius: 4px;
         }
-        .currency-input {
-            text-align: right;
-        }
-        .connection-status {
+        
+        /* Notification */
+        .notification {
             position: fixed;
-            bottom: 10px;
-            right: 10px;
-            padding: 5px 10px;
-            border-radius: 3px;
-            font-size: 12px;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(150%);
+            transition: transform 0.3s ease-out;
         }
-        .connected {
-            background-color: #4CAF50;
+        .notification.show {
+            transform: translateX(0);
+        }
+        .notification.success {
+            background: var(--primary-color);
             color: white;
         }
-        .disconnected {
-            background-color: #f44336;
+        .notification.warning {
+            background: var(--warning-color);
+            color: var(--dark-color);
+        }
+        .notification.error {
+            background: var(--danger-color);
             color: white;
+        }
+        
+        /* Loading Indicator */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            #claimsTable {
+                display: block;
+                overflow-x: auto;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
-    
-    <!-- Tambahkan Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
-    <div class="header">
-        <h1>SCATTER MAHYONG WAYS 1 & 2 ANGKABET (Realtime)</h1>
-        <button onclick="addNewRow()">+ Tambah Baris</button>
+    <!-- Login Form -->
+    <div id="loginForm">
+        <h2>Login Admin</h2>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+            <input type="email" id="email" placeholder="Email Admin" style="padding: 10px;">
+            <input type="password" id="password" placeholder="Password" style="padding: 10px;">
+            <button class="primary" onclick="login()">Login</button>
+            <div id="loginMessage" style="color: var(--danger-color); text-align: center;"></div>
+        </div>
     </div>
 
-    <!-- Scatter Rewards Table -->
-    <div class="note-container">
-        <div class="note-title">📝 CLAIM GRUP LINE :</div>
-        <table class="rewards-table">
-            <thead>
-                <tr>
-                    <th>Jumlah Scatter</th>
-                    <th>Betting (400-800)</th>
-                    <th>Betting (1.200-1.400)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>🎰 3 Scatter</td>
-                    <td>Rp.8.000</td>
-                    <td>Rp.20.000</td>
-                </tr>
-                <tr>
-                    <td>🎰 4 Scatter</td>
-                    <td>Rp.15.000</td>
-                    <td>Rp.30.000</td>
-                </tr>
-                <tr>
-                    <td>🎰 5 Scatter</td>
-                    <td>Rp.50.000</td>
-                    <td>Rp.80.000</td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
     </div>
 
-    <div class="note-container">
-        <div class="note-title">📝 CLAIM LIVE CHAT :</div>
-        <table class="rewards-table">
-            <thead>
-                <tr>
-                    <th>Jumlah Scatter</th>
-                    <th>Betting (1.600-1.800)</th>
-                    <th>Betting (2.000-8.000)</th>
-                    <th>Betting (10.000-18.000)</th>
-                    <th>Betting (20.000-100.000)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>🎰 3 Scatter</td>
-                    <td>Rp.30.000</td>
-                    <td>Rp.50.000</td>
-                    <td>Rp.80.000</td>
-                    <td>Rp.100.000</td>
-                </tr>
-                <tr>
-                    <td>🎰 4 Scatter</td>
-                    <td>Rp.60.000</td>
-                    <td>Rp.100.000</td>
-                    <td>Rp.160.000</td>
-                    <td>Rp.300.000</td>
-                </tr>
-                <tr>
-                    <td>🎰 5 Scatter</td>
-                    <td>Rp.150.000</td>
-                    <td>Rp.200.000</td>
-                    <td>Rp.300.000</td>
-                    <td>Rp.500.000</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div id="warningMessage" class="warning-message"></div>
-    
-    <div class="spreadsheet-container">
-        <table id="claimsTable">
-            <thead>
-                <tr>
-                    <th>Tanggal</th>
-                    <th>User ID</th>
-                    <th>Nama Rekening</th>
-                    <th>Nomor Rekening</th>
-                    <th>Kode Tiket</th>
-                    <th>Nominal Betting</th>
-                    <th>Nominal Claim</th>
-                    <th>Status</th>
-                    <th>Claim Via</th>
-                    <th>Screenshot Scatter</th>
-                    <th>Screenshot Kemenangan</th>
-                    <th>Total Claim Livechat</th>
-                    <th>Total Claim Grup LINE</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Data akan diisi oleh JavaScript -->
-            </tbody>
-        </table>
-    </div>
-    
-    <div class="action-buttons">
-        <button onclick="saveData()">Simpan Data</button>
-        <button onclick="exportToExcel()">Export ke Excel</button>
-        <button onclick="calculateTotals()">Hitung Total</button>
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <span id="notificationMessage"></span>
     </div>
 
-    <div id="connectionStatus" class="connection-status disconnected">Disconnected</div>
+    <!-- Main App (Hidden until login) -->
+    <div id="appContent" style="display: none;">
+        <div class="header">
+            <h1>SCATTER CLAIM PROCESSOR 2.0</h1>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <span id="currentUserEmail" style="font-weight: bold;"></span>
+                <button class="danger" onclick="logout()">Logout</button>
+                <button class="primary" onclick="addNewRow()">+ Tambah Data</button>
+            </div>
+        </div>
+
+        <!-- Reward Tables -->
+        <div class="note-container">
+            <div class="note-title">📝 CLAIM GRUP LINE :</div>
+            <table class="rewards-table">
+                <thead>
+                    <tr>
+                        <th>Jumlah Scatter</th>
+                        <th>Betting (400-800)</th>
+                        <th>Betting (1.200-1.400)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>🎰 3 Scatter</td>
+                        <td>Rp.8.000</td>
+                        <td>Rp.20.000</td>
+                    </tr>
+                    <tr>
+                        <td>🎰 4 Scatter</td>
+                        <td>Rp.15.000</td>
+                        <td>Rp.30.000</td>
+                    </tr>
+                    <tr>
+                        <td>🎰 5 Scatter</td>
+                        <td>Rp.50.000</td>
+                        <td>Rp.80.000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="note-container">
+            <div class="note-title">📝 CLAIM LIVE CHAT :</div>
+            <table class="rewards-table">
+                <thead>
+                    <tr>
+                        <th>Jumlah Scatter</th>
+                        <th>Betting (1.600-1.800)</th>
+                        <th>Betting (2.000-8.000)</th>
+                        <th>Betting (10.000-18.000)</th>
+                        <th>Betting (20.000-100.000)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>🎰 3 Scatter</td>
+                        <td>Rp.8.000</td>
+                        <td>Rp.20.000</td>
+                        <td>Rp.80.000</td>
+                        <td>Rp.100.000</td>
+                    </tr>
+                    <tr>
+                        <td>🎰 4 Scatter</td>
+                        <td>Rp.15.000</td>
+                        <td>Rp.30.000</td>
+                        <td>Rp.160.000</td>
+                        <td>Rp.300.000</td>
+                    </tr>
+                    <tr>
+                        <td>🎰 5 Scatter</td>
+                        <td>Rp.50.000</td>
+                        <td>Rp.80.000</td>
+                        <td>Rp.300.000</td>
+                        <td>Rp.500.000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Search and Filter -->
+        <div style="margin: 20px 0; display: flex; gap: 15px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px;">
+                <input type="text" id="searchInput" placeholder="Cari User ID/Kode Tiket..." style="width: 100%; padding: 10px;">
+            </div>
+            <div style="flex: 1; min-width: 250px;">
+                <select id="statusFilter" style="width: 100%; padding: 10px;">
+                    <option value="">Semua Status</option>
+                    <option value="Waiting">Waiting</option>
+                    <option value="Done">Done</option>
+                </select>
+            </div>
+            <button class="primary" onclick="filterData()">Filter</button>
+        </div>
+
+        <!-- Claims Table -->
+        <div style="overflow-x: auto;">
+            <table id="claimsTable">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>User ID</th>
+                        <th>Nama Rekening</th>
+                        <th>Nomor Rekening</th>
+                        <th>Kode Tiket</th>
+                        <th>Nominal Betting</th>
+                        <th>Nominal Claim</th>
+                        <th>Status</th>
+                        <th>Claim Via</th>
+                        <th>Screenshot Scatter</th>
+                        <th>Screenshot Kemenangan</th>
+                        <th>Total Claim Livechat</th>
+                        <th>Total Claim Grup LINE</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="primary" onclick="exportToExcel()">Export Excel</button>
+            <button class="primary" onclick="calculateTotals()">Hitung Total</button>
+            <button onclick="toggleDarkMode()" id="darkModeToggle">Dark Mode</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 
     <script>
-        // Konfigurasi Firebase
+        // Firebase Configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyBnms_EPrdyCF8ceoO_gzX9Ph_a73qEl6U",
-            authDomain: "interaktifberfikir.firebaseapp.com",
-            databaseURL: "https://interaktifberfikir-default-rtdb.asia-southeast1.firebasedatabase.app/
-Value
-",
-            projectId: "interaktifberfikir",
-            storageBucket: "interaktifberfikir.firebasestorage.app",
-            messagingSenderId: "190734202085",
-            appId: "1:190734202085:web:5780c17064e0865d96900c"
+            apiKey: "AIzaSyCH05exvW9is7JYTqT0PFAzWDJoBji6uWQ",
+            authDomain: "interaktifberfikir-70ac0.firebaseapp.com",
+            databaseURL: "https://interaktifberfikir-70ac0-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            projectId: "interaktifberfikir-70ac0",
+            storageBucket: "interaktifberfikir-70ac0.firebasestorage.app",
+            messagingSenderId: "931930581619",
+            appId: "1:931930581619:web:561a85ddcdfd478638d806"
         };
 
-        // Inisialisasi Firebase
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        
-        // Track claim counts per user per channel
-        let userClaimStats = {};
-        const MAX_CLAIMS_PER_CHANNEL = 3;
-        let currentRows = {}; // Untuk menyimpan referensi row berdasarkan ID
+        const auth = firebase.auth();
+
+        // Global Variables
+        let currentUser = null;
+        let currentRows = {};
         let isInitialLoad = true;
+        const MAX_CLAIMS_PER_CHANNEL = 3;
+
+       async function initializeDefaultAdmin() {
+    const testEmail = "prasatlasmana@gmail.com";
+    const testPassword = "maupwinidia123";
+    
+    try {
+        // Coba login dengan email dan password
+        const userCredential = await auth.signInWithEmailAndPassword(testEmail, testPassword);
+        currentUser = userCredential.user;
+        initApp();
+        return true;
+    } catch (error) {
+        console.error("Login error:", error);
         
-        // Format currency untuk input
-        function formatCurrency(input) {
-            let value = input.value.replace(/\D/g, '');
-            if (value === '') value = '0';
-            
-            let rupiah = '';
-            while (value.length > 3) {
-                rupiah = '.' + value.substr(value.length - 3) + rupiah;
-                value = value.substr(0, value.length - 3);
+        // Jika user tidak ditemukan, coba buat akun baru
+        if (error.code === "auth/user-not-found") {
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(testEmail, testPassword);
+                currentUser = userCredential.user;
+                initApp();
+                return true;
+            } catch (createError) {
+                console.error("Error creating default admin:", createError);
+                return false;
             }
-            rupiah = 'Rp.' + value + rupiah;
+        }
+        return false;
+    }
+}
+
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginMessage = document.getElementById('loginMessage');
             
-            input.value = rupiah;
+            if (!email || !password) {
+                loginMessage.textContent = "Email dan password harus diisi";
+                return;
+            }
+            
+            showLoading('Sedang masuk...');
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    currentUser = userCredential.user;
+                    initApp();
+                    showNotification("Login berhasil", "success");
+                })
+                .catch((error) => {
+                    loginMessage.textContent = getAuthErrorMessage(error.code);
+                    console.error("Login error:", error);
+                    showNotification("Login gagal: " + getAuthErrorMessage(error.code), "error");
+                })
+                .finally(() => {
+                    hideLoading();
+                });
         }
-        
-        // Konversi dari format currency ke angka
-        function currencyToNumber(currency) {
-            return parseInt(currency.replace(/\D/g, '')) || 0;
+
+        function logout() {
+            showLoading('Keluar...');
+            auth.signOut()
+                .then(() => {
+                    currentUser = null;
+                    document.getElementById('appContent').style.display = 'none';
+                    document.getElementById('loginForm').style.display = 'block';
+                    document.querySelector('#claimsTable tbody').innerHTML = '';
+                    currentRows = {};
+                    showNotification("Anda telah logout", "success");
+                })
+                .catch((error) => {
+                    showNotification("Gagal logout: " + error.message, "error");
+                })
+                .finally(() => {
+                    hideLoading();
+                });
         }
-        
-        // Generate ID unik untuk setiap row
-        function generateRowId() {
-            return 'row-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+
+        function getAuthErrorMessage(errorCode) {
+            const messages = {
+                "auth/invalid-email": "Email tidak valid",
+                "auth/user-disabled": "Akun dinonaktifkan",
+                "auth/user-not-found": "Akun tidak ditemukan",
+                "auth/wrong-password": "Password salah",
+                "auth/too-many-requests": "Terlalu banyak percobaan gagal. Coba lagi nanti",
+                "auth/network-request-failed": "Gagal terhubung ke server. Periksa koneksi internet Anda"
+            };
+            return messages[errorCode] || "Terjadi error saat login";
         }
-        
-        // Tambah baris baru
+
+       
+        function initApp() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('appContent').style.display = 'block';
+            document.getElementById('currentUserEmail').textContent = currentUser.email;
+            
+            setupRealtimeListeners();
+            initDarkMode();
+            
+            // Add initial row if no data exists
+            database.ref('claims').once('value').then((snapshot) => {
+                if (!snapshot.exists()) {
+                    addNewRow();
+                }
+            });
+        }
+
         function addNewRow(rowData = null) {
+            if (!currentUser) return;
+            
             const tbody = document.querySelector('#claimsTable tbody');
             const rowId = rowData ? rowData.id : generateRowId();
+            const today = new Date().toISOString().split('T')[0];
+            
             const newRow = document.createElement('tr');
             newRow.setAttribute('data-id', rowId);
-            
             newRow.innerHTML = `
-                <td><input type="date" style="width: 120px;" value="${rowData ? rowData.date || '' : ''}"></td>
+                <td><input type="date" value="${rowData ? rowData.date || today : today}" onchange="updateRowData('${rowId}')"></td>
                 <td><input type="text" placeholder="USER123" value="${rowData ? rowData.userId || '' : ''}" oninput="validateUserClaims(); calculateTotals(); updateRowData('${rowId}')"></td>
                 <td><input type="text" value="${rowData ? rowData.accountName || '' : ''}" oninput="updateRowData('${rowId}')"></td>
                 <td><input type="text" value="${rowData ? rowData.accountNumber || '' : ''}" oninput="updateRowData('${rowId}')"></td>
                 <td><input type="text" value="${rowData ? rowData.ticketCode || '' : ''}" oninput="checkDuplicateTickets(); updateRowData('${rowId}')"></td>
-                <td><input type="text" class="currency-input" placeholder="Rp.0" value="${rowData ? rowData.betAmount || '' : ''}" onfocus="this.value=''" onblur="formatCurrency(this)" oninput="calculateClaimAmount(this); updateRowData('${rowId}')"></td>
+                <td><input type="text" class="currency-input" placeholder="Rp.0" value="${rowData ? rowData.betAmount || '' : ''}" onfocus="this.value=''" onblur="formatCurrency(this); updateRowData('${rowId}')" oninput="calculateClaimAmount(this); updateRowData('${rowId}')"></td>
                 <td><input type="text" class="currency-input" placeholder="Rp.0" value="${rowData ? rowData.claimAmount || '' : ''}" readonly></td>
                 <td>
                     <select onchange="updateRowStatus(this); validateUserClaims(); calculateTotals(); updateRowData('${rowId}')">
@@ -341,30 +515,278 @@ Value
                     </select>
                 </td>
                 <td>
-                    <input type="file" accept="image/*" onchange="previewImage(this); updateRowData('${rowId}')">
-                    <img src="${rowData && rowData.scatterImage ? rowData.scatterImage : ''}" class="image-preview" style="display: ${rowData && rowData.scatterImage ? 'block' : 'none'};">
+                    <input type="file" accept="image/*" onchange="previewImage(this, '${rowId}')">
+                    <img src="${rowData && rowData.scatterImage ? rowData.scatterImage : ''}" class="image-preview" style="display: ${rowData && rowData.scatterImage ? 'block' : 'none'};" onclick="openModal(this.src)">
                 </td>
                 <td>
-                    <input type="file" accept="image/*" onchange="previewImage(this); updateRowData('${rowId}')">
-                    <img src="${rowData && rowData.winImage ? rowData.winImage : ''}" class="image-preview" style="display: ${rowData && rowData.winImage ? 'block' : 'none'};">
+                    <input type="file" accept="image/*" onchange="previewImage(this, '${rowId}')">
+                    <img src="${rowData && rowData.winImage ? rowData.winImage : ''}" class="image-preview" style="display: ${rowData && rowData.winImage ? 'block' : 'none'};" onclick="openModal(this.src)">
                 </td>
                 <td><input type="number" value="${rowData ? rowData.totalLivechat || '0' : '0'}" readonly></td>
                 <td><input type="number" value="${rowData ? rowData.totalLine || '0' : '0'}" readonly></td>
-                <td><button onclick="deleteRow('${rowId}')" style="background-color: #f44336;">Hapus</button></td>
+                <td><button class="danger" onclick="deleteRow('${rowId}')">Hapus</button></td>
             `;
             
             tbody.appendChild(newRow);
             currentRows[rowId] = newRow;
             
             if (!rowData) {
-                // Jika row baru, simpan ke Firebase
                 saveRowData(rowId);
             }
-            
-            return rowId;
         }
 
-        // Hitung nominal claim berdasarkan betting
+        function saveRowData(rowId) {
+            if (!currentUser || !validateRowData(rowId)) return;
+            
+            const row = currentRows[rowId];
+            const rowData = {
+                id: rowId,
+                date: row.querySelector('td:nth-child(1) input').value,
+                userId: row.querySelector('td:nth-child(2) input').value,
+                accountName: row.querySelector('td:nth-child(3) input').value,
+                accountNumber: row.querySelector('td:nth-child(4) input').value,
+                ticketCode: row.querySelector('td:nth-child(5) input').value,
+                betAmount: row.querySelector('td:nth-child(6) input').value,
+                claimAmount: row.querySelector('td:nth-child(7) input').value,
+                status: row.querySelector('td:nth-child(8) select').value,
+                claimVia: row.querySelector('td:nth-child(9) select').value,
+                scatterImage: row.querySelector('td:nth-child(10) img').src,
+                winImage: row.querySelector('td:nth-child(11) img').src,
+                totalLivechat: row.querySelector('td:nth-child(12) input').value,
+                totalLine: row.querySelector('td:nth-child(13) input').value,
+                lastUpdated: firebase.database.ServerValue.TIMESTAMP,
+                updatedBy: currentUser.uid
+            };
+            
+            database.ref('claims/' + rowId).set(rowData)
+                .then(() => showNotification("Data tersimpan", "success"))
+                .catch(error => showNotification("Gagal menyimpan: " + error.message, "error"));
+        }
+
+        function validateRowData(rowId) {
+            const row = currentRows[rowId];
+            if (!row) return false;
+            
+            const userId = row.querySelector('td:nth-child(2) input').value.trim();
+            const ticketCode = row.querySelector('td:nth-child(5) input').value.trim();
+            const betAmount = row.querySelector('td:nth-child(6) input').value;
+            
+            if (!userId || userId.length < 3) {
+                showNotification("User ID harus diisi (min 3 karakter)", "error");
+                return false;
+            }
+            
+            if (!ticketCode || ticketCode.length < 5) {
+                showNotification("Kode Tiket harus diisi (min 5 karakter)", "error");
+                return false;
+            }
+            
+            if (!betAmount || currencyToNumber(betAmount) <= 0) {
+                showNotification("Nominal Betting tidak valid", "error");
+                return false;
+            }
+            
+            return true;
+        }
+
+        // ==================== ENHANCED FEATURES ====================
+        function setupRealtimeListeners() {
+            database.ref('claims').on('value', (snapshot) => {
+                const data = snapshot.val();
+                const tbody = document.querySelector('#claimsTable tbody');
+                
+                if (!isInitialLoad) {
+                    const existingRows = {...currentRows};
+                    
+                    if (data) {
+                        Object.entries(data).forEach(([rowId, rowData]) => {
+                            if (!currentRows[rowId]) {
+                                addNewRow(rowData);
+                            } else {
+                                updateExistingRow(rowId, rowData);
+                            }
+                            delete existingRows[rowId];
+                        });
+                    }
+                    
+                    Object.keys(existingRows).forEach(rowId => {
+                        if (existingRows[rowId]) {
+                            existingRows[rowId].remove();
+                            delete currentRows[rowId];
+                        }
+                    });
+                } else if (data) {
+                    Object.keys(data).forEach(rowId => {
+                        addNewRow(data[rowId]);
+                    });
+                    isInitialLoad = false;
+                } else {
+                    addNewRow();
+                    isInitialLoad = false;
+                }
+            });
+        }
+
+        function updateExistingRow(rowId, rowData) {
+            const row = currentRows[rowId];
+            if (!row || rowData.updatedBy === currentUser?.uid) return;
+
+            const fields = [
+                { selector: 'td:nth-child(1) input', key: 'date' },
+                { selector: 'td:nth-child(2) input', key: 'userId' },
+                { selector: 'td:nth-child(3) input', key: 'accountName' },
+                { selector: 'td:nth-child(4) input', key: 'accountNumber' },
+                { selector: 'td:nth-child(5) input', key: 'ticketCode' },
+                { selector: 'td:nth-child(6) input', key: 'betAmount' },
+                { selector: 'td:nth-child(7) input', key: 'claimAmount' },
+                { selector: 'td:nth-child(8) select', key: 'status' },
+                { selector: 'td:nth-child(9) select', key: 'claimVia' },
+                { selector: 'td:nth-child(10) img', key: 'scatterImage' },
+                { selector: 'td:nth-child(11) img', key: 'winImage' },
+                { selector: 'td:nth-child(12) input', key: 'totalLivechat' },
+                { selector: 'td:nth-child(13) input', key: 'totalLine' }
+            ];
+
+            fields.forEach(field => {
+                const element = row.querySelector(field.selector);
+                if (element) {
+                    if (field.key.includes('Image')) {
+                        if (rowData[field.key]) {
+                            element.src = rowData[field.key];
+                            element.style.display = 'block';
+                        } else {
+                            element.src = '';
+                            element.style.display = 'none';
+                        }
+                    } else if (element.tagName === 'SELECT') {
+                        if (element.value !== rowData[field.key]) {
+                            element.value = rowData[field.key] || '';
+                            if (field.key === 'status') {
+                                updateRowStatus(element);
+                            }
+                        }
+                    } else {
+                        if (element.value !== rowData[field.key]) {
+                            element.value = rowData[field.key] || '';
+                        }
+                    }
+                }
+            });
+
+            row.classList.add('remote-change');
+            setTimeout(() => row.classList.remove('remote-change'), 2000);
+        }
+
+        function filterData() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            const rows = document.querySelectorAll('#claimsTable tbody tr');
+            
+            rows.forEach(row => {
+                const userId = row.querySelector('td:nth-child(2) input').value.toLowerCase();
+                const ticketCode = row.querySelector('td:nth-child(5) input').value.toLowerCase();
+                const status = row.querySelector('td:nth-child(8) select').value;
+                
+                const matchesSearch = userId.includes(searchTerm) || ticketCode.includes(searchTerm);
+                const matchesStatus = !statusFilter || status === statusFilter;
+                
+                row.style.display = matchesSearch && matchesStatus ? '' : 'none';
+            });
+        }
+
+        function exportToExcel() {
+            const rows = document.querySelectorAll('#claimsTable tr');
+            let csv = [];
+            
+            // Header
+            const headerCells = rows[0].querySelectorAll('th');
+            let headerRow = [];
+            headerCells.forEach(cell => {
+                if (!cell.querySelector('button')) {
+                    headerRow.push(cell.textContent.trim());
+                }
+            });
+            csv.push(headerRow.join(','));
+            
+            // Data rows
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].querySelectorAll('td');
+                let rowData = [];
+                
+                cells.forEach((cell, index) => {
+                    if (index !== cells.length - 1) {
+                        if (cell.querySelector('input')) {
+                            rowData.push(`"${cell.querySelector('input').value}"`);
+                        } else if (cell.querySelector('select')) {
+                            rowData.push(`"${cell.querySelector('select').value}"`);
+                        } else if (cell.querySelector('img') && cell.querySelector('img').src) {
+                            rowData.push('"Image Attached"');
+                        } else {
+                            rowData.push(`"${cell.textContent.trim()}"`);
+                        }
+                    }
+                });
+                
+                csv.push(rowData.join(','));
+            }
+
+            const csvContent = csv.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `scatter_claims_${new Date().toISOString().slice(0,10)}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function showNotification(message, type = "success") {
+            const notification = document.getElementById('notification');
+            notification.className = `notification ${type}`;
+            document.getElementById('notificationMessage').textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function showLoading(message) {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        function generateRowId() {
+            return 'row-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+        }
+
+        function formatCurrency(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value === '') value = '0';
+            
+            let rupiah = '';
+            while (value.length > 3) {
+                rupiah = '.' + value.substr(value.length - 3) + rupiah;
+                value = value.substr(0, value.length - 3);
+            }
+            rupiah = 'Rp.' + value + rupiah;
+            
+            input.value = rupiah;
+        }
+
+        function currencyToNumber(currency) {
+            return parseInt(currency.replace(/\D/g, '')) || 0;
+        }
+
         function calculateClaimAmount(input) {
             formatCurrency(input);
             const row = input.closest('tr');
@@ -395,17 +817,17 @@ Value
             claimInput.value = 'Rp.' + claimAmount.toLocaleString('id-ID');
         }
 
-        // Validasi claim count per user per channel
         function validateUserClaims() {
             const rows = document.querySelectorAll('#claimsTable tbody tr');
-            userClaimStats = {};
+            const userClaimStats = {};
             let warningMessage = '';
             
             rows.forEach(row => {
                 const userId = row.querySelector('td:nth-child(2) input').value.trim();
                 const claimVia = row.querySelector('td:nth-child(9) select').value;
+                const status = row.querySelector('td:nth-child(8) select').value;
                 
-                if (userId) {
+                if (userId && status !== 'Done') {
                     if (!userClaimStats[userId]) {
                         userClaimStats[userId] = { Livechat: 0, LINE: 0 };
                     }
@@ -418,11 +840,12 @@ Value
                 const userIdInput = userIdCell.querySelector('input');
                 const userId = userIdInput.value.trim();
                 const claimVia = row.querySelector('td:nth-child(9) select').value;
+                const status = row.querySelector('td:nth-child(8) select').value;
 
                 userIdCell.classList.remove('exceed-limit');
                 userIdInput.classList.remove('exceed-limit');
                 
-                if (userId && userClaimStats[userId]) {
+                if (userId && userClaimStats[userId] && status !== 'Done') {
                     if (userClaimStats[userId][claimVia] > MAX_CLAIMS_PER_CHANNEL) {
                         userIdCell.classList.add('exceed-limit');
                         userIdInput.classList.add('exceed-limit');
@@ -431,10 +854,11 @@ Value
                 }
             });
 
-            document.getElementById('warningMessage').textContent = warningMessage;
+            if (warningMessage) {
+                showNotification(warningMessage, "warning");
+            }
         }
 
-        // Cek duplikat kode tiket
         function checkDuplicateTickets() {
             const ticketCodes = {};
             const rows = document.querySelectorAll('#claimsTable tbody tr');
@@ -463,215 +887,132 @@ Value
                         ticketCell.classList.add('duplicate-ticket');
                         ticketCell.querySelector('input').classList.add('duplicate-ticket');
                     });
+                    showNotification(`PERINGATAN: Kode tiket ${code} duplikat!`, "warning");
                 }
             }
         }
 
-        // Preview gambar
-        function previewImage(input) {
+        function previewImage(input, rowId) {
             const imgPreview = input.nextElementSibling;
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     imgPreview.src = e.target.result;
                     imgPreview.style.display = 'block';
+                    updateRowData(rowId);
                 }
                 reader.readAsDataURL(input.files[0]);
             } else {
                 imgPreview.src = '';
                 imgPreview.style.display = 'none';
+                updateRowData(rowId);
             }
         }
 
-        // Update status row
+        function openModal(imageSrc) {
+            if (!imageSrc) return;
+            // Implement modal opening logic here
+            console.log("Opening image:", imageSrc);
+        }
+
         function updateRowStatus(select) {
             const row = select.closest('tr');
             row.classList.remove('status-waiting', 'status-done', 'exceed-limit');
             if (select.value === 'Waiting') {
-                row.classList.add('status-waiting');
-            } else {
+                                row.classList.add('status-waiting');
+            } else if (select.value === 'Done') {
                 row.classList.add('status-done');
             }
-            const userIdInput = row.querySelector('td:nth-child(2) input');
-            userIdInput.classList.remove('exceed-limit');
-            
-            validateUserClaims();
         }
 
-        // Hapus baris
+        function updateRowData(rowId) {
+            if (!currentUser) return;
+            saveRowData(rowId);
+        }
+
         function deleteRow(rowId) {
-            const row = currentRows[rowId];
-            if (row) {
-                row.remove();
-                delete currentRows[rowId];
-                
-                // Hapus dari Firebase
-                database.ref('claims/' + rowId).remove();
-            }
+            if (!confirm('Apakah Anda yakin ingin menghapus data ini?')) return;
             
-            validateUserClaims();
-            calculateTotals();
-            checkDuplicateTickets();
+            database.ref('claims/' + rowId).remove()
+                .then(() => {
+                    showNotification("Data dihapus", "success");
+                })
+                .catch(error => {
+                    showNotification("Gagal menghapus: " + error.message, "error");
+                });
         }
 
-        // Hitung total claim
         function calculateTotals() {
             const rows = document.querySelectorAll('#claimsTable tbody tr');
-            let totalLivechat = 0;
-            let totalLine = 0;
-            let userClaims = {};
+            const userTotals = {};
             
+            // Reset all totals first
             rows.forEach(row => {
-                row.querySelector('td:nth-child(12) input').value = 0;
-                row.querySelector('td:nth-child(13) input').value = 0;
+                row.querySelector('td:nth-child(12) input').value = '0';
+                row.querySelector('td:nth-child(13) input').value = '0';
             });
             
+            // Calculate totals per user
+            rows.forEach(row => {
+                const userId = row.querySelector('td:nth-child(2) input').value.trim();
+                const claimVia = row.querySelector('td:nth-child(9) select').value;
+                const claimAmount = currencyToNumber(row.querySelector('td:nth-child(7) input').value);
+                const status = row.querySelector('td:nth-child(8) select').value;
+                
+                if (userId && status === 'Done') {
+                    if (!userTotals[userId]) {
+                        userTotals[userId] = { Livechat: 0, LINE: 0 };
+                    }
+                    userTotals[userId][claimVia] += claimAmount;
+                }
+            });
+            
+            // Update totals in each row
             rows.forEach(row => {
                 const userId = row.querySelector('td:nth-child(2) input').value.trim();
                 const claimVia = row.querySelector('td:nth-child(9) select').value;
                 
-                if (!userId) return;
-                
-                if (!userClaims[userId]) {
-                    userClaims[userId] = { Livechat: 0, LINE: 0 };
-                }
-                
-                if (userClaims[userId][claimVia] < MAX_CLAIMS_PER_CHANNEL) {
+                if (userId && userTotals[userId]) {
                     if (claimVia === 'Livechat') {
-                        totalLivechat++;
-                        userClaims[userId].Livechat++;
-                        row.querySelector('td:nth-child(12) input').value = 1;
-                    } else {
-                        totalLine++;
-                        userClaims[userId].LINE++;
-                        row.querySelector('td:nth-child(13) input').value = 1;
+                        row.querySelector('td:nth-child(12) input').value = userTotals[userId].Livechat;
+                    } else if (claimVia === 'LINE') {
+                        row.querySelector('td:nth-child(13) input').value = userTotals[userId].LINE;
                     }
                 }
             });
+            
+            showNotification("Total claim dihitung", "success");
         }
 
-        // Simpan data row ke Firebase
-        function saveRowData(rowId) {
-            const row = currentRows[rowId];
-            if (!row) return;
-            
-            const rowData = {
-                id: rowId,
-                date: row.querySelector('td:nth-child(1) input').value,
-                userId: row.querySelector('td:nth-child(2) input').value,
-                accountName: row.querySelector('td:nth-child(3) input').value,
-                accountNumber: row.querySelector('td:nth-child(4) input').value,
-                ticketCode: row.querySelector('td:nth-child(5) input').value,
-                betAmount: row.querySelector('td:nth-child(6) input').value,
-                claimAmount: row.querySelector('td:nth-child(7) input').value,
-                status: row.querySelector('td:nth-child(8) select').value,
-                claimVia: row.querySelector('td:nth-child(9) select').value,
-                scatterImage: row.querySelector('td:nth-child(10) img').src,
-                winImage: row.querySelector('td:nth-child(11) img').src,
-                totalLivechat: row.querySelector('td:nth-child(12) input').value,
-                totalLine: row.querySelector('td:nth-child(13) input').value
-            };
-            
-            database.ref('claims/' + rowId).set(rowData);
+        function initDarkMode() {
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('darkModeToggle').textContent = 'Light Mode';
+            }
         }
 
-        // Update row data dan simpan ke Firebase
-        function updateRowData(rowId) {
-            if (isInitialLoad) return;
-            saveRowData(rowId);
+        function toggleDarkMode() {
+            const body = document.body;
+            const isDarkMode = body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+            
+            const toggleButton = document.getElementById('darkModeToggle');
+            toggleButton.textContent = isDarkMode ? 'Light Mode' : 'Dark Mode';
         }
 
-        // Export ke Excel
-        function exportToExcel() {
-            const rows = document.querySelectorAll('#claimsTable tr');
-            let csv = [];
-            
-            rows.forEach(row => {
-                const rowData = [];
-                const cells = row.querySelectorAll('th, td');
-                
-                cells.forEach(cell => {
-                    if (cell.querySelector('input')) {
-                        rowData.push(cell.querySelector('input').value);
-                    } else if (cell.querySelector('select')) {
-                        rowData.push(cell.querySelector('select').value);
-                    } else if (cell.querySelector('img') && cell.querySelector('img').src) {
-                        rowData.push('Image Attached');
-                    } else if (!cell.querySelector('button')) {
-                        rowData.push(cell.textContent.trim());
+        // Initialize default admin and check auth state
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                initApp();
+            } else {
+                initializeDefaultAdmin().then(success => {
+                    if (!success) {
+                        console.log("Could not initialize default admin");
                     }
                 });
-                
-                csv.push(rowData.join(','));
-            });
-
-            const csvContent = csv.join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            
-            link.setAttribute('href', url);
-            link.setAttribute('download', 'scatter_claims.csv');
-            link.style.visibility = 'hidden';
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // Inisialisasi Firebase dan load data
-        document.addEventListener('DOMContentLoaded', function() {
-            // Status koneksi
-            const connectionStatus = document.getElementById('connectionStatus');
-            
-            firebase.database().ref('.info/connected').on('value', function(snapshot) {
-                if (snapshot.val() === true) {
-                    connectionStatus.textContent = 'Connected';
-                    connectionStatus.className = 'connection-status connected';
-                } else {
-                    connectionStatus.textContent = 'Disconnected';
-                    connectionStatus.className = 'connection-status disconnected';
-                }
-            });
-            
-            // Load data dari Firebase
-            database.ref('claims').on('value', (snapshot) => {
-                const data = snapshot.val();
-                const tbody = document.querySelector('#claimsTable tbody');
-                
-                // Kosongkan tabel kecuali sedang initial load
-                if (!isInitialLoad) {
-                    tbody.innerHTML = '';
-                    currentRows = {};
-                }
-                
-                if (data) {
-                    Object.keys(data).forEach(rowId => {
-                        if (!currentRows[rowId]) {
-                            addNewRow(data[rowId]);
-                        }
-                    });
-                } else if (isInitialLoad) {
-                    addNewRow(); // Tambah baris kosong pertama jika tidak ada data
-                }
-                
-                if (isInitialLoad) {
-                    isInitialLoad = false;
-                }
-                
-                validateUserClaims();
-                calculateTotals();
-                checkDuplicateTickets();
-            });
-            
-            // Tambahkan event listener untuk perubahan data
-            document.querySelector('#claimsTable').addEventListener('input', function(e) {
-                if (e.target.matches('td:nth-child(2) input') || // User ID
-                    e.target.matches('td:nth-child(9) select')) { // Claim Via
-                    validateUserClaims();
-                    calculateTotals();
-                }
-            });
+            }
         });
     </script>
 </body>
