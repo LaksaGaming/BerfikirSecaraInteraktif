@@ -3,24 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCATTER ANGKABET167</title>
+    <title>SCATTER ANGKABET167 - Admin Dashboard</title>
     <style>
         :root {
-            --primary-color: #4CAF50;
-            --danger-color: #f44336;
-            --warning-color: #FFC107;
-            --dark-color: #2c3e50;
+            --primary-color: #4a6bff;
+            --secondary-color: #6c5ce7;
+            --success-color: #00b894;
+            --danger-color: #d63031;
+            --warning-color: #fdcb6e;
+            --info-color: #0984e3;
+            --dark-color: #2d3436;
             --light-color: #f8f9fa;
-            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --sidebar-width: 280px;
+            --header-height: 70px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --border-radius: 10px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
+            padding: 0;
+            background-color: #f5f7fa;
             color: #333;
             transition: all 0.3s ease;
+            line-height: 1.6;
         }
         
         /* Dark Mode */
@@ -30,70 +43,329 @@
         }
         body.dark-mode .note-container,
         body.dark-mode #claimsTable,
+        body.dark-mode #historyTable,
         body.dark-mode input,
-        body.dark-mode select {
+        body.dark-mode select,
+        body.dark-mode textarea,
+        body.dark-mode .sidebar,
+        body.dark-mode .dashboard-card,
+        body.dark-mode .modal-content {
             background-color: #1e1e1e;
             color: #f1f1f1;
             border-color: #444;
         }
+        body.dark-mode .sidebar {
+            border-right-color: #444;
+        }
+        body.dark-mode .header {
+            background-color: #1e1e1e;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        body.dark-mode .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Layout */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: white;
+            border-right: 1px solid #e0e0e0;
+            transition: all 0.3s;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            overflow-y: auto;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 25px;
+            padding-top: calc(var(--header-height) + 25px);
+            transition: all 0.3s;
+        }
         
         .header {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            height: var(--header-height);
+            background-color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
+            padding: 0 25px;
+            box-shadow: var(--shadow);
+            z-index: 90;
+            transition: all 0.3s;
+        }
+        
+        .logo-container {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+        
+        .logo {
+            max-width: 80%;
+            max-height: 60px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        
+        .brand-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .brand-subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .nav-menu {
+            padding: 15px 0;
+        }
+        
+        .nav-item {
+            padding: 12px 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+            font-size: 14px;
+            border-left: 4px solid transparent;
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(74, 107, 255, 0.1);
+        }
+        
+        .nav-item.active {
+            background-color: rgba(74, 107, 255, 0.1);
+            border-left-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        /* Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .card-value {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+        
+        .dark-mode .card-value {
+            color: #f1f1f1;
+        }
+        
+        .card-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .dark-mode .card-footer {
+            color: #aaa;
+        }
+        
+        .card-icon {
+            font-size: 40px;
+            opacity: 0.2;
+            color: var(--primary-color);
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+        }
+        
+        .card-change {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .change-up {
+            color: var(--success-color);
+        }
+        
+        .change-down {
+            color: var(--danger-color);
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-waiting {
+            background-color: #FFF3CD;
+            color: #856404;
+        }
+        
+        .badge-processing {
+            background-color: #CCE5FF;
+            color: #004085;
+        }
+        
+        .badge-done {
+            background-color: #D4EDDA;
+            color: #155724;
+        }
+        
+        .badge-rejected {
+            background-color: #F8D7DA;
+            color: #721C24;
         }
         
         /* Login Form */
         #loginForm {
             max-width: 400px;
             margin: 50px auto;
-            padding: 25px;
-            background: var(--light-color);
-            border-radius: 8px;
+            padding: 30px;
+            background: white;
+            border-radius: var(--border-radius);
             box-shadow: var(--shadow);
+            text-align: center;
         }
+        
         #loginForm h2 {
             color: var(--primary-color);
             text-align: center;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        
+        .login-logo {
+            max-width: 150px;
             margin-bottom: 20px;
         }
         
         /* Note Container */
         .note-container {
-            background-color: var(--light-color);
-            border-left: 6px solid var(--primary-color);
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 4px;
+            background-color: white;
+            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: var(--border-radius);
             box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+        
+        .note-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         /* Tables */
-        .rewards-table, #claimsTable {
+        .rewards-table, #claimsTable, #historyTable {
             width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 15px 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 0 0 1px #e0e0e0;
         }
-        .rewards-table th, #claimsTable th {
+        
+        .dark-mode .rewards-table, 
+        .dark-mode #claimsTable, 
+        .dark-mode #historyTable {
+            box-shadow: 0 0 0 1px #444;
+        }
+        
+        .rewards-table th, 
+        #claimsTable th, 
+        #historyTable th {
             background-color: var(--primary-color);
             color: white;
-            padding: 12px;
+            padding: 12px 15px;
             text-align: center;
+            font-weight: 500;
+            font-size: 13px;
         }
-        .rewards-table td, #claimsTable td {
-            padding: 10px;
-            border: 1px solid #ddd;
+        
+        .rewards-table td, 
+        #claimsTable td, 
+        #historyTable td {
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
             text-align: center;
+            font-size: 13px;
+        }
+        
+        .dark-mode .rewards-table td, 
+        .dark-mode #claimsTable td, 
+        .dark-mode #historyTable td {
+            border-color: #444;
         }
         
         /* Status Styles */
-        .status-waiting { background-color: #FFF3CD; }
-        .status-done { background-color: #D4EDDA; }
+        .status-waiting { background-color: rgba(255, 243, 205, 0.3); }
+        .status-processing { background-color: rgba(204, 229, 255, 0.3); }
+        .status-done { background-color: rgba(212, 237, 218, 0.3); }
+        .status-rejected { background-color: rgba(248, 215, 218, 0.3); }
         .duplicate-ticket { background-color: #FFCCCC !important; }
-        .exceed-limit { background-color: var(--danger-color) !important; color: white; }
+        .exceed-limit { background-color: var(--danger-color) !important; color: white !important; }
         
         /* Action Buttons */
         .action-buttons {
@@ -102,25 +374,106 @@
             margin-top: 20px;
             flex-wrap: wrap;
         }
+        
         button {
-            padding: 10px 15px;
+            padding: 10px 18px;
             border: none;
-            border-radius: 4px;
+            border-radius: var(--border-radius);
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 500;
             transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
         }
+        
+        button i {
+            font-size: 14px;
+        }
+        
         button.primary {
             background-color: var(--primary-color);
             color: white;
         }
+        
+        button.secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        button.success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
         button.danger {
             background-color: var(--danger-color);
             color: white;
         }
+        
+        button.warning {
+            background-color: var(--warning-color);
+            color: var(--dark-color);
+        }
+        
+        button.info {
+            background-color: var(--info-color);
+            color: white;
+        }
+        
+        button.outline {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
         button:hover {
             opacity: 0.9;
             transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        /* Form Elements */
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .dark-mode input, 
+        .dark-mode select, 
+        .dark-mode textarea {
+            background-color: #2d2d2d;
+            border-color: #444;
+            color: #f1f1f1;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.2);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
         }
         
         /* Image Preview */
@@ -130,6 +483,45 @@
             cursor: pointer;
             border-radius: 4px;
             border: 1px solid #ddd;
+            transition: all 0.3s;
+        }
+        
+        .image-preview:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .file-upload-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .file-upload-label {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #f0f0f0;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 13px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .dark-mode .file-upload-label {
+            background-color: #2d2d2d;
+        }
+        
+        .file-upload-label:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .dark-mode .file-upload-label:hover {
+            background-color: #3d3d3d;
+        }
+        
+        .file-upload {
+            display: none;
         }
         
         /* Notification */
@@ -137,30 +529,44 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            padding: 15px;
-            border-radius: 5px;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
             z-index: 1000;
             box-shadow: var(--shadow);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             transform: translateX(150%);
             transition: transform 0.3s ease-out;
+            max-width: 350px;
         }
+        
         .notification.show {
             transform: translateX(0);
         }
+        
         .notification.success {
-            background: var(--primary-color);
+            background: var(--success-color);
             color: white;
         }
+        
         .notification.warning {
             background: var(--warning-color);
             color: var(--dark-color);
         }
+        
         .notification.error {
             background: var(--danger-color);
             color: white;
+        }
+        
+        .notification.info {
+            background: var(--info-color);
+            color: white;
+        }
+        
+        .notification i {
+            font-size: 20px;
         }
         
         /* Loading Indicator */
@@ -170,185 +576,735 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.7);
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 999;
+            gap: 15px;
         }
+        
+        .loading-text {
+            color: white;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        
         .spinner {
             width: 50px;
             height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid var(--primary-color);
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
         
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            max-width: 90%;
+            max-height: 90%;
+            overflow: auto;
+            padding: 25px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .dark-mode .modal-content {
+            background-color: #2d2d2d;
+        }
+        
+        .modal-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            display: block;
+            margin: 0 auto;
+            border-radius: 5px;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #666;
+            font-size: 30px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .dark-mode .close-modal {
+            color: #aaa;
+        }
+        
+        .close-modal:hover {
+            color: var(--danger-color);
+            transform: rotate(90deg);
+        }
+        
+        .modal-title {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
         /* Responsive Adjustments */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 250px;
+            }
+            .main-content {
+                margin-left: 250px;
+            }
+            .header {
+                left: 250px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .header {
+                left: 0;
+            }
+        }
+        
         @media (max-width: 768px) {
-            #claimsTable {
+            #claimsTable, #historyTable {
                 display: block;
                 overflow-x: auto;
             }
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            .main-content {
+                padding: 15px;
+                padding-top: calc(var(--header-height) + 15px);
             }
         }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+        
+        .dark-mode ::-webkit-scrollbar-track {
+            background: #2d2d2d;
+        }
+        
+        .dark-mode ::-webkit-scrollbar-thumb {
+            background: #555;
+        }
+        
+        .dark-mode ::-webkit-scrollbar-thumb:hover {
+            background: #777;
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            font-weight: normal;
+        }
+        
+        .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-primary {
+            background-color: rgba(74, 107, 255, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .badge-secondary {
+            background-color: rgba(108, 92, 231, 0.1);
+            color: var(--secondary-color);
+        }
+        
+        /* Section Header */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .dark-mode .section-title {
+            color: #f1f1f1;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+        
+        .empty-state p {
+            font-size: 16px;
+        }
+        
+        .dark-mode .empty-state {
+            color: #aaa;
+        }
+        
+        /* Action Cell */
+        .action-cell {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .action-cell button {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+        
+        /* Card Position Relative */
+        .card-relative {
+            position: relative;
+            overflow: hidden;
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Login Form -->
     <div id="loginForm">
-        <h2>Login Admin</h2>
+        <img src="https://angkabet33524.com/resources/images/logo.png" alt="Logo" class="login-logo">
+        <h2>Admin Dashboard</h2>
         <div style="display: flex; flex-direction: column; gap: 15px;">
-            <input type="email" id="email" placeholder="Email Admin" style="padding: 10px;">
-            <input type="password" id="password" placeholder="Password" style="padding: 10px;">
-            <button class="primary" onclick="login()">Login</button>
-            <div id="loginMessage" style="color: var(--danger-color); text-align: center;"></div>
+            <div class="form-group">
+                <label for="email">Email Admin</label>
+                <input type="email" id="email" placeholder="Masukkan email admin">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Masukkan password">
+            </div>
+            <button class="primary" onclick="login()">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+            <div id="loginMessage" style="color: var(--danger-color); text-align: center; font-size: 13px;"></div>
         </div>
     </div>
 
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
         <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">Memuat data...</div>
     </div>
 
     <!-- Notification -->
     <div id="notification" class="notification">
+        <i class="fas fa-info-circle"></i>
         <span id="notificationMessage"></span>
+    </div>
+
+    <!-- Modal for Image Preview and Details -->
+    <div id="imageModal" class="modal">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="Preview">
+        </div>
     </div>
 
     <!-- Main App (Hidden until login) -->
     <div id="appContent" style="display: none;">
-        <div class="header">
-            <h1>CLAIM SCATTER ANGKABET167</h1>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <span id="currentUserEmail" style="font-weight: bold;"></span>
-                <button class="danger" onclick="logout()">Logout</button>
-                <button class="primary" onclick="addNewRow()">+ Tambah Data</button>
+        <div class="app-container">
+            <!-- Sidebar Navigation -->
+            <div class="sidebar" id="sidebar">
+                <div class="logo-container">
+                    <img src="https://angkabet33524.com/resources/images/logo.png" alt="Logo" class="logo" id="logoImage">
+                    <div class="brand-name">SCATTER ANGKABET167</div>
+                    <div class="brand-subtitle">Admin Dashboard</div>
+                </div>
+                <div class="nav-menu">
+                    <div class="nav-item active" onclick="showSection('dashboard')">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </div>
+                    <div class="nav-item" onclick="showSection('claims')">
+                        <i class="fas fa-ticket-alt"></i>
+                        <span>Claim Scatter</span>
+                        <span class="badge badge-primary" id="waitingBadge" style="margin-left: auto; display: none;">0</span>
+                    </div>
+                    <div class="nav-item" onclick="showSection('history')">
+                        <i class="fas fa-history"></i>
+                        <span>Riwayat Claim</span>
+                    </div>
+                    <div class="nav-item" onclick="showSection('settings')">
+                        <i class="fas fa-cog"></i>
+                        <span>Pengaturan</span>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- Reward Tables -->
-        <div class="note-container">
-            <div class="note-title">📝 CLAIM GRUP LINE :</div>
-            <table class="rewards-table">
-                <thead>
-                    <tr>
-                        <th>Jumlah Scatter</th>
-                        <th>Betting (400-800)</th>
-                        <th>Betting (1.200-1.400)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>🎰 3 Scatter</td>
-                        <td>Rp.8.000</td>
-                        <td>Rp.20.000</td>
-                    </tr>
-                    <tr>
-                        <td>🎰 4 Scatter</td>
-                        <td>Rp.15.000</td>
-                        <td>Rp.30.000</td>
-                    </tr>
-                    <tr>
-                        <td>🎰 5 Scatter</td>
-                        <td>Rp.50.000</td>
-                        <td>Rp.80.000</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Header -->
+                <div class="header">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <button class="info" onclick="toggleSidebar()" style="display: none;" id="sidebarToggle">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <h2 id="pageTitle">Dashboard</h2>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <span id="currentUserEmail" style="font-weight: 500;"></span>
+                        <button class="danger" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
 
-        <div class="note-container">
-            <div class="note-title">📝 CLAIM LIVE CHAT :</div>
-            <table class="rewards-table">
-                <thead>
-                    <tr>
-                        <th>Jumlah Scatter</th>
-                        <th>Betting (1.600-1.800)</th>
-                        <th>Betting (2.000-8.000)</th>
-                        <th>Betting (10.000-18.000)</th>
-                        <th>Betting (20.000-100.000)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>🎰 3 Scatter</td>
-                        <td>Rp.30.000</td>
-                        <td>Rp.50.000</td>
-                        <td>Rp.80.000</td>
-                        <td>Rp.100.000</td>
-                    </tr>
-                    <tr>
-                        <td>🎰 4 Scatter</td>
-                        <td>Rp.60.000</td>
-                        <td>Rp.1000.000</td>
-                        <td>Rp.160.000</td>
-                        <td>Rp.300.000</td>
-                    </tr>
-                    <tr>
-                        <td>🎰 5 Scatter</td>
-                        <td>Rp.150.000</td>
-                        <td>Rp.200.000</td>
-                        <td>Rp.300.000</td>
-                        <td>Rp.500.000</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                <!-- Dashboard Section -->
+                <div id="dashboardSection">
+                    <div class="dashboard">
+                        <div class="dashboard-card card-relative">
+                            <div class="card-title">Total Claim Hari Ini</div>
+                            <div class="card-value" id="todayClaims">0</div>
+                            <div class="card-footer">
+                                <div class="card-change">
+                                    <span id="todayClaimsChange">0</span>
+                                    <span>dari kemarin</span>
+                                </div>
+                                <i class="fas fa-chart-line card-icon"></i>
+                            </div>
+                        </div>
+                        <div class="dashboard-card card-relative">
+                            <div class="card-title">Claim Waiting</div>
+                            <div class="card-value" id="waitingClaims">0</div>
+                            <div class="card-footer">
+                                <span>Menunggu verifikasi</span>
+                                <i class="fas fa-clock card-icon"></i>
+                            </div>
+                        </div>
+                        <div class="dashboard-card card-relative">
+                            <div class="card-title">Claim Processing</div>
+                            <div class="card-value" id="processingClaims">0</div>
+                            <div class="card-footer">
+                                <span>Sedang diproses</span>
+                                <i class="fas fa-spinner card-icon"></i>
+                            </div>
+                        </div>
+                        <div class="dashboard-card card-relative">
+                            <div class="card-title">Claim Selesai</div>
+                            <div class="card-value" id="completedClaims">0</div>
+                            <div class="card-footer">
+                                <span>Total bulan ini</span>
+                                <i class="fas fa-check-circle card-icon"></i>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Search and Filter -->
-        <div style="margin: 20px 0; display: flex; gap: 15px; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 250px;">
-                <input type="text" id="searchInput" placeholder="Cari User ID/Kode Tiket..." style="width: 100%; padding: 10px;">
+                    <div class="note-container">
+                        <div class="note-title">
+                            <i class="fas fa-bell"></i> Aktivitas Terakhir
+                        </div>
+                        <table class="rewards-table" id="recentActivityTable">
+                            <thead>
+                                <tr>
+                                    <th>Waktu</th>
+                                    <th>User ID</th>
+                                    <th>Nominal</th>
+                                    <th>Status</th>
+                                    <th>Admin</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="5" class="empty-state">
+                                        <i class="fas fa-history"></i>
+                                        <p>Belum ada aktivitas terakhir</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Claims Section -->
+                <div id="claimsSection" style="display: none;">
+                    <div class="section-header">
+                        <h1 class="section-title">
+                            <i class="fas fa-ticket-alt"></i> CLAIM SCATTER ANGKABET167
+                        </h1>
+                        <button class="primary" onclick="addNewRow()">
+                            <i class="fas fa-plus"></i> Tambah Data
+                        </button>
+                    </div>
+
+                    <!-- Reward Tables -->
+                    <div class="note-container">
+                        <div class="note-title">
+                            <i class="fas fa-table"></i> CLAIM GRUP LINE
+                        </div>
+                        <table class="rewards-table">
+                            <thead>
+                                <tr>
+                                    <th>Jumlah Scatter</th>
+                                    <th>Betting (400-800)</th>
+                                    <th>Betting (1.200-1.400)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><i class="fas fa-dice"></i> 3 Scatter</td>
+                                    <td>Rp.8.000</td>
+                                    <td>Rp.20.000</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-dice"></i> 4 Scatter</td>
+                                    <td>Rp.15.000</td>
+                                    <td>Rp.30.000</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-dice"></i> 5 Scatter</td>
+                                    <td>Rp.50.000</td>
+                                    <td>Rp.80.000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="note-container">
+                        <div class="note-title">
+                            <i class="fas fa-table"></i> CLAIM LIVE CHAT
+                        </div>
+                        <table class="rewards-table">
+                            <thead>
+                                <tr>
+                                    <th>Jumlah Scatter</th>
+                                    <th>Betting (1.600-1.800)</th>
+                                    <th>Betting (2.000-8.000)</th>
+                                    <th>Betting (10.000-18.000)</th>
+                                    <th>Betting (20.000-100.000)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><i class="fas fa-dice"></i> 3 Scatter</td>
+                                    <td>Rp.30.000</td>
+                                    <td>Rp.50.000</td>
+                                    <td>Rp.80.000</td>
+                                    <td>Rp.100.000</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-dice"></i> 4 Scatter</td>
+                                    <td>Rp.60.000</td>
+                                    <td>Rp.100.000</td>
+                                    <td>Rp.160.000</td>
+                                    <td>Rp.300.000</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fas fa-dice"></i> 5 Scatter</td>
+                                    <td>Rp.150.000</td>
+                                    <td>Rp.200.000</td>
+                                    <td>Rp.300.000</td>
+                                    <td>Rp.500.000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Search and Filter -->
+                    <div style="margin: 20px 0; display: flex; gap: 15px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 250px;">
+                            <input type="text" id="searchInput" placeholder="Cari User ID/Kode Tiket..." 
+                                   onkeyup="if(event.key === 'Enter') filterData()">
+                        </div>
+                        <div style="flex: 1; min-width: 250px;">
+                            <select id="statusFilter" onchange="filterData()">
+                                <option value="">Semua Status</option>
+                                <option value="Waiting">Waiting</option>
+                                <option value="Processing">Processing</option>
+                                <option value="Done">Done</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                        </div>
+                        <button class="primary" onclick="filterData()">
+                            <i class="fas fa-filter"></i> Filter
+                        </button>
+                        <button class="outline" onclick="resetFilter()">
+                            <i class="fas fa-sync-alt"></i> Reset
+                        </button>
+                    </div>
+
+                    <!-- Claims Table -->
+                    <div style="overflow-x: auto;">
+                        <table id="claimsTable">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>User ID</th>
+                                    <th>Nama Rekening</th>
+                                    <th>Nomor Rekening</th>
+                                    <th>Kode Tiket</th>
+                                    <th>Nominal Betting</th>
+                                    <th>Nominal Claim</th>
+                                    <th>Status</th>
+                                    <th>Claim Via</th>
+                                    <th>Screenshot Scatter</th>
+                                    <th>Screenshot Kemenangan</th>
+                                    <th>Total Claim Livechat</th>
+                                    <th>Total Claim Grup LINE</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="14" class="empty-state">
+                                        <i class="fas fa-ticket-alt"></i>
+                                        <p>Belum ada data claim</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button class="success" onclick="exportToExcel()">
+                            <i class="fas fa-file-excel"></i> Export Excel
+                        </button>
+                        <button class="info" onclick="calculateTotals()">
+                            <i class="fas fa-calculator"></i> Hitung Total
+                        </button>
+                        <button onclick="toggleDarkMode()" id="darkModeToggle">
+                            <i class="fas fa-moon"></i> Dark Mode
+                        </button>
+                    </div>
+                </div>
+
+                <!-- History Section -->
+                <div id="historySection" style="display: none;">
+                    <div class="section-header">
+                        <h1 class="section-title">
+                            <i class="fas fa-history"></i> Riwayat Claim
+                        </h1>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="success" onclick="exportHistoryToExcel()">
+                                <i class="fas fa-file-excel"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 20px 0; display: flex; gap: 15px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 250px;">
+                            <input type="text" id="historySearchInput" placeholder="Cari User ID/Kode Tiket..." 
+                                   onkeyup="if(event.key === 'Enter') filterHistoryData()">
+                        </div>
+                        <div style="flex: 1; min-width: 250px;">
+                            <select id="historyStatusFilter" onchange="filterHistoryData()">
+                                <option value="">Semua Status</option>
+                                <option value="Done">Done</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1; min-width: 250px;">
+                            <input type="date" id="historyDateFilter" onchange="filterHistoryData()">
+                        </div>
+                        <button class="primary" onclick="filterHistoryData()">
+                            <i class="fas fa-filter"></i> Filter
+                        </button>
+                        <button class="outline" onclick="resetHistoryFilter()">
+                            <i class="fas fa-sync-alt"></i> Reset
+                        </button>
+                    </div>
+                    
+                    <div style="overflow-x: auto;">
+                        <table id="historyTable">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>User ID</th>
+                                    <th>Kode Tiket</th>
+                                    <th>Nominal Claim</th>
+                                    <th>Status</th>
+                                    <th>Diproses Oleh</th>
+                                    <th>Waktu Proses</th>
+                                    <th>Detail</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="8" class="empty-state">
+                                        <i class="fas fa-history"></i>
+                                        <p>Belum ada riwayat claim</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+                <div id="settingsSection" style="display: none;">
+                    <div class="section-header">
+                        <h1 class="section-title">
+                            <i class="fas fa-cog"></i> Pengaturan Aplikasi
+                        </h1>
+                    </div>
+                    
+                    <div class="note-container">
+                        <h3>
+                            <i class="fas fa-image"></i> Logo Aplikasi
+                        </h3>
+                        <div style="display: flex; gap: 20px; align-items: center; margin-top: 15px; flex-wrap: wrap;">
+                            <img id="currentLogo" src="https://via.placeholder.com/150x50?text=ANGKABET167" alt="Current Logo" style="max-width: 200px; max-height: 80px; border-radius: 5px;">
+                            <div style="flex: 1; min-width: 250px;">
+                                <label class="file-upload-label" for="logoUpload">
+                                    <i class="fas fa-upload"></i> Pilih File Logo
+                                </label>
+                                <input type="file" id="logoUpload" class="file-upload" accept="image/*">
+                                <div style="margin-top: 10px; font-size: 12px; color: #666;">
+                                    Format: JPG, PNG (Maksimal 2MB)
+                                </div>
+                                <button class="primary" onclick="uploadLogo()" style="margin-top: 15px;">
+                                    <i class="fas fa-save"></i> Simpan Logo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="note-container">
+                        <h3>
+                            <i class="fas fa-ticket-alt"></i> Pengaturan Claim
+                        </h3>
+                        <div style="margin-top: 15px;">
+                            <div class="form-group">
+                                <label for="maxClaims">Maksimal Claim per User per Channel:</label>
+                                <input type="number" id="maxClaims" value="3" min="1" style="width: 100px;">
+                            </div>
+                            <button class="primary" onclick="saveSettings()">
+                                <i class="fas fa-save"></i> Simpan Pengaturan
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="note-container">
+                        <h3>
+                            <i class="fas fa-database"></i> Backup Data
+                        </h3>
+                        <div class="action-buttons">
+                            <button class="secondary" onclick="backupData()">
+                                <i class="fas fa-download"></i> Backup Data
+                            </button>
+                            <button class="info" onclick="restoreData()">
+                                <i class="fas fa-upload"></i> Restore Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div style="flex: 1; min-width: 250px;">
-                <select id="statusFilter" style="width: 100%; padding: 10px;">
-                    <option value="">Semua Status</option>
-                    <option value="Waiting">Waiting</option>
-                    <option value="Done">Done</option>
-                </select>
-            </div>
-            <button class="primary" onclick="filterData()">Filter</button>
-        </div>
-
-        <!-- Claims Table -->
-        <div style="overflow-x: auto;">
-            <table id="claimsTable">
-                <thead>
-                    <tr>
-                        <th>Tanggal</th>
-                        <th>User ID</th>
-                        <th>Nama Rekening</th>
-                        <th>Nomor Rekening</th>
-                        <th>Kode Tiket</th>
-                        <th>Nominal Betting</th>
-                        <th>Nominal Claim</th>
-                        <th>Status</th>
-                        <th>Claim Via</th>
-                        <th>Screenshot Scatter</th>
-                        <th>Screenshot Kemenangan</th>
-                        <th>Total Claim Livechat</th>
-                        <th>Total Claim Grup LINE</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button class="primary" onclick="exportToExcel()">Export Excel</button>
-            <button class="primary" onclick="calculateTotals()">Hitung Total</button>
-            <button onclick="toggleDarkMode()" id="darkModeToggle">Dark Mode</button>
         </div>
     </div>
 
@@ -356,6 +1312,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
     <script>
         // Firebase Configuration
@@ -364,7 +1321,7 @@
             authDomain: "interaktifberfikir-70ac0.firebaseapp.com",
             databaseURL: "https://interaktifberfikir-70ac0-default-rtdb.asia-southeast1.firebasedatabase.app/",
             projectId: "interaktifberfikir-70ac0",
-            storageBucket: "interaktifberfikir-70ac0.firebasestorage.app",
+            storageBucket: "interaktifberfikir-70ac0.appspot.com",
             messagingSenderId: "931930581619",
             appId: "1:931930581619:web:561a85ddcdfd478638d806"
         };
@@ -373,42 +1330,46 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const auth = firebase.auth();
+        const storage = firebase.storage();
 
         // Global Variables
         let currentUser = null;
         let currentRows = {};
         let isInitialLoad = true;
-        const MAX_CLAIMS_PER_CHANNEL = 3;
+        let MAX_CLAIMS_PER_CHANNEL = 3;
+        let currentSection = 'dashboard';
 
-       async function initializeDefaultAdmin() {
-    const testEmail = "prasatlasmana@gmail.com";
-    const testPassword = "maupwinidia123";
-    
-    try {
-        // Coba login dengan email dan password
-        const userCredential = await auth.signInWithEmailAndPassword(testEmail, testPassword);
-        currentUser = userCredential.user;
-        initApp();
-        return true;
-    } catch (error) {
-        console.error("Login error:", error);
-        
-        // Jika user tidak ditemukan, coba buat akun baru
-        if (error.code === "auth/user-not-found") {
+        // Initialize default admin
+        async function initializeDefaultAdmin() {
+            const testEmail = "prasatlasmana@gmail.com";
+            const testPassword = "maupwinidia123";
+            
             try {
-                const userCredential = await auth.createUserWithEmailAndPassword(testEmail, testPassword);
+                // Try to login first
+                const userCredential = await auth.signInWithEmailAndPassword(testEmail, testPassword);
                 currentUser = userCredential.user;
                 initApp();
                 return true;
-            } catch (createError) {
-                console.error("Error creating default admin:", createError);
+            } catch (error) {
+                console.error("Login error:", error);
+                
+                // If user not found, try to create account
+                if (error.code === "auth/user-not-found") {
+                    try {
+                        const userCredential = await auth.createUserWithEmailAndPassword(testEmail, testPassword);
+                        currentUser = userCredential.user;
+                        initApp();
+                        return true;
+                    } catch (createError) {
+                        console.error("Error creating default admin:", createError);
+                        return false;
+                    }
+                }
                 return false;
             }
         }
-        return false;
-    }
-}
 
+        // Login function
         function login() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -437,6 +1398,7 @@
                 });
         }
 
+        // Logout function
         function logout() {
             showLoading('Keluar...');
             auth.signOut()
@@ -456,6 +1418,7 @@
                 });
         }
 
+        // Get auth error messages
         function getAuthErrorMessage(errorCode) {
             const messages = {
                 "auth/invalid-email": "Email tidak valid",
@@ -468,14 +1431,24 @@
             return messages[errorCode] || "Terjadi error saat login";
         }
 
-       
+        // Initialize app after login
         function initApp() {
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('appContent').style.display = 'block';
             document.getElementById('currentUserEmail').textContent = currentUser.email;
             
+            // Load settings
+            loadSettings();
+            
+            // Setup realtime listeners
             setupRealtimeListeners();
+            
+            // Initialize UI
             initDarkMode();
+            setupResponsiveSidebar();
+            
+            // Load logo if exists
+            loadLogo();
             
             // Add initial row if no data exists
             database.ref('claims').once('value').then((snapshot) => {
@@ -485,10 +1458,72 @@
             });
         }
 
+        // Show section based on navigation
+        function showSection(section) {
+            // Hide all sections first
+            document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('claimsSection').style.display = 'none';
+            document.getElementById('historySection').style.display = 'none';
+            document.getElementById('settingsSection').style.display = 'none';
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`${section}Section`).style.display = 'block';
+            document.getElementById('pageTitle').textContent = document.querySelector(`.nav-item[onclick="showSection('${section}')"] span`).textContent;
+            
+            // Add active class to selected nav item
+            document.querySelector(`.nav-item[onclick="showSection('${section}')"]`).classList.add('active');
+            
+            // Update current section
+            currentSection = section;
+            
+            // If history section, refresh data
+            if (section === 'history') {
+                loadHistoryData();
+            }
+        }
+
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Setup responsive sidebar
+        function setupResponsiveSidebar() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            if (window.innerWidth < 992) {
+                sidebarToggle.style.display = 'block';
+                document.getElementById('sidebar').classList.remove('open');
+            } else {
+                sidebarToggle.style.display = 'none';
+                document.getElementById('sidebar').classList.add('open');
+            }
+            
+            window.addEventListener('resize', function() {
+                if (window.innerWidth < 992) {
+                    sidebarToggle.style.display = 'block';
+                    document.getElementById('sidebar').classList.remove('open');
+                } else {
+                    sidebarToggle.style.display = 'none';
+                    document.getElementById('sidebar').classList.add('open');
+                }
+            });
+        }
+
+        // Add new row to claims table
         function addNewRow(rowData = null) {
             if (!currentUser) return;
             
             const tbody = document.querySelector('#claimsTable tbody');
+            // Remove empty state row if exists
+            if (tbody.querySelector('.empty-state')) {
+                tbody.innerHTML = '';
+            }
+            
             const rowId = rowData ? rowData.id : generateRowId();
             const today = new Date().toISOString().split('T')[0];
             
@@ -505,7 +1540,9 @@
                 <td>
                     <select onchange="updateRowStatus(this); validateUserClaims(); calculateTotals(); updateRowData('${rowId}')">
                         <option value="Waiting" ${rowData && rowData.status === 'Waiting' ? 'selected' : ''}>Waiting</option>
+                        <option value="Processing" ${rowData && rowData.status === 'Processing' ? 'selected' : ''}>Processing</option>
                         <option value="Done" ${rowData && rowData.status === 'Done' ? 'selected' : ''}>Done</option>
+                        <option value="Rejected" ${rowData && rowData.status === 'Rejected' ? 'selected' : ''}>Rejected</option>
                     </select>
                 </td>
                 <td>
@@ -515,16 +1552,34 @@
                     </select>
                 </td>
                 <td>
-                    <input type="file" accept="image/*" onchange="previewImage(this, '${rowId}')">
-                    <img src="${rowData && rowData.scatterImage ? rowData.scatterImage : ''}" class="image-preview" style="display: ${rowData && rowData.scatterImage ? 'block' : 'none'};" onclick="openModal(this.src)">
+                    <label class="file-upload-label">
+                        <i class="fas fa-upload"></i> Upload
+                        <input type="file" class="file-upload" accept="image/*" onchange="previewImage(this, '${rowId}', 'scatter')">
+                    </label>
+                    <img src="${rowData && rowData.scatterImage ? rowData.scatterImage : ''}" class="image-preview" style="display: ${rowData && rowData.scatterImage ? 'block' : 'none'}; margin-top: 5px;" onclick="openModal(this.src)">
                 </td>
                 <td>
-                    <input type="file" accept="image/*" onchange="previewImage(this, '${rowId}')">
-                    <img src="${rowData && rowData.winImage ? rowData.winImage : ''}" class="image-preview" style="display: ${rowData && rowData.winImage ? 'block' : 'none'};" onclick="openModal(this.src)">
+                    <label class="file-upload-label">
+                        <i class="fas fa-upload"></i> Upload
+                        <input type="file" class="file-upload" accept="image/*" onchange="previewImage(this, '${rowId}', 'win')">
+                    </label>
+                    <img src="${rowData && rowData.winImage ? rowData.winImage : ''}" class="image-preview" style="display: ${rowData && rowData.winImage ? 'block' : 'none'}; margin-top: 5px;" onclick="openModal(this.src)">
                 </td>
                 <td><input type="number" value="${rowData ? rowData.totalLivechat || '0' : '0'}" readonly></td>
                 <td><input type="number" value="${rowData ? rowData.totalLine || '0' : '0'}" readonly></td>
-                <td><button class="danger" onclick="deleteRow('${rowId}')">Hapus</button></td>
+                <td>
+                    <div class="action-cell">
+                        <button class="info" onclick="processClaim('${rowId}', 'Processing')" title="Proses Claim">
+                            <i class="fas fa-spinner"></i>
+                        </button>
+                        <button class="success" onclick="processClaim('${rowId}', 'Done')" title="Approve Claim">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="danger" onclick="processClaim('${rowId}', 'Rejected')" title="Reject Claim">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </td>
             `;
             
             tbody.appendChild(newRow);
@@ -532,9 +1587,12 @@
             
             if (!rowData) {
                 saveRowData(rowId);
+            } else if (rowData.status) {
+                updateRowStatus(newRow.querySelector('td:nth-child(8) select'));
             }
         }
 
+        // Save row data to Firebase
         function saveRowData(rowId) {
             if (!currentUser || !validateRowData(rowId)) return;
             
@@ -559,10 +1617,15 @@
             };
             
             database.ref('claims/' + rowId).set(rowData)
-                .then(() => showNotification("Data tersimpan", "success"))
+                .then(() => {
+                    if (rowData.status === 'Done' || rowData.status === 'Rejected') {
+                        addToHistory(rowData);
+                    }
+                })
                 .catch(error => showNotification("Gagal menyimpan: " + error.message, "error"));
         }
 
+        // Validate row data before saving
         function validateRowData(rowId) {
             const row = currentRows[rowId];
             if (!row) return false;
@@ -589,8 +1652,196 @@
             return true;
         }
 
-        // ==================== ENHANCED FEATURES ====================
+        // Process claim (change status)
+        function processClaim(rowId, status) {
+            const row = currentRows[rowId];
+            if (!row) return;
+            
+            const statusSelect = row.querySelector('td:nth-child(8) select');
+            statusSelect.value = status;
+            updateRowStatus(statusSelect);
+            
+            // If status is Done or Rejected, add processed info
+            if (status === 'Done' || status === 'Rejected') {
+                const now = new Date().toISOString();
+                const processedData = {
+                    processedAt: now,
+                    processedBy: currentUser.email
+                };
+                
+                database.ref('claims/' + rowId).update(processedData)
+                    .then(() => {
+                        saveRowData(rowId);
+                        showNotification(`Claim ${status.toLowerCase()}`, "success");
+                    })
+                    .catch(error => showNotification("Gagal memproses: " + error.message, "error"));
+            } else {
+                saveRowData(rowId);
+                showNotification(`Claim sedang diproses`, "success");
+            }
+        }
+
+        // Add to history when claim is completed
+        function addToHistory(claimData) {
+            const historyRef = database.ref('history').push();
+            const historyData = {
+                id: claimData.id,
+                date: claimData.date,
+                userId: claimData.userId,
+                ticketCode: claimData.ticketCode,
+                claimAmount: claimData.claimAmount,
+                status: claimData.status,
+                processedBy: currentUser.email,
+                processedAt: new Date().toISOString(),
+                claimVia: claimData.claimVia,
+                betAmount: claimData.betAmount
+            };
+            
+            historyRef.set(historyData)
+                .then(() => {
+                    if (currentSection === 'history') {
+                        loadHistoryData();
+                    }
+                })
+                .catch(error => console.error("Error adding to history:", error));
+        }
+
+        // Load history data
+        function loadHistoryData() {
+            showLoading('Memuat riwayat...');
+            
+            database.ref('history').once('value')
+                .then(snapshot => {
+                    const historyData = snapshot.val();
+                    const tbody = document.querySelector('#historyTable tbody');
+                    tbody.innerHTML = '';
+                    
+                    if (historyData) {
+                        // Convert to array and sort by date (newest first)
+                        const historyArray = Object.values(historyData).sort((a, b) => 
+                            new Date(b.processedAt) - new Date(a.processedAt));
+                        
+                        historyArray.forEach(item => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${formatDate(item.date)}</td>
+                                <td>${item.userId}</td>
+                                <td>${item.ticketCode}</td>
+                                <td>${item.claimAmount}</td>
+                                <td><span class="status-badge ${getStatusBadgeClass(item.status)}">${item.status}</span></td>
+                                <td>${item.processedBy}</td>
+                                <td>${formatDateTime(item.processedAt)}</td>
+                                <td>
+                                    <button class="info" onclick="showHistoryDetail('${item.id}')" title="Lihat Detail">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+                    } else {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="8" class="empty-state">
+                                    <i class="fas fa-history"></i>
+                                    <p>Belum ada riwayat claim</p>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                })
+                .catch(error => showNotification("Gagal memuat riwayat: " + error.message, "error"))
+                .finally(() => hideLoading());
+        }
+
+        // Filter history data
+        function filterHistoryData() {
+            const searchTerm = document.getElementById('historySearchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('historyStatusFilter').value;
+            const dateFilter = document.getElementById('historyDateFilter').value;
+            
+            const rows = document.querySelectorAll('#historyTable tbody tr');
+            
+            rows.forEach(row => {
+                if (row.classList.contains('empty-state')) return;
+                
+                const userId = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                const ticketCode = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                const status = row.querySelector('td:nth-child(5) span').textContent;
+                const date = row.querySelector('td:nth-child(1)').textContent;
+                
+                const matchesSearch = userId.includes(searchTerm) || ticketCode.includes(searchTerm);
+                const matchesStatus = !statusFilter || status === statusFilter;
+                const matchesDate = !dateFilter || date === formatDate(dateFilter);
+                
+                row.style.display = matchesSearch && matchesStatus && matchesDate ? '' : 'none';
+            });
+        }
+
+        // Reset history filter
+        function resetHistoryFilter() {
+            document.getElementById('historySearchInput').value = '';
+            document.getElementById('historyStatusFilter').value = '';
+            document.getElementById('historyDateFilter').value = '';
+            filterHistoryData();
+        }
+
+        // Show history detail
+        function showHistoryDetail(claimId) {
+            database.ref('claims/' + claimId).once('value')
+                .then(snapshot => {
+                    const claimData = snapshot.val();
+                    if (claimData) {
+                        let detailHtml = `
+                            <div class="modal-title">
+                                <i class="fas fa-info-circle"></i> Detail Claim
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                                <div>
+                                    <p><strong>User ID:</strong> ${claimData.userId}</p>
+                                    <p><strong>Tanggal:</strong> ${formatDate(claimData.date)}</p>
+                                    <p><strong>Kode Tiket:</strong> ${claimData.ticketCode}</p>
+                                    <p><strong>Nominal Betting:</strong> ${claimData.betAmount}</p>
+                                </div>
+                                <div>
+                                    <p><strong>Nominal Claim:</strong> ${claimData.claimAmount}</p>
+                                    <p><strong>Status:</strong> <span class="status-badge ${getStatusBadgeClass(claimData.status)}">${claimData.status}</span></p>
+                                    <p><strong>Claim Via:</strong> ${claimData.claimVia}</p>
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                                <div>
+                                    <p><strong>Nama Rekening:</strong> ${claimData.accountName || '-'}</p>
+                                </div>
+                                <div>
+                                    <p><strong>Nomor Rekening:</strong> ${claimData.accountNumber || '-'}</p>
+                                </div>
+                            </div>
+                        `;
+                        
+                        if (claimData.scatterImage) {
+                            detailHtml += `
+                                <p><strong>Screenshot Scatter:</strong></p>
+                                <img src="${claimData.scatterImage}" style="max-width: 100%; margin-bottom: 15px; cursor: pointer;" onclick="openModal(this.src)">
+                            `;
+                        }
+                        
+                        if (claimData.winImage) {
+                            detailHtml += `
+                                <p><strong>Screenshot Kemenangan:</strong></p>
+                                <img src="${claimData.winImage}" style="max-width: 100%; cursor: pointer;" onclick="openModal(this.src)">
+                            `;
+                        }
+                        
+                        showModal(detailHtml);
+                    }
+                })
+                .catch(error => showNotification("Gagal memuat detail: " + error.message, "error"));
+        }
+
+        // Setup realtime listeners for claims data
         function setupRealtimeListeners() {
+            // Claims data listener
             database.ref('claims').on('value', (snapshot) => {
                 const data = snapshot.val();
                 const tbody = document.querySelector('#claimsTable tbody');
@@ -609,24 +1860,158 @@
                         });
                     }
                     
+                    // Remove rows that no longer exist in Firebase
                     Object.keys(existingRows).forEach(rowId => {
                         if (existingRows[rowId]) {
                             existingRows[rowId].remove();
                             delete currentRows[rowId];
                         }
                     });
+                    
+                    // Update dashboard stats
+                    updateDashboardStats(data);
+                    
+                    // Update waiting claims badge
+                    updateWaitingBadge(data);
                 } else if (data) {
+                    // Initial load
+                    tbody.innerHTML = '';
                     Object.keys(data).forEach(rowId => {
                         addNewRow(data[rowId]);
                     });
                     isInitialLoad = false;
+                    
+                    // Update dashboard stats
+                    updateDashboardStats(data);
+                    
+                    // Update waiting claims badge
+                    updateWaitingBadge(data);
                 } else {
+                    // No data exists
                     addNewRow();
                     isInitialLoad = false;
                 }
             });
+            
+            // Recent activity listener
+            database.ref('history').limitToLast(5).on('value', (snapshot) => {
+                const historyData = snapshot.val();
+                const tbody = document.querySelector('#recentActivityTable tbody');
+                tbody.innerHTML = '';
+                
+                if (historyData) {
+                    // Convert to array and sort by date (newest first)
+                    const historyArray = Object.values(historyData).sort((a, b) => 
+                        new Date(b.processedAt) - new Date(a.processedAt));
+                    
+                    historyArray.slice(0, 5).forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${formatDateTime(item.processedAt)}</td>
+                            <td>${item.userId}</td>
+                            <td>${item.claimAmount}</td>
+                            <td><span class="status-badge ${getStatusBadgeClass(item.status)}">${item.status}</span></td>
+                            <td>${item.processedBy}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <i class="fas fa-history"></i>
+                                <p>Belum ada aktivitas terakhir</p>
+                            </td>
+                        </tr>
+                    `;
+                }
+            });
         }
 
+        // Update waiting claims badge in sidebar
+        function updateWaitingBadge(claimsData) {
+            if (!claimsData) {
+                document.getElementById('waitingBadge').style.display = 'none';
+                return;
+            }
+            
+            let waitingCount = 0;
+            Object.values(claimsData).forEach(claim => {
+                if (claim.status === 'Waiting') {
+                    waitingCount++;
+                }
+            });
+            
+            const waitingBadge = document.getElementById('waitingBadge');
+            if (waitingCount > 0) {
+                waitingBadge.textContent = waitingCount;
+                waitingBadge.style.display = 'flex';
+            } else {
+                waitingBadge.style.display = 'none';
+            }
+        }
+
+        // Update dashboard statistics
+        function updateDashboardStats(claimsData) {
+            if (!claimsData) {
+                document.getElementById('todayClaims').textContent = '0';
+                document.getElementById('todayClaimsChange').textContent = '0';
+                document.getElementById('waitingClaims').textContent = '0';
+                document.getElementById('processingClaims').textContent = '0';
+                document.getElementById('completedClaims').textContent = '0';
+                return;
+            }
+            
+            const today = new Date().toISOString().split('T')[0];
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+            
+            let todayCount = 0;
+            let yesterdayCount = 0;
+            let waitingCount = 0;
+            let processingCount = 0;
+            let completedCount = 0;
+            
+            Object.values(claimsData).forEach(claim => {
+                const claimDate = claim.date || new Date().toISOString().split('T')[0];
+                
+                if (claimDate === today) {
+                    todayCount++;
+                } else if (claimDate === yesterdayStr) {
+                    yesterdayCount++;
+                }
+                
+                if (claim.status === 'Waiting') {
+                    waitingCount++;
+                } else if (claim.status === 'Processing') {
+                    processingCount++;
+                } else if (claim.status === 'Done') {
+                    completedCount++;
+                }
+            });
+            
+            // Update dashboard cards
+            document.getElementById('todayClaims').textContent = todayCount;
+            
+            const changeElement = document.getElementById('todayClaimsChange');
+            if (todayCount > yesterdayCount) {
+                changeElement.textContent = `+${todayCount - yesterdayCount}`;
+                changeElement.className = 'change-up';
+            } else if (todayCount < yesterdayCount) {
+                changeElement.textContent = `-${yesterdayCount - todayCount}`;
+                changeElement.className = 'change-down';
+            } else {
+                changeElement.textContent = '0';
+                changeElement.className = '';
+            }
+            
+            document.getElementById('waitingClaims').textContent = waitingCount;
+            document.getElementById('processingClaims').textContent = processingCount;
+            document.getElementById('completedClaims').textContent = completedCount;
+        }
+
+        // Update existing row with new data
         function updateExistingRow(rowId, rowData) {
             const row = currentRows[rowId];
             if (!row || rowData.updatedBy === currentUser?.uid) return;
@@ -673,10 +2058,12 @@
                 }
             });
 
+            // Highlight row to indicate remote change
             row.classList.add('remote-change');
             setTimeout(() => row.classList.remove('remote-change'), 2000);
         }
 
+        // Filter data in claims table
         function filterData() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const statusFilter = document.getElementById('statusFilter').value;
@@ -684,6 +2071,8 @@
             const rows = document.querySelectorAll('#claimsTable tbody tr');
             
             rows.forEach(row => {
+                if (row.classList.contains('empty-state')) return;
+                
                 const userId = row.querySelector('td:nth-child(2) input').value.toLowerCase();
                 const ticketCode = row.querySelector('td:nth-child(5) input').value.toLowerCase();
                 const status = row.querySelector('td:nth-child(8) select').value;
@@ -695,6 +2084,14 @@
             });
         }
 
+        // Reset filter
+        function resetFilter() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = '';
+            filterData();
+        }
+
+        // Export to Excel
         function exportToExcel() {
             const rows = document.querySelectorAll('#claimsTable tr');
             let csv = [];
@@ -704,18 +2101,20 @@
             let headerRow = [];
             headerCells.forEach(cell => {
                 if (!cell.querySelector('button')) {
-                    headerRow.push(cell.textContent.trim());
+                    headerRow.push(`"${cell.textContent.trim()}"`);
                 }
             });
             csv.push(headerRow.join(','));
             
             // Data rows
             for (let i = 1; i < rows.length; i++) {
+                if (rows[i].classList.contains('empty-state')) continue;
+                
                 const cells = rows[i].querySelectorAll('td');
                 let rowData = [];
                 
                 cells.forEach((cell, index) => {
-                    if (index !== cells.length - 1) {
+                    if (index !== cells.length - 1) { // Skip action column
                         if (cell.querySelector('input')) {
                             rowData.push(`"${cell.querySelector('input').value}"`);
                         } else if (cell.querySelector('select')) {
@@ -743,6 +2142,55 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            
+            showNotification("Data berhasil diexport ke CSV", "success");
+        }
+
+        // Export history to Excel
+        function exportHistoryToExcel() {
+            const rows = document.querySelectorAll('#historyTable tr');
+            let csv = [];
+            
+            // Header
+            const headerCells = rows[0].querySelectorAll('th');
+            let headerRow = [];
+            headerCells.forEach(cell => {
+                headerRow.push(`"${cell.textContent.trim()}"`);
+            });
+            csv.push(headerRow.join(','));
+            
+            // Data rows
+            for (let i = 1; i < rows.length; i++) {
+                if (rows[i].classList.contains('empty-state')) continue;
+                
+                const cells = rows[i].querySelectorAll('td');
+                let rowData = [];
+                
+                cells.forEach(cell => {
+                    if (cell.querySelector('button')) {
+                        rowData.push('"View Details"');
+                    } else {
+                        rowData.push(`"${cell.textContent.trim()}"`);
+                    }
+                });
+                
+                csv.push(rowData.join(','));
+            }
+
+            const csvContent = csv.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `scatter_history_${new Date().toISOString().slice(0,10)}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification("Riwayat berhasil diexport ke CSV", "success");
         }
 
         // ==================== UTILITY FUNCTIONS ====================
@@ -758,6 +2206,7 @@
         }
 
         function showLoading(message) {
+            document.getElementById('loadingText').textContent = message || 'Memuat data...';
             document.getElementById('loadingOverlay').style.display = 'flex';
         }
 
@@ -823,11 +2272,13 @@
             let warningMessage = '';
             
             rows.forEach(row => {
+                if (row.classList.contains('empty-state')) return;
+                
                 const userId = row.querySelector('td:nth-child(2) input').value.trim();
                 const claimVia = row.querySelector('td:nth-child(9) select').value;
                 const status = row.querySelector('td:nth-child(8) select').value;
                 
-                if (userId && status !== 'Done') {
+                if (userId && status !== 'Done' && status !== 'Rejected') {
                     if (!userClaimStats[userId]) {
                         userClaimStats[userId] = { Livechat: 0, LINE: 0 };
                     }
@@ -836,6 +2287,8 @@
             });
 
             rows.forEach(row => {
+                if (row.classList.contains('empty-state')) return;
+                
                 const userIdCell = row.querySelector('td:nth-child(2)');
                 const userIdInput = userIdCell.querySelector('input');
                 const userId = userIdInput.value.trim();
@@ -845,7 +2298,7 @@
                 userIdCell.classList.remove('exceed-limit');
                 userIdInput.classList.remove('exceed-limit');
                 
-                if (userId && userClaimStats[userId] && status !== 'Done') {
+                if (userId && userClaimStats[userId] && status !== 'Done' && status !== 'Rejected') {
                     if (userClaimStats[userId][claimVia] > MAX_CLAIMS_PER_CHANNEL) {
                         userIdCell.classList.add('exceed-limit');
                         userIdInput.classList.add('exceed-limit');
@@ -864,6 +2317,8 @@
             const rows = document.querySelectorAll('#claimsTable tbody tr');
             
             rows.forEach(row => {
+                if (row.classList.contains('empty-state')) return;
+                
                 const ticketInput = row.querySelector('td:nth-child(5) input');
                 const ticketCode = ticketInput.value.trim();
                 if (ticketCode) {
@@ -875,6 +2330,8 @@
             });
 
             rows.forEach(row => {
+                if (row.classList.contains('empty-state')) return;
+                
                 const ticketCell = row.querySelector('td:nth-child(5)');
                 ticketCell.classList.remove('duplicate-ticket');
                 ticketCell.querySelector('input').classList.remove('duplicate-ticket');
@@ -892,36 +2349,81 @@
             }
         }
 
-        function previewImage(input, rowId) {
-            const imgPreview = input.nextElementSibling;
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imgPreview.src = e.target.result;
+        function previewImage(input, rowId, type) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            // Validate file type
+            if (!file.type.match('image.*')) {
+                showNotification("Hanya file gambar yang diperbolehkan", "error");
+                return;
+            }
+            
+            // Validate file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                showNotification("Ukuran file maksimal 2MB", "error");
+                return;
+            }
+            
+            const imgPreview = input.parentElement.nextElementSibling;
+            const storageRef = storage.ref(`claims/${rowId}/${type}_${Date.now()}`);
+            
+            showLoading('Mengupload gambar...');
+            
+            storageRef.put(file).then((snapshot) => {
+                snapshot.ref.getDownloadURL().then((url) => {
+                    imgPreview.src = url;
                     imgPreview.style.display = 'block';
                     updateRowData(rowId);
-                }
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                imgPreview.src = '';
-                imgPreview.style.display = 'none';
-                updateRowData(rowId);
-            }
+                    hideLoading();
+                    showNotification("Gambar berhasil diupload", "success");
+                });
+            }).catch(error => {
+                showNotification("Gagal upload gambar: " + error.message, "error");
+                hideLoading();
+            });
         }
 
         function openModal(imageSrc) {
             if (!imageSrc) return;
-            // Implement modal opening logic here
-            console.log("Opening image:", imageSrc);
+            document.getElementById('modalImage').src = imageSrc;
+            document.getElementById('modalImage').style.display = 'block';
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        function showModal(content) {
+            const modal = document.getElementById('imageModal');
+            document.getElementById('modalImage').style.display = 'none';
+            document.querySelector('.modal-content').innerHTML = content;
+            modal.style.display = 'flex';
         }
 
         function updateRowStatus(select) {
             const row = select.closest('tr');
-            row.classList.remove('status-waiting', 'status-done', 'exceed-limit');
+            row.classList.remove('status-waiting', 'status-processing', 'status-done', 'status-rejected', 'exceed-limit');
+            
             if (select.value === 'Waiting') {
-                                row.classList.add('status-waiting');
+                row.classList.add('status-waiting');
+            } else if (select.value === 'Processing') {
+                row.classList.add('status-processing');
             } else if (select.value === 'Done') {
                 row.classList.add('status-done');
+            } else if (select.value === 'Rejected') {
+                row.classList.add('status-rejected');
+            }
+        }
+
+        function getStatusBadgeClass(status) {
+            switch(status) {
+                case 'Waiting': return 'badge-waiting';
+                case 'Processing': return 'badge-processing';
+                case 'Done': return 'badge-done';
+                case 'Rejected': return 'badge-rejected';
+                default: return '';
             }
         }
 
@@ -930,30 +2432,22 @@
             saveRowData(rowId);
         }
 
-        function deleteRow(rowId) {
-            if (!confirm('Apakah Anda yakin ingin menghapus data ini?')) return;
-            
-            database.ref('claims/' + rowId).remove()
-                .then(() => {
-                    showNotification("Data dihapus", "success");
-                })
-                .catch(error => {
-                    showNotification("Gagal menghapus: " + error.message, "error");
-                });
-        }
-
         function calculateTotals() {
             const rows = document.querySelectorAll('#claimsTable tbody tr');
             const userTotals = {};
             
             // Reset all totals first
             rows.forEach(row => {
+                if (row.classList.contains('empty-state')) return;
+                
                 row.querySelector('td:nth-child(12) input').value = '0';
                 row.querySelector('td:nth-child(13) input').value = '0';
             });
             
             // Calculate totals per user
             rows.forEach(row => {
+                if (row.classList.contains('empty-state')) return;
+                
                 const userId = row.querySelector('td:nth-child(2) input').value.trim();
                 const claimVia = row.querySelector('td:nth-child(9) select').value;
                 const claimAmount = currencyToNumber(row.querySelector('td:nth-child(7) input').value);
@@ -969,6 +2463,8 @@
             
             // Update totals in each row
             rows.forEach(row => {
+                if (row.classList.contains('empty-state')) return;
+                
                 const userId = row.querySelector('td:nth-child(2) input').value.trim();
                 const claimVia = row.querySelector('td:nth-child(9) select').value;
                 
@@ -988,7 +2484,9 @@
             const isDarkMode = localStorage.getItem('darkMode') === 'true';
             if (isDarkMode) {
                 document.body.classList.add('dark-mode');
-                document.getElementById('darkModeToggle').textContent = 'Light Mode';
+                document.getElementById('darkModeToggle').innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+            } else {
+                document.getElementById('darkModeToggle').innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
             }
         }
 
@@ -998,7 +2496,202 @@
             localStorage.setItem('darkMode', isDarkMode);
             
             const toggleButton = document.getElementById('darkModeToggle');
-            toggleButton.textContent = isDarkMode ? 'Light Mode' : 'Dark Mode';
+            toggleButton.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i> Light Mode' : '<i class="fas fa-moon"></i> Dark Mode';
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        function formatDateTime(dateTimeString) {
+            if (!dateTimeString) return '';
+            const date = new Date(dateTimeString);
+            return date.toLocaleString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Load settings from Firebase
+        function loadSettings() {
+            database.ref('settings').once('value')
+                .then(snapshot => {
+                    const settings = snapshot.val();
+                    if (settings) {
+                        MAX_CLAIMS_PER_CHANNEL = settings.maxClaims || 3;
+                        document.getElementById('maxClaims').value = MAX_CLAIMS_PER_CHANNEL;
+                        
+                        if (settings.logoUrl) {
+                            document.getElementById('logoImage').src = settings.logoUrl;
+                            document.getElementById('currentLogo').src = settings.logoUrl;
+                        }
+                    }
+                })
+                .catch(error => console.error("Error loading settings:", error));
+        }
+
+        // Save settings to Firebase
+        function saveSettings() {
+            const maxClaims = parseInt(document.getElementById('maxClaims').value) || 3;
+            
+            database.ref('settings').update({
+                maxClaims: maxClaims
+            })
+            .then(() => {
+                MAX_CLAIMS_PER_CHANNEL = maxClaims;
+                showNotification("Pengaturan disimpan", "success");
+            })
+            .catch(error => showNotification("Gagal menyimpan pengaturan: " + error.message, "error"));
+        }
+
+        // Upload logo to Firebase Storage
+        function uploadLogo() {
+            const fileInput = document.getElementById('logoUpload');
+            if (!fileInput.files || !fileInput.files[0]) {
+                showNotification("Pilih file logo terlebih dahulu", "error");
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            
+            // Validate file type
+            if (!file.type.match('image.*')) {
+                showNotification("Hanya file gambar yang diperbolehkan", "error");
+                return;
+            }
+            
+            // Validate file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                showNotification("Ukuran file maksimal 2MB", "error");
+                return;
+            }
+            
+            const storageRef = storage.ref('logo/' + file.name);
+            
+            showLoading('Mengupload logo...');
+            
+            storageRef.put(file).then((snapshot) => {
+                snapshot.ref.getDownloadURL().then((url) => {
+                    // Save logo URL to settings
+                    database.ref('settings').update({
+                        logoUrl: url
+                    })
+                    .then(() => {
+                        // Update logo images
+                        document.getElementById('logoImage').src = url;
+                        document.getElementById('currentLogo').src = url;
+                        showNotification("Logo berhasil diubah", "success");
+                        hideLoading();
+                    });
+                });
+            }).catch(error => {
+                showNotification("Gagal upload logo: " + error.message, "error");
+                hideLoading();
+            });
+        }
+
+        // Load logo from settings
+        function loadLogo() {
+            database.ref('settings/logoUrl').once('value')
+                .then(snapshot => {
+                    const logoUrl = snapshot.val();
+                    if (logoUrl) {
+                        document.getElementById('logoImage').src = logoUrl;
+                        document.getElementById('currentLogo').src = logoUrl;
+                    }
+                })
+                .catch(error => console.error("Error loading logo:", error));
+        }
+
+        // Backup data
+        function backupData() {
+            showLoading('Membuat backup...');
+            
+            Promise.all([
+                database.ref('claims').once('value'),
+                database.ref('history').once('value'),
+                database.ref('settings').once('value')
+            ])
+            .then(([claimsSnapshot, historySnapshot, settingsSnapshot]) => {
+                const backupData = {
+                    claims: claimsSnapshot.val(),
+                    history: historySnapshot.val(),
+                    settings: settingsSnapshot.val(),
+                    timestamp: new Date().toISOString()
+                };
+                
+                const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                
+                a.href = url;
+                a.download = `scatter_backup_${new Date().toISOString().slice(0,10)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showNotification("Backup berhasil dibuat", "success");
+                hideLoading();
+            })
+            .catch(error => {
+                showNotification("Gagal membuat backup: " + error.message, "error");
+                hideLoading();
+            });
+        }
+
+        // Restore data
+        function restoreData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = event => {
+                    try {
+                        const backupData = JSON.parse(event.target.result);
+                        
+                        if (!confirm('Apakah Anda yakin ingin restore data? Semua data saat ini akan diganti.')) {
+                            return;
+                        }
+                        
+                        showLoading('Memulihkan data...');
+                        
+                        const updates = {};
+                        if (backupData.claims) updates['claims'] = backupData.claims;
+                        if (backupData.history) updates['history'] = backupData.history;
+                        if (backupData.settings) updates['settings'] = backupData.settings;
+                        
+                        database.ref().update(updates)
+                            .then(() => {
+                                showNotification("Data berhasil dipulihkan", "success");
+                                hideLoading();
+                            })
+                            .catch(error => {
+                                showNotification("Gagal memulihkan data: " + error.message, "error");
+                                hideLoading();
+                            });
+                    } catch (error) {
+                        showNotification("File backup tidak valid", "error");
+                    }
+                };
+                reader.readAsText(file);
+            };
+            
+            input.click();
         }
 
         // Initialize default admin and check auth state
