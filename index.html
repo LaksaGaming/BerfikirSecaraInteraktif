@@ -877,6 +877,29 @@
             position: relative;
             overflow: hidden;
         }
+        
+        /* New Input Form Styles */
+        .input-form-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -937,9 +960,13 @@
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </div>
+                    <div class="nav-item" onclick="showSection('input')">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Input Claim</span>
+                    </div>
                     <div class="nav-item" onclick="showSection('claims')">
                         <i class="fas fa-ticket-alt"></i>
-                        <span>Claim Scatter</span>
+                        <span>Waiting List</span>
                         <span class="badge badge-primary" id="waitingBadge" style="margin-left: auto; display: none;">0</span>
                     </div>
                     <div class="nav-item" onclick="showSection('history')">
@@ -1037,88 +1064,98 @@
                     </div>
                 </div>
 
-                <!-- Claims Section -->
+                <!-- Input Form Section -->
+                <div id="inputSection" style="display: none;">
+                    <div class="section-header">
+                        <h1 class="section-title">
+                            <i class="fas fa-plus-circle"></i> INPUT CLAIM SCATTER
+                        </h1>
+                    </div>
+
+                    <div class="input-form-container">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="inputDate">Tanggal</label>
+                                <input type="date" id="inputDate">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputUserId">User ID</label>
+                                <input type="text" id="inputUserId" placeholder="Masukkan User ID">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="inputAccountName">Nama Rekening</label>
+                                <input type="text" id="inputAccountName" placeholder="Masukkan nama rekening">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputAccountNumber">Nomor Rekening</label>
+                                <input type="text" id="inputAccountNumber" placeholder="Masukkan nomor rekening">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="inputTicketCode">Kode Tiket</label>
+                                <input type="text" id="inputTicketCode" placeholder="Masukkan kode tiket">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputBetAmount">Nominal Betting</label>
+                                <input type="text" id="inputBetAmount" placeholder="Rp.0" onfocus="this.value=''" onblur="formatCurrency(this)" oninput="calculateClaimAmount()">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="inputClaimAmount">Nominal Claim</label>
+                                <input type="text" id="inputClaimAmount" placeholder="Rp.0" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputClaimVia">Claim Via</label>
+                                <select id="inputClaimVia" onchange="calculateClaimAmount()">
+                                    <option value="Livechat">Livechat</option>
+                                    <option value="LINE">LINE</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="inputScatterImage">Screenshot Scatter</label>
+                                <label class="file-upload-label">
+                                    <i class="fas fa-upload"></i> Pilih File
+                                    <input type="file" id="inputScatterImage" class="file-upload" accept="image/*">
+                                </label>
+                                <img id="scatterPreview" src="" class="image-preview" style="display: none; margin-top: 5px;" onclick="openModal(this.src)">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputWinImage">Screenshot Kemenangan</label>
+                                <label class="file-upload-label">
+                                    <i class="fas fa-upload"></i> Pilih File
+                                    <input type="file" id="inputWinImage" class="file-upload" accept="image/*">
+                                </label>
+                                <img id="winPreview" src="" class="image-preview" style="display: none; margin-top: 5px;" onclick="openModal(this.src)">
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button class="outline" onclick="resetInputForm()">
+                                <i class="fas fa-sync-alt"></i> Reset
+                            </button>
+                            <button class="primary" onclick="submitClaim()">
+                                <i class="fas fa-paper-plane"></i> Submit Claim
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Claims Section (Waiting List) -->
                 <div id="claimsSection" style="display: none;">
                     <div class="section-header">
                         <h1 class="section-title">
-                            <i class="fas fa-ticket-alt"></i> CLAIM SCATTER ANGKABET167
+                            <i class="fas fa-ticket-alt"></i> WAITING LIST CLAIM
                         </h1>
-                        <button class="primary" onclick="addNewRow()">
-                            <i class="fas fa-plus"></i> Tambah Data
-                        </button>
-                    </div>
-
-                    <!-- Reward Tables -->
-                    <div class="note-container">
-                        <div class="note-title">
-                            <i class="fas fa-table"></i> CLAIM GRUP LINE
-                        </div>
-                        <table class="rewards-table">
-                            <thead>
-                                <tr>
-                                    <th>Jumlah Scatter</th>
-                                    <th>Betting (400-800)</th>
-                                    <th>Betting (1.200-1.400)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><i class="fas fa-dice"></i> 3 Scatter</td>
-                                    <td>Rp.8.000</td>
-                                    <td>Rp.20.000</td>
-                                </tr>
-                                <tr>
-                                    <td><i class="fas fa-dice"></i> 4 Scatter</td>
-                                    <td>Rp.15.000</td>
-                                    <td>Rp.30.000</td>
-                                </tr>
-                                <tr>
-                                    <td><i class="fas fa-dice"></i> 5 Scatter</td>
-                                    <td>Rp.50.000</td>
-                                    <td>Rp.80.000</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="note-container">
-                        <div class="note-title">
-                            <i class="fas fa-table"></i> CLAIM LIVE CHAT
-                        </div>
-                        <table class="rewards-table">
-                            <thead>
-                                <tr>
-                                    <th>Jumlah Scatter</th>
-                                    <th>Betting (1.600-1.800)</th>
-                                    <th>Betting (2.000-8.000)</th>
-                                    <th>Betting (10.000-18.000)</th>
-                                    <th>Betting (20.000-100.000)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><i class="fas fa-dice"></i> 3 Scatter</td>
-                                    <td>Rp.30.000</td>
-                                    <td>Rp.50.000</td>
-                                    <td>Rp.80.000</td>
-                                    <td>Rp.100.000</td>
-                                </tr>
-                                <tr>
-                                    <td><i class="fas fa-dice"></i> 4 Scatter</td>
-                                    <td>Rp.60.000</td>
-                                    <td>Rp.100.000</td>
-                                    <td>Rp.160.000</td>
-                                    <td>Rp.300.000</td>
-                                </tr>
-                                <tr>
-                                    <td><i class="fas fa-dice"></i> 5 Scatter</td>
-                                    <td>Rp.150.000</td>
-                                    <td>Rp.200.000</td>
-                                    <td>Rp.300.000</td>
-                                    <td>Rp.500.000</td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
 
                     <!-- Search and Filter -->
@@ -1160,14 +1197,12 @@
                                     <th>Claim Via</th>
                                     <th>Screenshot Scatter</th>
                                     <th>Screenshot Kemenangan</th>
-                                    <th>Total Claim Livechat</th>
-                                    <th>Total Claim Grup LINE</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="14" class="empty-state">
+                                    <td colspan="12" class="empty-state">
                                         <i class="fas fa-ticket-alt"></i>
                                         <p>Belum ada data claim</p>
                                     </td>
@@ -1180,9 +1215,6 @@
                     <div class="action-buttons">
                         <button class="success" onclick="exportToExcel()">
                             <i class="fas fa-file-excel"></i> Export Excel
-                        </button>
-                        <button class="info" onclick="calculateTotals()">
-                            <i class="fas fa-calculator"></i> Hitung Total
                         </button>
                         <button onclick="toggleDarkMode()" id="darkModeToggle">
                             <i class="fas fa-moon"></i> Dark Mode
@@ -1456,18 +1488,20 @@
             // Load logo if exists
             loadLogo();
             
-            // Add initial row if no data exists
-            database.ref('claims').once('value').then((snapshot) => {
-                if (!snapshot.exists()) {
-                    addNewRow();
-                }
-            });
+            // Set default date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('inputDate').value = today;
+            
+            // Setup file upload previews
+            setupFileUploadPreview('inputScatterImage', 'scatterPreview');
+            setupFileUploadPreview('inputWinImage', 'winPreview');
         }
 
         // Show section based on navigation
         function showSection(section) {
             // Hide all sections first
             document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('inputSection').style.display = 'none';
             document.getElementById('claimsSection').style.display = 'none';
             document.getElementById('historySection').style.display = 'none';
             document.getElementById('settingsSection').style.display = 'none';
@@ -1520,7 +1554,202 @@
             });
         }
 
-        // Add new row to claims table
+        // Setup file upload preview
+        function setupFileUploadPreview(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            
+            input.addEventListener('change', function() {
+                const file = this.files[0];
+                if (!file) return;
+                
+                // Validate file type
+                if (!file.type.match('image.*')) {
+                    showNotification("Hanya file gambar yang diperbolehkan", "error");
+                    return;
+                }
+                
+                // Validate file size (max 2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    showNotification("Ukuran file maksimal 2MB", "error");
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Reset input form
+        function resetInputForm() {
+            document.getElementById('inputUserId').value = '';
+            document.getElementById('inputAccountName').value = '';
+            document.getElementById('inputAccountNumber').value = '';
+            document.getElementById('inputTicketCode').value = '';
+            document.getElementById('inputBetAmount').value = '';
+            document.getElementById('inputClaimAmount').value = '';
+            document.getElementById('inputClaimVia').value = 'Livechat';
+            document.getElementById('inputScatterImage').value = '';
+            document.getElementById('inputWinImage').value = '';
+            document.getElementById('scatterPreview').src = '';
+            document.getElementById('scatterPreview').style.display = 'none';
+            document.getElementById('winPreview').src = '';
+            document.getElementById('winPreview').style.display = 'none';
+            
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('inputDate').value = today;
+        }
+
+        // Format currency input
+        function formatCurrency(input) {
+            if (!input) input = document.getElementById('inputBetAmount');
+            
+            let value = input.value.replace(/\D/g, '');
+            if (value === '') value = '0';
+            
+            let rupiah = '';
+            while (value.length > 3) {
+                rupiah = '.' + value.substr(value.length - 3) + rupiah;
+                value = value.substr(0, value.length - 3);
+            }
+            rupiah = 'Rp.' + value + rupiah;
+            
+            input.value = rupiah;
+            
+            // Recalculate claim amount
+            calculateClaimAmount();
+        }
+
+        // Convert currency to number
+        function currencyToNumber(currency) {
+            return parseInt(currency.replace(/\D/g, '')) || 0;
+        }
+
+        // Calculate claim amount based on bet amount and claim via
+        function calculateClaimAmount() {
+            const betAmount = currencyToNumber(document.getElementById('inputBetAmount').value);
+            const claimVia = document.getElementById('inputClaimVia').value;
+            const claimAmountInput = document.getElementById('inputClaimAmount');
+            
+            let claimAmount = 0;
+            
+            if (claimVia === 'LINE') {
+                if (betAmount >= 400 && betAmount <= 800) {
+                    claimAmount = 8000;
+                } else if (betAmount >= 1200 && betAmount <= 1400) {
+                    claimAmount = 20000;
+                }
+            } else if (claimVia === 'Livechat') {
+                if (betAmount >= 1600 && betAmount <= 1800) {
+                    claimAmount = 30000;
+                } else if (betAmount >= 2000 && betAmount <= 8000) {
+                    claimAmount = 50000;
+                } else if (betAmount >= 10000 && betAmount <= 18000) {
+                    claimAmount = 80000;
+                } else if (betAmount >= 20000 && betAmount <= 100000) {
+                    claimAmount = 100000;
+                }
+            }
+            
+            claimAmountInput.value = 'Rp.' + claimAmount.toLocaleString('id-ID');
+        }
+
+        // Submit claim form
+        function submitClaim() {
+            // Validate form
+            const userId = document.getElementById('inputUserId').value.trim();
+            const ticketCode = document.getElementById('inputTicketCode').value.trim();
+            const betAmount = document.getElementById('inputBetAmount').value;
+            const scatterImage = document.getElementById('scatterPreview').src;
+            const winImage = document.getElementById('winPreview').src;
+            
+            if (!userId || userId.length < 3) {
+                showNotification("User ID harus diisi (min 3 karakter)", "error");
+                return;
+            }
+            
+            if (!ticketCode || ticketCode.length < 5) {
+                showNotification("Kode Tiket harus diisi (min 5 karakter)", "error");
+                return;
+            }
+            
+            if (!betAmount || currencyToNumber(betAmount) <= 0) {
+                showNotification("Nominal Betting tidak valid", "error");
+                return;
+            }
+            
+            if (!scatterImage || scatterImage === '') {
+                showNotification("Screenshot Scatter harus diupload", "error");
+                return;
+            }
+            
+            // Prepare claim data
+            const claimData = {
+                id: generateRowId(),
+                date: document.getElementById('inputDate').value,
+                userId: userId,
+                accountName: document.getElementById('inputAccountName').value.trim(),
+                accountNumber: document.getElementById('inputAccountNumber').value.trim(),
+                ticketCode: ticketCode,
+                betAmount: betAmount,
+                claimAmount: document.getElementById('inputClaimAmount').value,
+                status: 'Waiting',
+                claimVia: document.getElementById('inputClaimVia').value,
+                scatterImage: scatterImage,
+                winImage: winImage,
+                lastUpdated: firebase.database.ServerValue.TIMESTAMP,
+                updatedBy: currentUser.uid
+            };
+            
+            // Upload images to Firebase Storage if they are data URLs
+            showLoading('Menyimpan claim...');
+            
+            const uploadPromises = [];
+            
+            if (scatterImage.startsWith('data:')) {
+                const scatterRef = storage.ref(`claims/${claimData.id}/scatter_${Date.now()}.jpg`);
+                uploadPromises.push(
+                    fetch(scatterImage)
+                        .then(res => res.blob())
+                        .then(blob => scatterRef.put(blob))
+                        .then(snapshot => snapshot.ref.getDownloadURL())
+                        .then(url => claimData.scatterImage = url)
+                );
+            }
+            
+            if (winImage.startsWith('data:')) {
+                const winRef = storage.ref(`claims/${claimData.id}/win_${Date.now()}.jpg`);
+                uploadPromises.push(
+                    fetch(winImage)
+                        .then(res => res.blob())
+                        .then(blob => winRef.put(blob))
+                        .then(snapshot => snapshot.ref.getDownloadURL())
+                        .then(url => claimData.winImage = url)
+                );
+            }
+            
+            // Wait for all uploads to complete
+            Promise.all(uploadPromises)
+                .then(() => {
+                    // Save claim data to Firebase
+                    return database.ref('claims/' + claimData.id).set(claimData);
+                })
+                .then(() => {
+                    showNotification("Claim berhasil disimpan ke waiting list", "success");
+                    resetInputForm();
+                    hideLoading();
+                })
+                .catch(error => {
+                    showNotification("Gagal menyimpan claim: " + error.message, "error");
+                    hideLoading();
+                });
+        }
+
+        // Add new row to claims table (for existing data)
         function addNewRow(rowData = null) {
             if (!currentUser) return;
             
@@ -1531,160 +1760,97 @@
             }
             
             const rowId = rowData ? rowData.id : generateRowId();
-            const today = new Date().toISOString().split('T')[0];
             
             const newRow = document.createElement('tr');
             newRow.setAttribute('data-id', rowId);
             newRow.innerHTML = `
-                <td><input type="date" value="${rowData ? rowData.date || today : today}" onchange="updateRowData('${rowId}')"></td>
-                <td><input type="text" placeholder="USER123" value="${rowData ? rowData.userId || '' : ''}" oninput="validateUserClaims(); calculateTotals(); updateRowData('${rowId}')"></td>
-                <td><input type="text" value="${rowData ? rowData.accountName || '' : ''}" oninput="updateRowData('${rowId}')"></td>
-                <td><input type="text" value="${rowData ? rowData.accountNumber || '' : ''}" oninput="updateRowData('${rowId}')"></td>
-                <td><input type="text" value="${rowData ? rowData.ticketCode || '' : ''}" oninput="checkDuplicateTickets(); updateRowData('${rowId}')"></td>
-                <td><input type="text" class="currency-input" placeholder="Rp.0" value="${rowData ? rowData.betAmount || '' : ''}" onfocus="this.value=''" onblur="formatCurrency(this); updateRowData('${rowId}')" oninput="calculateClaimAmount(this); updateRowData('${rowId}')"></td>
-                <td><input type="text" class="currency-input" placeholder="Rp.0" value="${rowData ? rowData.claimAmount || '' : ''}" readonly></td>
+                <td>${formatDate(rowData.date)}</td>
+                <td>${rowData.userId}</td>
+                <td>${rowData.accountName || '-'}</td>
+                <td>${rowData.accountNumber || '-'}</td>
+                <td>${rowData.ticketCode}</td>
+                <td>${rowData.betAmount}</td>
+                <td>${rowData.claimAmount}</td>
                 <td>
-                    <select onchange="updateRowStatus(this); validateUserClaims(); calculateTotals(); updateRowData('${rowId}')">
-                        <option value="Waiting" ${rowData && rowData.status === 'Waiting' ? 'selected' : ''}>Waiting</option>
-                        <option value="Processing" ${rowData && rowData.status === 'Processing' ? 'selected' : ''}>Processing</option>
-                        <option value="Done" ${rowData && rowData.status === 'Done' ? 'selected' : ''}>Done</option>
-                        <option value="Rejected" ${rowData && rowData.status === 'Rejected' ? 'selected' : ''}>Rejected</option>
-                    </select>
+                    <span class="status-badge ${getStatusBadgeClass(rowData.status)}">${rowData.status}</span>
+                </td>
+                <td>${rowData.claimVia}</td>
+                <td>
+                    ${rowData.scatterImage ? 
+                        `<img src="${rowData.scatterImage}" class="image-preview" onclick="openModal(this.src)">` : 
+                        '-'}
                 </td>
                 <td>
-                    <select onchange="validateUserClaims(); calculateTotals(); updateRowData('${rowId}')">
-                        <option value="Livechat" ${rowData && rowData.claimVia === 'Livechat' ? 'selected' : ''}>Livechat</option>
-                        <option value="LINE" ${rowData && rowData.claimVia === 'LINE' ? 'selected' : ''}>LINE</option>
-                    </select>
+                    ${rowData.winImage ? 
+                        `<img src="${rowData.winImage}" class="image-preview" onclick="openModal(this.src)">` : 
+                        '-'}
                 </td>
-                <td>
-                    <label class="file-upload-label">
-                        <i class="fas fa-upload"></i> Upload
-                        <input type="file" class="file-upload" accept="image/*" onchange="previewImage(this, '${rowId}', 'scatter')">
-                    </label>
-                    <img src="${rowData && rowData.scatterImage ? rowData.scatterImage : ''}" class="image-preview" style="display: ${rowData && rowData.scatterImage ? 'block' : 'none'}; margin-top: 5px;" onclick="openModal(this.src)">
-                </td>
-                <td>
-                    <label class="file-upload-label">
-                        <i class="fas fa-upload"></i> Upload
-                        <input type="file" class="file-upload" accept="image/*" onchange="previewImage(this, '${rowId}', 'win')">
-                    </label>
-                    <img src="${rowData && rowData.winImage ? rowData.winImage : ''}" class="image-preview" style="display: ${rowData && rowData.winImage ? 'block' : 'none'}; margin-top: 5px;" onclick="openModal(this.src)">
-                </td>
-                <td><input type="number" value="${rowData ? rowData.totalLivechat || '0' : '0'}" readonly></td>
-                <td><input type="number" value="${rowData ? rowData.totalLine || '0' : '0'}" readonly></td>
                 <td>
                     <div class="action-cell">
-                        <button class="info" onclick="processClaim('${rowId}', 'Processing')" title="Proses Claim">
-                            <i class="fas fa-spinner"></i>
-                        </button>
-                        <button class="success" onclick="processClaim('${rowId}', 'Done')" title="Approve Claim">
-                            <i class="fas fa-check"></i>
-                        </button>
-                        <button class="danger" onclick="processClaim('${rowId}', 'Rejected')" title="Reject Claim">
-                            <i class="fas fa-times"></i>
-                        </button>
+                        ${rowData.status === 'Waiting' ? `
+                            <button class="info" onclick="processClaim('${rowId}', 'Processing')" title="Proses Claim">
+                                <i class="fas fa-spinner"></i>
+                            </button>
+                            <button class="success" onclick="processClaim('${rowId}', 'Done')" title="Approve Claim">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="danger" onclick="processClaim('${rowId}', 'Rejected')" title="Reject Claim">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        ` : ''}
+                        ${rowData.status === 'Processing' ? `
+                            <button class="success" onclick="processClaim('${rowId}', 'Done')" title="Approve Claim">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="danger" onclick="processClaim('${rowId}', 'Rejected')" title="Reject Claim">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        ` : ''}
                     </div>
                 </td>
             `;
             
             tbody.appendChild(newRow);
             currentRows[rowId] = newRow;
-            
-            if (!rowData) {
-                saveRowData(rowId);
-            } else if (rowData.status) {
-                updateRowStatus(newRow.querySelector('td:nth-child(8) select'));
-            }
-        }
-
-        // Save row data to Firebase
-        function saveRowData(rowId) {
-            if (!currentUser || !validateRowData(rowId)) return;
-            
-            const row = currentRows[rowId];
-            const rowData = {
-                id: rowId,
-                date: row.querySelector('td:nth-child(1) input').value,
-                userId: row.querySelector('td:nth-child(2) input').value,
-                accountName: row.querySelector('td:nth-child(3) input').value,
-                accountNumber: row.querySelector('td:nth-child(4) input').value,
-                ticketCode: row.querySelector('td:nth-child(5) input').value,
-                betAmount: row.querySelector('td:nth-child(6) input').value,
-                claimAmount: row.querySelector('td:nth-child(7) input').value,
-                status: row.querySelector('td:nth-child(8) select').value,
-                claimVia: row.querySelector('td:nth-child(9) select').value,
-                scatterImage: row.querySelector('td:nth-child(10) img').src,
-                winImage: row.querySelector('td:nth-child(11) img').src,
-                totalLivechat: row.querySelector('td:nth-child(12) input').value,
-                totalLine: row.querySelector('td:nth-child(13) input').value,
-                lastUpdated: firebase.database.ServerValue.TIMESTAMP,
-                updatedBy: currentUser.uid
-            };
-            
-            database.ref('claims/' + rowId).set(rowData)
-                .then(() => {
-                    if (rowData.status === 'Done' || rowData.status === 'Rejected') {
-                        addToHistory(rowData);
-                    }
-                })
-                .catch(error => showNotification("Gagal menyimpan: " + error.message, "error"));
-        }
-
-        // Validate row data before saving
-        function validateRowData(rowId) {
-            const row = currentRows[rowId];
-            if (!row) return false;
-            
-            const userId = row.querySelector('td:nth-child(2) input').value.trim();
-            const ticketCode = row.querySelector('td:nth-child(5) input').value.trim();
-            const betAmount = row.querySelector('td:nth-child(6) input').value;
-            
-            if (!userId || userId.length < 3) {
-                showNotification("User ID harus diisi (min 3 karakter)", "error");
-                return false;
-            }
-            
-            if (!ticketCode || ticketCode.length < 5) {
-                showNotification("Kode Tiket harus diisi (min 5 karakter)", "error");
-                return false;
-            }
-            
-            if (!betAmount || currencyToNumber(betAmount) <= 0) {
-                showNotification("Nominal Betting tidak valid", "error");
-                return false;
-            }
-            
-            return true;
         }
 
         // Process claim (change status)
         function processClaim(rowId, status) {
-            const row = currentRows[rowId];
-            if (!row) return;
-            
-            const statusSelect = row.querySelector('td:nth-child(8) select');
-            statusSelect.value = status;
-            updateRowStatus(statusSelect);
-            
-            // If status is Done or Rejected, add processed info
-            if (status === 'Done' || status === 'Rejected') {
-                const now = new Date().toISOString();
-                const processedData = {
-                    processedAt: now,
-                    processedBy: currentUser.email
-                };
-                
-                database.ref('claims/' + rowId).update(processedData)
-                    .then(() => {
-                        saveRowData(rowId);
-                        showNotification(`Claim ${status.toLowerCase()}`, "success");
-                    })
-                    .catch(error => showNotification("Gagal memproses: " + error.message, "error"));
-            } else {
-                saveRowData(rowId);
-                showNotification(`Claim sedang diproses`, "success");
+            if (!confirm(`Apakah Anda yakin ingin mengubah status claim ini menjadi ${status}?`)) {
+                return;
             }
+            
+            const now = new Date().toISOString();
+            const processedData = {
+                status: status,
+                processedAt: now,
+                processedBy: currentUser.email,
+                lastUpdated: firebase.database.ServerValue.TIMESTAMP,
+                updatedBy: currentUser.uid
+            };
+            
+            showLoading('Memproses claim...');
+            
+            database.ref('claims/' + rowId).update(processedData)
+                .then(() => {
+                    // If status is Done or Rejected, add to history
+                    if (status === 'Done' || status === 'Rejected') {
+                        database.ref('claims/' + rowId).once('value')
+                            .then(snapshot => {
+                                const claimData = snapshot.val();
+                                addToHistory(claimData);
+                                showNotification(`Claim berhasil di${status.toLowerCase()}`, "success");
+                                hideLoading();
+                            });
+                    } else {
+                        showNotification(`Claim berhasil diproses`, "success");
+                        hideLoading();
+                    }
+                })
+                .catch(error => {
+                    showNotification("Gagal memproses claim: " + error.message, "error");
+                    hideLoading();
+                });
         }
 
         // Add to history when claim is completed
@@ -1894,7 +2060,14 @@
                     updateWaitingBadge(data);
                 } else {
                     // No data exists
-                    addNewRow();
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="12" class="empty-state">
+                                <i class="fas fa-ticket-alt"></i>
+                                <p>Belum ada data claim</p>
+                            </td>
+                        </tr>
+                    `;
                     isInitialLoad = false;
                 }
             });
@@ -2022,48 +2195,62 @@
             const row = currentRows[rowId];
             if (!row || rowData.updatedBy === currentUser?.uid) return;
 
-            const fields = [
-                { selector: 'td:nth-child(1) input', key: 'date' },
-                { selector: 'td:nth-child(2) input', key: 'userId' },
-                { selector: 'td:nth-child(3) input', key: 'accountName' },
-                { selector: 'td:nth-child(4) input', key: 'accountNumber' },
-                { selector: 'td:nth-child(5) input', key: 'ticketCode' },
-                { selector: 'td:nth-child(6) input', key: 'betAmount' },
-                { selector: 'td:nth-child(7) input', key: 'claimAmount' },
-                { selector: 'td:nth-child(8) select', key: 'status' },
-                { selector: 'td:nth-child(9) select', key: 'claimVia' },
-                { selector: 'td:nth-child(10) img', key: 'scatterImage' },
-                { selector: 'td:nth-child(11) img', key: 'winImage' },
-                { selector: 'td:nth-child(12) input', key: 'totalLivechat' },
-                { selector: 'td:nth-child(13) input', key: 'totalLine' }
-            ];
-
-            fields.forEach(field => {
-                const element = row.querySelector(field.selector);
-                if (element) {
-                    if (field.key.includes('Image')) {
-                        if (rowData[field.key]) {
-                            element.src = rowData[field.key];
-                            element.style.display = 'block';
-                        } else {
-                            element.src = '';
-                            element.style.display = 'none';
-                        }
-                    } else if (element.tagName === 'SELECT') {
-                        if (element.value !== rowData[field.key]) {
-                            element.value = rowData[field.key] || '';
-                            if (field.key === 'status') {
-                                updateRowStatus(element);
-                            }
-                        }
-                    } else {
-                        if (element.value !== rowData[field.key]) {
-                            element.value = rowData[field.key] || '';
-                        }
-                    }
-                }
-            });
-
+            // Update all fields in the row
+            row.querySelector('td:nth-child(1)').textContent = formatDate(rowData.date);
+            row.querySelector('td:nth-child(2)').textContent = rowData.userId;
+            row.querySelector('td:nth-child(3)').textContent = rowData.accountName || '-';
+            row.querySelector('td:nth-child(4)').textContent = rowData.accountNumber || '-';
+            row.querySelector('td:nth-child(5)').textContent = rowData.ticketCode;
+            row.querySelector('td:nth-child(6)').textContent = rowData.betAmount;
+            row.querySelector('td:nth-child(7)').textContent = rowData.claimAmount;
+            
+            // Update status badge
+            const statusCell = row.querySelector('td:nth-child(8)');
+            statusCell.innerHTML = `<span class="status-badge ${getStatusBadgeClass(rowData.status)}">${rowData.status}</span>`;
+            
+            row.querySelector('td:nth-child(9)').textContent = rowData.claimVia;
+            
+            // Update scatter image
+            const scatterCell = row.querySelector('td:nth-child(10)');
+            scatterCell.innerHTML = rowData.scatterImage ? 
+                `<img src="${rowData.scatterImage}" class="image-preview" onclick="openModal(this.src)">` : 
+                '-';
+            
+            // Update win image
+            const winCell = row.querySelector('td:nth-child(11)');
+            winCell.innerHTML = rowData.winImage ? 
+                `<img src="${rowData.winImage}" class="image-preview" onclick="openModal(this.src)">` : 
+                '-';
+            
+            // Update action buttons based on status
+            const actionCell = row.querySelector('td:nth-child(12)');
+            let actionButtons = '';
+            
+            if (rowData.status === 'Waiting') {
+                actionButtons = `
+                    <button class="info" onclick="processClaim('${rowId}', 'Processing')" title="Proses Claim">
+                        <i class="fas fa-spinner"></i>
+                    </button>
+                    <button class="success" onclick="processClaim('${rowId}', 'Done')" title="Approve Claim">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button class="danger" onclick="processClaim('${rowId}', 'Rejected')" title="Reject Claim">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+            } else if (rowData.status === 'Processing') {
+                actionButtons = `
+                    <button class="success" onclick="processClaim('${rowId}', 'Done')" title="Approve Claim">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button class="danger" onclick="processClaim('${rowId}', 'Rejected')" title="Reject Claim">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+            }
+            
+            actionCell.innerHTML = `<div class="action-cell">${actionButtons}</div>`;
+            
             // Highlight row to indicate remote change
             row.classList.add('remote-change');
             setTimeout(() => row.classList.remove('remote-change'), 2000);
@@ -2079,9 +2266,9 @@
             rows.forEach(row => {
                 if (row.classList.contains('empty-state')) return;
                 
-                const userId = row.querySelector('td:nth-child(2) input').value.toLowerCase();
-                const ticketCode = row.querySelector('td:nth-child(5) input').value.toLowerCase();
-                const status = row.querySelector('td:nth-child(8) select').value;
+                const userId = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                const ticketCode = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
+                const status = row.querySelector('td:nth-child(8) span').textContent;
                 
                 const matchesSearch = userId.includes(searchTerm) || ticketCode.includes(searchTerm);
                 const matchesStatus = !statusFilter || status === statusFilter;
@@ -2121,15 +2308,7 @@
                 
                 cells.forEach((cell, index) => {
                     if (index !== cells.length - 1) { // Skip action column
-                        if (cell.querySelector('input')) {
-                            rowData.push(`"${cell.querySelector('input').value}"`);
-                        } else if (cell.querySelector('select')) {
-                            rowData.push(`"${cell.querySelector('select').value}"`);
-                        } else if (cell.querySelector('img') && cell.querySelector('img').src) {
-                            rowData.push('"Image Attached"');
-                        } else {
-                            rowData.push(`"${cell.textContent.trim()}"`);
-                        }
+                        rowData.push(`"${cell.textContent.trim()}"`);
                     }
                 });
                 
@@ -2224,172 +2403,6 @@
             return 'row-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
         }
 
-        function formatCurrency(input) {
-            let value = input.value.replace(/\D/g, '');
-            if (value === '') value = '0';
-            
-            let rupiah = '';
-            while (value.length > 3) {
-                rupiah = '.' + value.substr(value.length - 3) + rupiah;
-                value = value.substr(0, value.length - 3);
-            }
-            rupiah = 'Rp.' + value + rupiah;
-            
-            input.value = rupiah;
-        }
-
-        function currencyToNumber(currency) {
-            return parseInt(currency.replace(/\D/g, '')) || 0;
-        }
-
-        function calculateClaimAmount(input) {
-            formatCurrency(input);
-            const row = input.closest('tr');
-            const betAmount = currencyToNumber(input.value);
-            const claimVia = row.querySelector('td:nth-child(9) select').value;
-            const claimInput = row.querySelector('td:nth-child(7) input');
-            
-            let claimAmount = 0;
-            
-            if (claimVia === 'LINE') {
-                if (betAmount >= 400 && betAmount <= 800) {
-                    claimAmount = 8000;
-                } else if (betAmount >= 1200 && betAmount <= 1400) {
-                    claimAmount = 20000;
-                }
-            } else if (claimVia === 'Livechat') {
-                if (betAmount >= 1600 && betAmount <= 1800) {
-                    claimAmount = 8000;
-                } else if (betAmount >= 2000 && betAmount <= 8000) {
-                    claimAmount = 20000;
-                } else if (betAmount >= 10000 && betAmount <= 18000) {
-                    claimAmount = 80000;
-                } else if (betAmount >= 20000 && betAmount <= 100000) {
-                    claimAmount = 100000;
-                }
-            }
-            
-            claimInput.value = 'Rp.' + claimAmount.toLocaleString('id-ID');
-        }
-
-        function validateUserClaims() {
-            const rows = document.querySelectorAll('#claimsTable tbody tr');
-            const userClaimStats = {};
-            let warningMessage = '';
-            
-            rows.forEach(row => {
-                if (row.classList.contains('empty-state')) return;
-                
-                const userId = row.querySelector('td:nth-child(2) input').value.trim();
-                const claimVia = row.querySelector('td:nth-child(9) select').value;
-                const status = row.querySelector('td:nth-child(8) select').value;
-                
-                if (userId && status !== 'Done' && status !== 'Rejected') {
-                    if (!userClaimStats[userId]) {
-                        userClaimStats[userId] = { Livechat: 0, LINE: 0 };
-                    }
-                    userClaimStats[userId][claimVia]++;
-                }
-            });
-
-            rows.forEach(row => {
-                if (row.classList.contains('empty-state')) return;
-                
-                const userIdCell = row.querySelector('td:nth-child(2)');
-                const userIdInput = userIdCell.querySelector('input');
-                const userId = userIdInput.value.trim();
-                const claimVia = row.querySelector('td:nth-child(9) select').value;
-                const status = row.querySelector('td:nth-child(8) select').value;
-
-                userIdCell.classList.remove('exceed-limit');
-                userIdInput.classList.remove('exceed-limit');
-                
-                if (userId && userClaimStats[userId] && status !== 'Done' && status !== 'Rejected') {
-                    if (userClaimStats[userId][claimVia] > MAX_CLAIMS_PER_CHANNEL) {
-                        userIdCell.classList.add('exceed-limit');
-                        userIdInput.classList.add('exceed-limit');
-                        warningMessage = `PERINGATAN: User ${userId} melebihi batas claim (maksimal ${MAX_CLAIMS_PER_CHANNEL}x per channel)!`;
-                    }
-                }
-            });
-
-            if (warningMessage) {
-                showNotification(warningMessage, "warning");
-            }
-        }
-
-        function checkDuplicateTickets() {
-            const ticketCodes = {};
-            const rows = document.querySelectorAll('#claimsTable tbody tr');
-            
-            rows.forEach(row => {
-                if (row.classList.contains('empty-state')) return;
-                
-                const ticketInput = row.querySelector('td:nth-child(5) input');
-                const ticketCode = ticketInput.value.trim();
-                if (ticketCode) {
-                    if (!ticketCodes[ticketCode]) {
-                        ticketCodes[ticketCode] = [];
-                    }
-                    ticketCodes[ticketCode].push(row);
-                }
-            });
-
-            rows.forEach(row => {
-                if (row.classList.contains('empty-state')) return;
-                
-                const ticketCell = row.querySelector('td:nth-child(5)');
-                ticketCell.classList.remove('duplicate-ticket');
-                ticketCell.querySelector('input').classList.remove('duplicate-ticket');
-            });
-
-            for (const code in ticketCodes) {
-                if (ticketCodes[code].length > 1) {
-                    ticketCodes[code].forEach(row => {
-                        const ticketCell = row.querySelector('td:nth-child(5)');
-                        ticketCell.classList.add('duplicate-ticket');
-                        ticketCell.querySelector('input').classList.add('duplicate-ticket');
-                    });
-                    showNotification(`PERINGATAN: Kode tiket ${code} duplikat!`, "warning");
-                }
-            }
-        }
-
-        function previewImage(input, rowId, type) {
-            const file = input.files[0];
-            if (!file) return;
-            
-            // Validate file type
-            if (!file.type.match('image.*')) {
-                showNotification("Hanya file gambar yang diperbolehkan", "error");
-                return;
-            }
-            
-            // Validate file size (max 2MB)
-            if (file.size > 2 * 1024 * 1024) {
-                showNotification("Ukuran file maksimal 2MB", "error");
-                return;
-            }
-            
-            const imgPreview = input.parentElement.nextElementSibling;
-            const storageRef = storage.ref(`claims/${rowId}/${type}_${Date.now()}`);
-            
-            showLoading('Mengupload gambar...');
-            
-            storageRef.put(file).then((snapshot) => {
-                snapshot.ref.getDownloadURL().then((url) => {
-                    imgPreview.src = url;
-                    imgPreview.style.display = 'block';
-                    updateRowData(rowId);
-                    hideLoading();
-                    showNotification("Gambar berhasil diupload", "success");
-                });
-            }).catch(error => {
-                showNotification("Gagal upload gambar: " + error.message, "error");
-                hideLoading();
-            });
-        }
-
         function openModal(imageSrc) {
             if (!imageSrc) return;
             document.getElementById('modalImage').src = imageSrc;
@@ -2408,21 +2421,6 @@
             modal.style.display = 'flex';
         }
 
-        function updateRowStatus(select) {
-            const row = select.closest('tr');
-            row.classList.remove('status-waiting', 'status-processing', 'status-done', 'status-rejected', 'exceed-limit');
-            
-            if (select.value === 'Waiting') {
-                row.classList.add('status-waiting');
-            } else if (select.value === 'Processing') {
-                row.classList.add('status-processing');
-            } else if (select.value === 'Done') {
-                row.classList.add('status-done');
-            } else if (select.value === 'Rejected') {
-                row.classList.add('status-rejected');
-            }
-        }
-
         function getStatusBadgeClass(status) {
             switch(status) {
                 case 'Waiting': return 'badge-waiting';
@@ -2431,59 +2429,6 @@
                 case 'Rejected': return 'badge-rejected';
                 default: return '';
             }
-        }
-
-        function updateRowData(rowId) {
-            if (!currentUser) return;
-            saveRowData(rowId);
-        }
-
-        function calculateTotals() {
-            const rows = document.querySelectorAll('#claimsTable tbody tr');
-            const userTotals = {};
-            
-            // Reset all totals first
-            rows.forEach(row => {
-                if (row.classList.contains('empty-state')) return;
-                
-                row.querySelector('td:nth-child(12) input').value = '0';
-                row.querySelector('td:nth-child(13) input').value = '0';
-            });
-            
-            // Calculate totals per user
-            rows.forEach(row => {
-                if (row.classList.contains('empty-state')) return;
-                
-                const userId = row.querySelector('td:nth-child(2) input').value.trim();
-                const claimVia = row.querySelector('td:nth-child(9) select').value;
-                const claimAmount = currencyToNumber(row.querySelector('td:nth-child(7) input').value);
-                const status = row.querySelector('td:nth-child(8) select').value;
-                
-                if (userId && status === 'Done') {
-                    if (!userTotals[userId]) {
-                        userTotals[userId] = { Livechat: 0, LINE: 0 };
-                    }
-                    userTotals[userId][claimVia] += claimAmount;
-                }
-            });
-            
-            // Update totals in each row
-            rows.forEach(row => {
-                if (row.classList.contains('empty-state')) return;
-                
-                const userId = row.querySelector('td:nth-child(2) input').value.trim();
-                const claimVia = row.querySelector('td:nth-child(9) select').value;
-                
-                if (userId && userTotals[userId]) {
-                    if (claimVia === 'Livechat') {
-                        row.querySelector('td:nth-child(12) input').value = userTotals[userId].Livechat;
-                    } else if (claimVia === 'LINE') {
-                        row.querySelector('td:nth-child(13) input').value = userTotals[userId].LINE;
-                    }
-                }
-            });
-            
-            showNotification("Total claim dihitung", "success");
         }
 
         function initDarkMode() {
