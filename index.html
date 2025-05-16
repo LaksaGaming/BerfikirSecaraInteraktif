@@ -1555,34 +1555,34 @@
         }
 
         // Setup file upload preview
-        function setupFileUploadPreview(inputId, previewId) {
-            const input = document.getElementById(inputId);
-            const preview = document.getElementById(previewId);
-            
-            input.addEventListener('change', function() {
-                const file = this.files[0];
-                if (!file) return;
-                
-                // Validate file type
-                if (!file.type.match('image.*')) {
-                    showNotification("Hanya file gambar yang diperbolehkan", "error");
-                    return;
-                }
-                
-                // Validate file size (max 2MB)
-                if (file.size > 2 * 1024 * 1024) {
-                    showNotification("Ukuran file maksimal 2MB", "error");
-                    return;
-                }
-                
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            });
+function setupFileUploadPreview(inputId, previewId) {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    
+    input.addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+        
+        // Validate file type
+        if (!file.type.match('image.*')) {
+            showNotification("Hanya file gambar yang diperbolehkan", "error");
+            return;
         }
+        
+        // Validate file size (max 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            showNotification("Ukuran file maksimal 2MB", "error");
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    });
+}
 
         // Reset input form
         function resetInputForm() {
@@ -1660,94 +1660,98 @@
 
         // Submit claim form
         function submitClaim() {
-            // Validate form
-            const userId = document.getElementById('inputUserId').value.trim();
-            const ticketCode = document.getElementById('inputTicketCode').value.trim();
-            const betAmount = document.getElementById('inputBetAmount').value;
-            const scatterImage = document.getElementById('scatterPreview').src;
-            const winImage = document.getElementById('winPreview').src;
-            
-            if (!userId || userId.length < 3) {
-                showNotification("User ID harus diisi (min 3 karakter)", "error");
-                return;
-            }
-            
-            if (!ticketCode || ticketCode.length < 5) {
-                showNotification("Kode Tiket harus diisi (min 5 karakter)", "error");
-                return;
-            }
-            
-            if (!betAmount || currencyToNumber(betAmount) <= 0) {
-                showNotification("Nominal Betting tidak valid", "error");
-                return;
-            }
-            
-            if (!scatterImage || scatterImage === '') {
-                showNotification("Screenshot Scatter harus diupload", "error");
-                return;
-            }
-            
-            // Prepare claim data
-            const claimData = {
-                id: generateRowId(),
-                date: document.getElementById('inputDate').value,
-                userId: userId,
-                accountName: document.getElementById('inputAccountName').value.trim(),
-                accountNumber: document.getElementById('inputAccountNumber').value.trim(),
-                ticketCode: ticketCode,
-                betAmount: betAmount,
-                claimAmount: document.getElementById('inputClaimAmount').value,
-                status: 'Waiting',
-                claimVia: document.getElementById('inputClaimVia').value,
-                scatterImage: scatterImage,
-                winImage: winImage,
-                lastUpdated: firebase.database.ServerValue.TIMESTAMP,
-                updatedBy: currentUser.uid
-            };
-            
-            // Upload images to Firebase Storage if they are data URLs
-            showLoading('Menyimpan claim...');
-            
-            const uploadPromises = [];
-            
-            if (scatterImage.startsWith('data:')) {
-                const scatterRef = storage.ref(`claims/${claimData.id}/scatter_${Date.now()}.jpg`);
-                uploadPromises.push(
-                    fetch(scatterImage)
-                        .then(res => res.blob())
-                        .then(blob => scatterRef.put(blob))
-                        .then(snapshot => snapshot.ref.getDownloadURL())
-                        .then(url => claimData.scatterImage = url)
-                );
-            }
-            
-            if (winImage.startsWith('data:')) {
-                const winRef = storage.ref(`claims/${claimData.id}/win_${Date.now()}.jpg`);
-                uploadPromises.push(
-                    fetch(winImage)
-                        .then(res => res.blob())
-                        .then(blob => winRef.put(blob))
-                        .then(snapshot => snapshot.ref.getDownloadURL())
-                        .then(url => claimData.winImage = url)
-                );
-            }
-            
-            // Wait for all uploads to complete
-            Promise.all(uploadPromises)
-                .then(() => {
-                    // Save claim data to Firebase
-                    return database.ref('claims/' + claimData.id).set(claimData);
-                })
-                .then(() => {
-                    showNotification("Claim berhasil disimpan ke waiting list", "success");
-                    resetInputForm();
-                    hideLoading();
-                })
-                .catch(error => {
-                    showNotification("Gagal menyimpan claim: " + error.message, "error");
-                    hideLoading();
-                });
-        }
+    // Validate form
+    const userId = document.getElementById('inputUserId').value.trim();
+    const ticketCode = document.getElementById('inputTicketCode').value.trim();
+    const betAmount = document.getElementById('inputBetAmount').value;
+    const scatterImage = document.getElementById('scatterPreview').src;
+    const winImage = document.getElementById('winPreview').src;
+    
+    if (!userId || userId.length < 3) {
+        showNotification("User ID harus diisi (min 3 karakter)", "error");
+        return;
+    }
+    
+    if (!ticketCode || ticketCode.length < 5) {
+        showNotification("Kode Tiket harus diisi (min 5 karakter)", "error");
+        return;
+    }
+    
+    if (!betAmount || currencyToNumber(betAmount) <= 0) {
+        showNotification("Nominal Betting tidak valid", "error");
+        return;
+    }
+    
+    if (!scatterImage || scatterImage === '') {
+        showNotification("Screenshot Scatter harus diupload", "error");
+        return;
+    }
+    
+    // Generate ID baru untuk claim
+    const claimId = database.ref('claims').push().key;
+    
+    // Prepare claim data
+    const claimData = {
+        id: claimId,
+        date: document.getElementById('inputDate').value,
+        userId: userId,
+        accountName: document.getElementById('inputAccountName').value.trim(),
+        accountNumber: document.getElementById('inputAccountNumber').value.trim(),
+        ticketCode: ticketCode,
+        betAmount: betAmount,
+        claimAmount: document.getElementById('inputClaimAmount').value,
+        status: 'Waiting',
+        claimVia: document.getElementById('inputClaimVia').value,
+        scatterImage: scatterImage,
+        winImage: winImage || '',
+        createdAt: firebase.database.ServerValue.TIMESTAMP,
+        updatedBy: currentUser.uid
+    };
+    
+    showLoading('Menyimpan claim...');
+    
+    const uploadPromises = [];
+    
+    // Upload scatter image if it's a data URL
+    if (scatterImage.startsWith('data:')) {
+        const scatterRef = storage.ref(`claims/${claimId}/scatter_${Date.now()}.jpg`);
+        uploadPromises.push(
+            fetch(scatterImage)
+                .then(res => res.blob())
+                .then(blob => scatterRef.put(blob))
+                .then(snapshot => snapshot.ref.getDownloadURL())
+                .then(url => claimData.scatterImage = url)
+        );
+    }
+    
+    // Upload win image if it exists and is a data URL
+    if (winImage && winImage.startsWith('data:')) {
+        const winRef = storage.ref(`claims/${claimId}/win_${Date.now()}.jpg`);
+        uploadPromises.push(
+            fetch(winImage)
+                .then(res => res.blob())
+                .then(blob => winRef.put(blob))
+                .then(snapshot => snapshot.ref.getDownloadURL())
+                .then(url => claimData.winImage = url)
+        );
+    }
+    
+    // Wait for all uploads to complete then save claim data
+    Promise.all(uploadPromises)
+        .then(() => {
+            return database.ref('claims/' + claimId).set(claimData);
+        })
+        .then(() => {
+            showNotification("Claim berhasil disimpan ke waiting list", "success");
+            resetInputForm();
+        })
+        .catch(error => {
+            showNotification("Gagal menyimpan claim: " + error.message, "error");
+        })
+        .finally(() => {
+            hideLoading();
+        });
+}
 
         // Add new row to claims table (for existing data)
         function addNewRow(rowData = null) {
@@ -1816,67 +1820,80 @@
 
         // Process claim (change status)
         function processClaim(rowId, status) {
-            if (!confirm(`Apakah Anda yakin ingin mengubah status claim ini menjadi ${status}?`)) {
-                return;
+    if (!confirm(`Apakah Anda yakin ingin mengubah status claim ini menjadi ${status}?`)) {
+        return;
+    }
+    
+    showLoading('Memproses claim...');
+    
+    const updates = {
+        status: status,
+        processedAt: firebase.database.ServerValue.TIMESTAMP,
+        processedBy: currentUser.email,
+        lastUpdated: firebase.database.ServerValue.TIMESTAMP,
+        updatedBy: currentUser.uid
+    };
+    
+    // Update claim status
+    database.ref('claims/' + rowId).update(updates)
+        .then(() => {
+            if (status === 'Done' || status === 'Rejected') {
+                // Get claim data and add to history
+                database.ref('claims/' + rowId).once('value')
+                    .then(snapshot => {
+                        const claimData = snapshot.val();
+                        return addToHistory(claimData);
+                    })
+                    .then(() => {
+                        showNotification(`Claim berhasil di${status.toLowerCase()}`, "success");
+                        // Remove from claims if status is Done or Rejected
+                        if (status === 'Done' || status === 'Rejected') {
+                            return database.ref('claims/' + rowId).remove();
+                        }
+                    });
+            } else {
+                showNotification(`Claim berhasil diproses`, "success");
             }
-            
-            const now = new Date().toISOString();
-            const processedData = {
-                status: status,
-                processedAt: now,
-                processedBy: currentUser.email,
-                lastUpdated: firebase.database.ServerValue.TIMESTAMP,
-                updatedBy: currentUser.uid
-            };
-            
-            showLoading('Memproses claim...');
-            
-            database.ref('claims/' + rowId).update(processedData)
-                .then(() => {
-                    // If status is Done or Rejected, add to history
-                    if (status === 'Done' || status === 'Rejected') {
-                        database.ref('claims/' + rowId).once('value')
-                            .then(snapshot => {
-                                const claimData = snapshot.val();
-                                addToHistory(claimData);
-                                showNotification(`Claim berhasil di${status.toLowerCase()}`, "success");
-                                hideLoading();
-                            });
-                    } else {
-                        showNotification(`Claim berhasil diproses`, "success");
-                        hideLoading();
-                    }
-                })
-                .catch(error => {
-                    showNotification("Gagal memproses claim: " + error.message, "error");
-                    hideLoading();
-                });
-        }
+        })
+        .catch(error => {
+            showNotification("Gagal memproses claim: " + error.message, "error");
+        })
+        .finally(() => {
+            hideLoading();
+        });
+}
 
         // Add to history when claim is completed
         function addToHistory(claimData) {
-            const historyRef = database.ref('history').push();
-            const historyData = {
-                id: claimData.id,
-                date: claimData.date,
-                userId: claimData.userId,
-                ticketCode: claimData.ticketCode,
-                claimAmount: claimData.claimAmount,
-                status: claimData.status,
-                processedBy: currentUser.email,
-                processedAt: new Date().toISOString(),
-                claimVia: claimData.claimVia,
-                betAmount: claimData.betAmount
-            };
-            
-            historyRef.set(historyData)
-                .then(() => {
-                    if (currentSection === 'history') {
-                        loadHistoryData();
-                    }
-                })
-                .catch(error => console.error("Error adding to history:", error));
-        }
+    const historyRef = database.ref('history').push();
+    const historyData = {
+        id: claimData.id,
+        date: claimData.date,
+        userId: claimData.userId,
+        ticketCode: claimData.ticketCode,
+        claimAmount: claimData.claimAmount,
+        status: claimData.status,
+        processedBy: currentUser.email,
+        processedAt: new Date().toISOString(),
+        claimVia: claimData.claimVia,
+        betAmount: claimData.betAmount,
+        accountName: claimData.accountName,
+        accountNumber: claimData.accountNumber,
+        scatterImage: claimData.scatterImage,
+        winImage: claimData.winImage
+    };
+    
+    return historyRef.set(historyData)
+        .then(() => {
+            if (currentSection === 'history') {
+                loadHistoryData();
+            }
+        })
+        .catch(error => {
+            console.error("Error adding to history:", error);
+            throw error;
+        });
+}
 
         // Load history data
         function loadHistoryData() {
