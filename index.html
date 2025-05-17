@@ -12,18 +12,21 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css">
     <style>
         :root {
-            --primary-color: #4a6bff;
-            --secondary-color: #6c5ce7;
-            --success-color: #00b894;
-            --danger-color: #d63031;
-            --warning-color: #fdcb6e;
-            --info-color: #0984e3;
-            --dark-color: #2d3436;
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --success-color: #4cc9f0;
+            --danger-color: #f72585;
+            --warning-color: #f8961e;
+            --info-color: #4895ef;
+            --dark-color: #212529;
             --light-color: #f8f9fa;
             --sidebar-width: 280px;
             --header-height: 70px;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            --border-radius: 10px;
+            --border-radius: 12px;
+            --gradient-primary: linear-gradient(135deg, #4361ee, #3a0ca3);
+            --gradient-success: linear-gradient(135deg, #4cc9f0, #4895ef);
+            --gradient-danger: linear-gradient(135deg, #f72585, #b5179e);
         }
         
         * {
@@ -36,7 +39,7 @@
             font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5f7fa;
+            background-color: #f5f7ff;
             color: #333;
             transition: all 0.3s ease;
             line-height: 1.6;
@@ -86,6 +89,7 @@
             height: 100vh;
             z-index: 100;
             overflow-y: auto;
+            box-shadow: var(--shadow);
         }
         
         .main-content {
@@ -116,7 +120,7 @@
             text-align: center;
             padding: 20px 0;
             border-bottom: 1px solid #eee;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: var(--gradient-primary);
             color: white;
         }
         
@@ -154,11 +158,11 @@
         }
         
         .nav-item:hover {
-            background-color: rgba(74, 107, 255, 0.1);
+            background-color: rgba(67, 97, 238, 0.1);
         }
         
         .nav-item.active {
-            background-color: rgba(74, 107, 255, 0.1);
+            background-color: rgba(67, 97, 238, 0.1);
             border-left-color: var(--primary-color);
             color: var(--primary-color);
             font-weight: 500;
@@ -187,6 +191,8 @@
             flex-direction: column;
             transition: all 0.3s;
             border: 1px solid #e0e0e0;
+            position: relative;
+            overflow: hidden;
         }
         
         .dashboard-card:hover {
@@ -468,7 +474,7 @@
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.2);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
         }
         
         .form-group {
@@ -552,7 +558,7 @@
         }
         
         .notification.success {
-            background: var(--success-color);
+            background: var(--gradient-success);
             color: white;
         }
         
@@ -562,7 +568,7 @@
         }
         
         .notification.error {
-            background: var(--danger-color);
+            background: var(--gradient-danger);
             color: white;
         }
         
@@ -807,12 +813,12 @@
         }
         
         .badge-primary {
-            background-color: rgba(74, 107, 255, 0.1);
+            background-color: rgba(67, 97, 238, 0.1);
             color: var(--primary-color);
         }
         
         .badge-secondary {
-            background-color: rgba(108, 92, 231, 0.1);
+            background-color: rgba(58, 12, 163, 0.1);
             color: var(--secondary-color);
         }
         
@@ -872,12 +878,6 @@
             font-size: 12px;
         }
         
-        /* Card Position Relative */
-        .card-relative {
-            position: relative;
-            overflow: hidden;
-        }
-        
         /* New Input Form Styles */
         .input-form-container {
             background-color: white;
@@ -899,6 +899,16 @@
             justify-content: flex-end;
             gap: 10px;
             margin-top: 20px;
+        }
+        
+        /* Animation for remote changes */
+        .remote-change {
+            animation: highlightChange 2s;
+        }
+        
+        @keyframes highlightChange {
+            0% { background-color: rgba(76, 201, 240, 0.3); }
+            100% { background-color: transparent; }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -1658,8 +1668,70 @@
             claimAmountInput.value = 'Rp.' + claimAmount.toLocaleString('id-ID');
         }
 
+        // Fungsi untuk memvalidasi claim sebelum disimpan
+        async function validateClaim(userId, ticketCode) {
+            const today = new Date().toISOString().split('T')[0];
+            
+            try {
+                // Cek jumlah claim hari ini (dari history dan waiting list)
+                const [claimsSnapshot, historySnapshot] = await Promise.all([
+                    database.ref('claims').once('value'),
+                    database.ref('history').once('value')
+                ]);
+                
+                const claimsData = claimsSnapshot.val() || {};
+                const historyData = historySnapshot.val() || {};
+                
+                // Hitung total claim user hari ini
+                let claimCount = 0;
+                
+                // Cek di waiting list
+                Object.values(claimsData).forEach(claim => {
+                    if (claim.userId === userId && claim.date === today) {
+                        claimCount++;
+                    }
+                });
+                
+                // Cek di history
+                Object.values(historyData).forEach(history => {
+                    if (history.userId === userId && history.date === today) {
+                        claimCount++;
+                    }
+                });
+                
+                // Validasi maksimal 3 claim per hari
+                if (claimCount >= MAX_CLAIMS_PER_CHANNEL) {
+                    return {
+                        isValid: false,
+                        message: `User ${userId} sudah mencapai batas maksimal claim (${MAX_CLAIMS_PER_CHANNEL}x/hari)`
+                    };
+                }
+                
+                // Cek kode tiket unik (di history dan waiting list)
+                const isTicketExists = 
+                    Object.values(claimsData).some(claim => claim.ticketCode === ticketCode) ||
+                    Object.values(historyData).some(history => history.ticketCode === ticketCode);
+                
+                if (isTicketExists) {
+                    return {
+                        isValid: false,
+                        message: `Kode tiket ${ticketCode} sudah digunakan`
+                    };
+                }
+                
+                return { isValid: true };
+                
+            } catch (error) {
+                console.error("Error validating claim:", error);
+                return {
+                    isValid: false,
+                    message: "Terjadi kesalahan saat validasi data"
+                };
+            }
+        }
+
         // Submit claim form
-        function submitClaim() {
+        async function submitClaim() {
             // Validate form
             const userId = document.getElementById('inputUserId').value.trim();
             const ticketCode = document.getElementById('inputTicketCode').value.trim();
@@ -1686,71 +1758,80 @@
                 return;
             }
             
-            // Generate ID baru untuk claim
-            const claimId = database.ref('claims').push().key;
+            // Validasi claim
+            showLoading('Memvalidasi claim...');
             
-            // Prepare claim data dengan nilai default
-            const claimData = {
-                id: claimId,
-                date: document.getElementById('inputDate').value || new Date().toISOString().split('T')[0],
-                userId: userId,
-                accountName: document.getElementById('inputAccountName').value.trim() || '-',
-                accountNumber: document.getElementById('inputAccountNumber').value.trim() || '-',
-                ticketCode: ticketCode,
-                betAmount: betAmount,
-                claimAmount: document.getElementById('inputClaimAmount').value || 'Rp.0',
-                status: 'Waiting',
-                claimVia: document.getElementById('inputClaimVia').value || 'Livechat',
-                scatterImage: scatterImage,
-                winImage: document.getElementById('winPreview').src || '',
-                createdAt: firebase.database.ServerValue.TIMESTAMP,
-                updatedBy: currentUser.uid
-            };
-            
-            showLoading('Menyimpan claim...');
-            
-            const uploadPromises = [];
-            
-            // Upload scatter image if it's a data URL
-            if (scatterImage.startsWith('data:')) {
-                const scatterRef = storage.ref(`claims/${claimId}/scatter_${Date.now()}.jpg`);
-                uploadPromises.push(
-                    fetch(scatterImage)
-                        .then(res => res.blob())
-                        .then(blob => scatterRef.put(blob))
-                        .then(snapshot => snapshot.ref.getDownloadURL())
-                        .then(url => claimData.scatterImage = url)
-                );
-            }
-            
-            // Upload win image if it exists and is a data URL
-            const winImage = document.getElementById('winPreview').src;
-            if (winImage && winImage.startsWith('data:')) {
-                const winRef = storage.ref(`claims/${claimId}/win_${Date.now()}.jpg`);
-                uploadPromises.push(
-                    fetch(winImage)
-                        .then(res => res.blob())
-                        .then(blob => winRef.put(blob))
-                        .then(snapshot => snapshot.ref.getDownloadURL())
-                        .then(url => claimData.winImage = url)
-                );
-            }
-            
-            // Wait for all uploads to complete then save claim data
-            Promise.all(uploadPromises)
-                .then(() => {
-                    return database.ref('claims/' + claimId).set(claimData);
-                })
-                .then(() => {
-                    showNotification("Claim berhasil disimpan ke waiting list", "success");
-                    resetInputForm();
-                })
-                .catch(error => {
-                    showNotification("Gagal menyimpan claim: " + error.message, "error");
-                })
-                .finally(() => {
+            try {
+                const validation = await validateClaim(userId, ticketCode);
+                
+                if (!validation.isValid) {
+                    showNotification(validation.message, "error");
                     hideLoading();
-                });
+                    return;
+                }
+                
+                // Generate ID baru untuk claim
+                const claimId = database.ref('claims').push().key;
+                
+                // Prepare claim data dengan nilai default
+                const claimData = {
+                    id: claimId,
+                    date: document.getElementById('inputDate').value || new Date().toISOString().split('T')[0],
+                    userId: userId,
+                    accountName: document.getElementById('inputAccountName').value.trim() || '-',
+                    accountNumber: document.getElementById('inputAccountNumber').value.trim() || '-',
+                    ticketCode: ticketCode,
+                    betAmount: betAmount,
+                    claimAmount: document.getElementById('inputClaimAmount').value || 'Rp.0',
+                    status: 'Waiting',
+                    claimVia: document.getElementById('inputClaimVia').value || 'Livechat',
+                    scatterImage: scatterImage,
+                    winImage: document.getElementById('winPreview').src || '',
+                    createdAt: firebase.database.ServerValue.TIMESTAMP,
+                    updatedBy: currentUser.uid
+                };
+                
+                showLoading('Menyimpan claim...');
+                
+                const uploadPromises = [];
+                
+                // Upload scatter image if it's a data URL
+                if (scatterImage.startsWith('data:')) {
+                    const scatterRef = storage.ref(`claims/${claimId}/scatter_${Date.now()}.jpg`);
+                    uploadPromises.push(
+                        fetch(scatterImage)
+                            .then(res => res.blob())
+                            .then(blob => scatterRef.put(blob))
+                            .then(snapshot => snapshot.ref.getDownloadURL())
+                            .then(url => claimData.scatterImage = url)
+                    );
+                }
+                
+                // Upload win image if it exists and is a data URL
+                const winImage = document.getElementById('winPreview').src;
+                if (winImage && winImage.startsWith('data:')) {
+                    const winRef = storage.ref(`claims/${claimId}/win_${Date.now()}.jpg`);
+                    uploadPromises.push(
+                        fetch(winImage)
+                            .then(res => res.blob())
+                            .then(blob => winRef.put(blob))
+                            .then(snapshot => snapshot.ref.getDownloadURL())
+                            .then(url => claimData.winImage = url)
+                    );
+                }
+                
+                // Wait for all uploads to complete then save claim data
+                await Promise.all(uploadPromises);
+                await database.ref('claims/' + claimId).set(claimData);
+                
+                showNotification("Claim berhasil disimpan ke waiting list", "success");
+                resetInputForm();
+                
+            } catch (error) {
+                showNotification("Gagal menyimpan claim: " + error.message, "error");
+            } finally {
+                hideLoading();
+            }
         }
 
         // Add new row to claims table (for existing data)
@@ -1765,9 +1846,44 @@
             
             const rowId = rowData.id;
             
+            // Cek apakah user sudah melebihi batas claim hari ini
+            const today = new Date().toISOString().split('T')[0];
+            let userClaimCount = 0;
+            
+            Object.values(currentRows).forEach(row => {
+                if (row.dataset.userId === rowData.userId && row.dataset.date === today) {
+                    userClaimCount++;
+                }
+            });
+            
+            // Cek apakah kode tiket sudah ada
+            let isDuplicateTicket = false;
+            Object.values(currentRows).forEach(row => {
+                if (row.dataset.ticketCode === rowData.ticketCode && row.dataset.id !== rowId) {
+                    isDuplicateTicket = true;
+                }
+            });
+            
+            // Tambahkan class khusus jika melanggar aturan
+            let rowClasses = [];
+            if (userClaimCount >= MAX_CLAIMS_PER_CHANNEL) {
+                rowClasses.push('exceed-limit');
+            }
+            if (isDuplicateTicket) {
+                rowClasses.push('duplicate-ticket');
+            }
+            
             // Pastikan semua field memiliki nilai default jika kosong
             const newRow = document.createElement('tr');
             newRow.setAttribute('data-id', rowId);
+            newRow.setAttribute('data-user-id', rowData.userId);
+            newRow.setAttribute('data-date', rowData.date || today);
+            newRow.setAttribute('data-ticket-code', rowData.ticketCode || '');
+            
+            if (rowClasses.length > 0) {
+                newRow.className = rowClasses.join(' ');
+            }
+            
             newRow.innerHTML = `
                 <td>${formatDate(rowData.date || '')}</td>
                 <td>${rowData.userId || '-'}</td>
@@ -1819,6 +1935,13 @@
             
             tbody.appendChild(newRow);
             currentRows[rowId] = newRow;
+            
+            // Tambahkan tooltip untuk row yang melanggar
+            if (rowClasses.includes('exceed-limit')) {
+                newRow.title = `User sudah mencapai batas maksimal claim (${MAX_CLAIMS_PER_CHANNEL}x/hari)`;
+            } else if (rowClasses.includes('duplicate-ticket')) {
+                newRow.title = 'Kode tiket sudah digunakan';
+            }
         }
 
         // Process claim (change status)
