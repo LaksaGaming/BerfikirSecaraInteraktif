@@ -1971,7 +1971,7 @@
                                 return addToHistory(claimData);
                             })
                             .then(() => {
-                                showNotification(`Claim berhasil di${status.toLowerCase()}`, "success");
+                                showNotification(`Claim berhasil ${status.toLowerCase()}`, "success");
                                 // Remove from claims if status is Done or Rejected
                                 if (status === 'Done' || status === 'Rejected') {
                                     return database.ref('claims/' + rowId).remove();
