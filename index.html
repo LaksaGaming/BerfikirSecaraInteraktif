@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SCATTER ANGKABET167 - Admin Dashboard</title>
-    <link rel="icon" type="https://cdnstatic.augipt.com/images/bk/smb/angkabet167/html/favicon.png">
+    <link rel="icon" type="image/png" href="https://cdnstatic.augipt.com/images/bk/smb/angkabet167/html/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -283,6 +283,16 @@
         .badge-rejected {
             background-color: #F8D7DA;
             color: #721C24;
+        }
+        
+        /* Channel Styles */
+        .channel-livechat {
+            color: #4361ee;
+            font-weight: 600;
+        }
+        .channel-line {
+            color: #06d755;
+            font-weight: 600;
         }
         
         /* Login Form */
@@ -1346,7 +1356,7 @@
         let currentUser = null;
         let currentRows = {};
         let isInitialLoad = true;
-        let MAX_CLAIMS_PER_CHANNEL = 3;
+        const MAX_CLAIMS_PER_CHANNEL = 3; // Maksimal 3 claim per channel per user per hari
         let currentSection = 'dashboard';
 
         // Initialize default admin
@@ -1627,12 +1637,11 @@
             }
         }
 
-        // Fungsi untuk memvalidasi claim sebelum disimpan
-        async function validateClaim(userId, ticketCode) {
+        // Fungsi validasi claim per channel
+        async function validateClaim(userId, ticketCode, claimVia) {
             const today = new Date().toISOString().split('T')[0];
             
             try {
-                // Cek jumlah claim hari ini (dari history dan waiting list)
                 const [claimsSnapshot, historySnapshot] = await Promise.all([
                     database.ref('claims').once('value'),
                     database.ref('history').once('value')
@@ -1641,32 +1650,35 @@
                 const claimsData = claimsSnapshot.val() || {};
                 const historyData = historySnapshot.val() || {};
                 
-                // Hitung total claim user hari ini
+                // Hitung claim per channel
                 let claimCount = 0;
                 
                 // Cek di waiting list
                 Object.values(claimsData).forEach(claim => {
-                    if (claim.userId === userId && claim.date === today) {
+                    if (claim.userId === userId && 
+                        claim.date === today && 
+                        claim.claimVia === claimVia) {
                         claimCount++;
                     }
                 });
                 
                 // Cek di history
                 Object.values(historyData).forEach(history => {
-                    if (history.userId === userId && history.date === today) {
+                    if (history.userId === userId && 
+                        history.date === today && 
+                        history.claimVia === claimVia) {
                         claimCount++;
                     }
                 });
                 
-                // Validasi maksimal 3 claim per hari
                 if (claimCount >= MAX_CLAIMS_PER_CHANNEL) {
                     return {
                         isValid: false,
-                        message: `User ${userId} sudah mencapai batas maksimal claim (${MAX_CLAIMS_PER_CHANNEL}x/hari)`
+                        message: `User ${userId} sudah mencapai batas maksimal claim (${MAX_CLAIMS_PER_CHANNEL}x/hari) via ${claimVia}`
                     };
                 }
                 
-                // Cek kode tiket unik (di history dan waiting list)
+                // Cek duplikat kode tiket
                 const isTicketExists = 
                     Object.values(claimsData).some(claim => claim.ticketCode === ticketCode) ||
                     Object.values(historyData).some(history => history.ticketCode === ticketCode);
@@ -1689,14 +1701,15 @@
             }
         }
 
-        // Submit claim form
+        // Fungsi submit claim dengan validasi per channel
         async function submitClaim() {
-            // Validate form
             const userId = document.getElementById('inputUserId').value.trim();
             const ticketCode = document.getElementById('inputTicketCode').value.trim();
             const betAmount = document.getElementById('inputBetAmount').value;
             const scatterImage = document.getElementById('inputScatterImage').value.trim();
+            const claimVia = document.getElementById('inputClaimVia').value;
             
+            // Validasi input
             if (!userId || userId.length < 3) {
                 showNotification("User ID harus diisi (min 3 karakter)", "error");
                 return;
@@ -1722,11 +1735,11 @@
                 return;
             }
             
-            // Validasi claim
             showLoading('Memvalidasi claim...');
             
             try {
-                const validation = await validateClaim(userId, ticketCode);
+                // Validasi per channel
+                const validation = await validateClaim(userId, ticketCode, claimVia);
                 
                 if (!validation.isValid) {
                     showNotification(validation.message, "error");
@@ -1734,10 +1747,8 @@
                     return;
                 }
                 
-                // Generate ID baru untuk claim
+                // Simpan data claim
                 const claimId = database.ref('claims').push().key;
-                
-                // Prepare claim data dengan nilai default
                 const claimData = {
                     id: claimId,
                     date: document.getElementById('inputDate').value || new Date().toISOString().split('T')[0],
@@ -1748,7 +1759,7 @@
                     betAmount: betAmount,
                     claimAmount: document.getElementById('inputClaimAmount').value || 'Rp.0',
                     status: 'Waiting',
-                    claimVia: document.getElementById('inputClaimVia').value || 'Livechat',
+                    claimVia: claimVia,
                     scatterImage: scatterImage,
                     winImage: document.getElementById('inputWinImage').value.trim() || '',
                     createdAt: firebase.database.ServerValue.TIMESTAMP,
@@ -1756,10 +1767,9 @@
                 };
                 
                 showLoading('Menyimpan claim...');
-                
                 await database.ref('claims/' + claimId).set(claimData);
                 
-                showNotification("Claim berhasil disimpan ke waiting list", "success");
+                showNotification(`Claim via ${claimVia} berhasil disimpan! (${claimData.claimAmount})`, "success");
                 resetInputForm();
                 
             } catch (error) {
@@ -1780,18 +1790,19 @@
             }
             
             const rowId = rowData.id;
-            
-            // Cek apakah user sudah melebihi batas claim hari ini
             const today = new Date().toISOString().split('T')[0];
-            let userClaimCount = 0;
             
+            // Hitung claim per channel untuk user ini
+            let userClaimCount = 0;
             Object.values(currentRows).forEach(row => {
-                if (row.dataset.userId === rowData.userId && row.dataset.date === today) {
+                if (row.dataset.userId === rowData.userId && 
+                    row.dataset.date === today && 
+                    row.dataset.channel === rowData.claimVia) {
                     userClaimCount++;
                 }
             });
             
-            // Cek apakah kode tiket sudah ada
+            // Cek duplikat tiket
             let isDuplicateTicket = false;
             Object.values(currentRows).forEach(row => {
                 if (row.dataset.ticketCode === rowData.ticketCode && row.dataset.id !== rowId) {
@@ -1799,7 +1810,7 @@
                 }
             });
             
-            // Tambahkan class khusus jika melanggar aturan
+            // Class untuk row
             let rowClasses = [];
             if (userClaimCount >= MAX_CLAIMS_PER_CHANNEL) {
                 rowClasses.push('exceed-limit');
@@ -1808,16 +1819,20 @@
                 rowClasses.push('duplicate-ticket');
             }
             
-            // Pastikan semua field memiliki nilai default jika kosong
+            // Buat row baru
             const newRow = document.createElement('tr');
             newRow.setAttribute('data-id', rowId);
             newRow.setAttribute('data-user-id', rowData.userId);
             newRow.setAttribute('data-date', rowData.date || today);
             newRow.setAttribute('data-ticket-code', rowData.ticketCode || '');
+            newRow.setAttribute('data-channel', rowData.claimVia || 'Livechat');
             
             if (rowClasses.length > 0) {
                 newRow.className = rowClasses.join(' ');
             }
+            
+            // Tampilkan channel dengan warna berbeda
+            const channelClass = rowData.claimVia === 'Livechat' ? 'channel-livechat' : 'channel-line';
             
             newRow.innerHTML = `
                 <td>${formatDate(rowData.date || '')}</td>
@@ -1832,7 +1847,9 @@
                         ${rowData.status || 'Waiting'}
                     </span>
                 </td>
-                <td>${rowData.claimVia || 'Livechat'}</td>
+                <td class="${channelClass}">
+                    ${rowData.claimVia || 'Livechat'}
+                </td>
                 <td>
                     ${rowData.scatterImage ? 
                         `<img src="${rowData.scatterImage}" class="image-preview" onclick="openModal(this.src)">` : 
@@ -1871,9 +1888,9 @@
             tbody.appendChild(newRow);
             currentRows[rowId] = newRow;
             
-            // Tambahkan tooltip untuk row yang melanggar
+            // Tooltip untuk row bermasalah
             if (rowClasses.includes('exceed-limit')) {
-                newRow.title = `User sudah mencapai batas maksimal claim (${MAX_CLAIMS_PER_CHANNEL}x/hari)`;
+                newRow.title = `User sudah mencapai batas maksimal claim (${MAX_CLAIMS_PER_CHANNEL}x/hari) via ${rowData.claimVia}`;
             } else if (rowClasses.includes('duplicate-ticket')) {
                 newRow.title = 'Kode tiket sudah digunakan';
             }
@@ -2295,7 +2312,11 @@
             const statusCell = row.querySelector('td:nth-child(8)');
             statusCell.innerHTML = `<span class="status-badge ${getStatusBadgeClass(rowData.status)}">${rowData.status}</span>`;
             
-            row.querySelector('td:nth-child(9)').textContent = rowData.claimVia;
+            // Update channel with color
+            const channelCell = row.querySelector('td:nth-child(9)');
+            const channelClass = rowData.claimVia === 'Livechat' ? 'channel-livechat' : 'channel-line';
+            channelCell.className = channelClass;
+            channelCell.textContent = rowData.claimVia;
             
             // Update scatter image
             const scatterCell = row.querySelector('td:nth-child(10)');
