@@ -1019,7 +1019,7 @@
                             <div class="card-title">Claim Selesai</div>
                             <div class="card-value" id="completedClaims">0</div>
                             <div class="card-footer">
-                                <span>Total bulan ini</span>
+                                <span>Total hari ini</span>
                                 <i class="fas fa-check-circle card-icon"></i>
                             </div>
                         </div>
@@ -1036,12 +1036,13 @@
                                     <th>User ID</th>
                                     <th>Nominal</th>
                                     <th>Status</th>
+                                    <th>Channel</th>
                                     <th>Admin</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="5" class="empty-state">
+                                    <td colspan="6" class="empty-state">
                                         <i class="fas fa-history"></i>
                                         <p>Belum ada aktivitas terakhir</p>
                                     </td>
@@ -1063,7 +1064,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="inputDate">Tanggal</label>
-                                <input type="date" id="inputDate">
+                                <input type="date" id="inputDate" disabled>
                             </div>
                             <div class="form-group">
                                 <label for="inputUserId">User ID</label>
@@ -1107,7 +1108,6 @@
                             </div>
                         </div>
                         
-                        <!-- Bagian yang diubah - dari upload file ke input link -->
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="inputScatterImage">Link Screenshot Scatter</label>
@@ -1249,6 +1249,7 @@
                                     <th>Kode Tiket</th>
                                     <th>Nominal Claim</th>
                                     <th>Status</th>
+                                    <th>Channel</th>
                                     <th>Diproses Oleh</th>
                                     <th>Waktu Proses</th>
                                     <th>Detail</th>
@@ -1256,7 +1257,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="8" class="empty-state">
+                                    <td colspan="9" class="empty-state">
                                         <i class="fas fa-history"></i>
                                         <p>Belum ada riwayat claim</p>
                                     </td>
@@ -1356,7 +1357,7 @@
         let currentUser = null;
         let currentRows = {};
         let isInitialLoad = true;
-        const MAX_CLAIMS_PER_CHANNEL = 3; // Maksimal 3 claim per channel per user per hari
+        let MAX_CLAIMS_PER_CHANNEL = 3; // Maksimal 3 claim per channel per user per hari
         let currentSection = 'dashboard';
 
         // Initialize default admin
@@ -1470,9 +1471,9 @@
             // Load logo if exists
             loadLogo();
             
-            // Set default date
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('inputDate').value = today;
+            // Set default date to today and disable editing
+            document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('inputDate').disabled = true;
             
             // Setup image link preview
             setupImageLinkPreview('inputScatterImage', 'scatterPreview');
@@ -1569,8 +1570,8 @@
             document.getElementById('winPreview').src = '';
             document.getElementById('winPreview').style.display = 'none';
             
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('inputDate').value = today;
+            // Reset date to today
+            document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
         }
 
         // Format currency input
@@ -1751,7 +1752,7 @@
                 const claimId = database.ref('claims').push().key;
                 const claimData = {
                     id: claimId,
-                    date: document.getElementById('inputDate').value || new Date().toISOString().split('T')[0],
+                    date: new Date().toISOString().split('T')[0], // Always use today's date
                     userId: userId,
                     accountName: document.getElementById('inputAccountName').value.trim() || '-',
                     accountNumber: document.getElementById('inputAccountNumber').value.trim() || '-',
@@ -1990,12 +1991,15 @@
                         
                         historyArray.forEach(item => {
                             const row = document.createElement('tr');
+                            const channelClass = item.claimVia === 'Livechat' ? 'channel-livechat' : 'channel-line';
+                            
                             row.innerHTML = `
                                 <td>${formatDate(item.date)}</td>
                                 <td>${item.userId}</td>
                                 <td>${item.ticketCode}</td>
                                 <td>${item.claimAmount}</td>
                                 <td><span class="status-badge ${getStatusBadgeClass(item.status)}">${item.status}</span></td>
+                                <td class="${channelClass}">${item.claimVia || 'Livechat'}</td>
                                 <td>${item.processedBy}</td>
                                 <td>${formatDateTime(item.processedAt)}</td>
                                 <td>
@@ -2006,10 +2010,14 @@
                             `;
                             tbody.appendChild(row);
                         });
+                        
+                        // Set default date filter to today
+                        document.getElementById('historyDateFilter').value = new Date().toISOString().split('T')[0];
+                        filterHistoryData();
                     } else {
                         tbody.innerHTML = `
                             <tr>
-                                <td colspan="8" class="empty-state">
+                                <td colspan="9" class="empty-state">
                                     <i class="fas fa-history"></i>
                                     <p>Belum ada riwayat claim</p>
                                 </td>
@@ -2036,10 +2044,11 @@
                 const ticketCode = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
                 const status = row.querySelector('td:nth-child(5) span').textContent;
                 const date = row.querySelector('td:nth-child(1)').textContent;
+                const formattedFilterDate = dateFilter ? formatDate(dateFilter) : '';
                 
                 const matchesSearch = userId.includes(searchTerm) || ticketCode.includes(searchTerm);
                 const matchesStatus = !statusFilter || status === statusFilter;
-                const matchesDate = !dateFilter || date === formatDate(dateFilter);
+                const matchesDate = !dateFilter || date === formattedFilterDate;
                 
                 row.style.display = matchesSearch && matchesStatus && matchesDate ? '' : 'none';
             });
@@ -2049,7 +2058,7 @@
         function resetHistoryFilter() {
             document.getElementById('historySearchInput').value = '';
             document.getElementById('historyStatusFilter').value = '';
-            document.getElementById('historyDateFilter').value = '';
+            document.getElementById('historyDateFilter').value = new Date().toISOString().split('T')[0];
             filterHistoryData();
         }
 
@@ -2189,11 +2198,14 @@
                     
                     historyArray.slice(0, 5).forEach(item => {
                         const row = document.createElement('tr');
+                        const channelClass = item.claimVia === 'Livechat' ? 'channel-livechat' : 'channel-line';
+                        
                         row.innerHTML = `
                             <td>${formatDateTime(item.processedAt)}</td>
                             <td>${item.userId}</td>
                             <td>${item.claimAmount}</td>
                             <td><span class="status-badge ${getStatusBadgeClass(item.status)}">${item.status}</span></td>
+                            <td class="${channelClass}">${item.claimVia || 'Livechat'}</td>
                             <td>${item.processedBy}</td>
                         `;
                         tbody.appendChild(row);
@@ -2201,7 +2213,7 @@
                 } else {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="5" class="empty-state">
+                            <td colspan="6" class="empty-state">
                                 <i class="fas fa-history"></i>
                                 <p>Belum ada aktivitas terakhir</p>
                             </td>
@@ -2261,16 +2273,17 @@
                 
                 if (claimDate === today) {
                     todayCount++;
+                    
+                    // Count status for today only
+                    if (claim.status === 'Waiting') {
+                        waitingCount++;
+                    } else if (claim.status === 'Processing') {
+                        processingCount++;
+                    } else if (claim.status === 'Done') {
+                        completedCount++;
+                    }
                 } else if (claimDate === yesterdayStr) {
                     yesterdayCount++;
-                }
-                
-                if (claim.status === 'Waiting') {
-                    waitingCount++;
-                } else if (claim.status === 'Processing') {
-                    processingCount++;
-                } else if (claim.status === 'Done') {
-                    completedCount++;
                 }
             });
             
