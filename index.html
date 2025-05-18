@@ -364,6 +364,22 @@
             font-weight: 600;
         }
         
+        /* Scatter Count Styles */
+        .scatter-count-3 {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        
+        .scatter-count-4 {
+            color: #10b981;
+            font-weight: 600;
+        }
+        
+        .scatter-count-5 {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+        
         /* Login Form */
         #loginForm {
             max-width: 400px;
@@ -1394,9 +1410,20 @@
                         
                         <div class="form-row">
                             <div class="form-group">
+                                <label for="inputScatterCount">Jumlah Scatter</label>
+                                <select id="inputScatterCount" onchange="calculateClaimAmount()">
+                                    <option value="3">3 Scatter</option>
+                                    <option value="4">4 Scatter</option>
+                                    <option value="5">5 Scatter</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="inputClaimAmount">Nominal Claim</label>
                                 <input type="text" id="inputClaimAmount" placeholder="Rp.0" readonly>
                             </div>
+                        </div>
+                        
+                        <div class="form-row">
                             <div class="form-group">
                                 <label for="inputClaimVia">Claim Via</label>
                                 <select id="inputClaimVia" onchange="calculateClaimAmount()">
@@ -1404,14 +1431,14 @@
                                     <option value="LINE">LINE</option>
                                 </select>
                             </div>
-                        </div>
-                        
-                        <div class="form-row">
                             <div class="form-group">
                                 <label for="inputScatterImage">Link Screenshot Scatter</label>
                                 <input type="text" id="inputScatterImage" placeholder="Tempel link screenshot scatter">
                                 <img id="scatterPreview" src="" class="image-preview" style="display: none; margin-top: 5px;" onclick="openModal(this.src)">
                             </div>
+                        </div>
+                        
+                        <div class="form-row">
                             <div class="form-group">
                                 <label for="inputWinImage">Link Screenshot Kemenangan</label>
                                 <input type="text" id="inputWinImage" placeholder="Tempel link screenshot kemenangan">
@@ -1473,6 +1500,7 @@
                                     <th>Nomor Rekening</th>
                                     <th>Kode Tiket</th>
                                     <th>Nominal Betting</th>
+                                    <th>Jumlah Scatter</th>
                                     <th>Nominal Claim</th>
                                     <th>Status</th>
                                     <th>Claim Via</th>
@@ -1483,7 +1511,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="12" class="empty-state">
+                                    <td colspan="13" class="empty-state">
                                         <i class="fas fa-ticket-alt"></i>
                                         <p>Belum ada data claim</p>
                                     </td>
@@ -1541,6 +1569,7 @@
                                     <th>Tanggal</th>
                                     <th>User ID</th>
                                     <th>Kode Tiket</th>
+                                    <th>Jumlah Scatter</th>
                                     <th>Nominal Claim</th>
                                     <th>Status</th>
                                     <th>Channel</th>
@@ -1551,7 +1580,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="9" class="empty-state">
+                                    <td colspan="10" class="empty-state">
                                         <i class="fas fa-history"></i>
                                         <p>Belum ada riwayat claim</p>
                                     </td>
@@ -1910,6 +1939,7 @@
             document.getElementById('inputAccountNumber').value = '';
             document.getElementById('inputTicketCode').value = '';
             document.getElementById('inputBetAmount').value = '';
+            document.getElementById('inputScatterCount').value = '3';
             document.getElementById('inputClaimAmount').value = '';
             document.getElementById('inputClaimVia').value = 'Livechat';
             document.getElementById('inputScatterImage').value = '';
@@ -1948,29 +1978,69 @@
             return parseInt(currency.replace(/\D/g, '')) || 0;
         }
 
-        // Calculate claim amount based on bet amount and claim via
+        // Calculate claim amount based on bet amount, scatter count and claim via
         function calculateClaimAmount() {
             const betAmount = currencyToNumber(document.getElementById('inputBetAmount').value);
+            const scatterCount = parseInt(document.getElementById('inputScatterCount').value);
             const claimVia = document.getElementById('inputClaimVia').value;
             const claimAmountInput = document.getElementById('inputClaimAmount');
             
             let claimAmount = 0;
             
-            if (claimVia === 'LINE') {
-                if (betAmount >= 400 && betAmount <= 800) {
-                    claimAmount = 8000;
-                } else if (betAmount >= 1200 && betAmount <= 1400) {
-                    claimAmount = 20000;
+            // Calculate based on scatter count and bet amount
+            if (scatterCount === 3) {
+                if (claimVia === 'LINE') {
+                    if (betAmount >= 400 && betAmount <= 800) {
+                        claimAmount = 8000;
+                    } else if (betAmount >= 1200 && betAmount <= 1400) {
+                        claimAmount = 20000;
+                    }
+                } else if (claimVia === 'Livechat') {
+                    if (betAmount >= 1600 && betAmount <= 1800) {
+                        claimAmount = 30000;
+                    } else if (betAmount >= 2000 && betAmount <= 8000) {
+                        claimAmount = 50000;
+                    } else if (betAmount >= 10000 && betAmount <= 18000) {
+                        claimAmount = 80000;
+                    } else if (betAmount >= 20000 && betAmount <= 100000) {
+                        claimAmount = 100000;
+                    }
                 }
-            } else if (claimVia === 'Livechat') {
-                if (betAmount >= 1600 && betAmount <= 1800) {
-                    claimAmount = 30000;
-                } else if (betAmount >= 2000 && betAmount <= 8000) {
-                    claimAmount = 50000;
-                } else if (betAmount >= 10000 && betAmount <= 18000) {
-                    claimAmount = 80000;
-                } else if (betAmount >= 20000 && betAmount <= 100000) {
-                    claimAmount = 100000;
+            } else if (scatterCount === 4) {
+                if (claimVia === 'LINE') {
+                    if (betAmount >= 400 && betAmount <= 800) {
+                        claimAmount = 16000;
+                    } else if (betAmount >= 1200 && betAmount <= 1400) {
+                        claimAmount = 40000;
+                    }
+                } else if (claimVia === 'Livechat') {
+                    if (betAmount >= 1600 && betAmount <= 1800) {
+                        claimAmount = 60000;
+                    } else if (betAmount >= 2000 && betAmount <= 8000) {
+                        claimAmount = 100000;
+                    } else if (betAmount >= 10000 && betAmount <= 18000) {
+                        claimAmount = 160000;
+                    } else if (betAmount >= 20000 && betAmount <= 100000) {
+                        claimAmount = 200000;
+                    }
+                }
+            } else if (scatterCount === 5) {
+                if (claimVia === 'LINE') {
+                    if (betAmount >= 400 && betAmount <= 800) {
+                        claimAmount = 24000;
+                    } else if (betAmount >= 1200 && betAmount <= 1400) {
+                        claimAmount = 60000;
+                    }
+                } else if (claimVia === 'Livechat') {
+                    if (betAmount >= 1600 && betAmount <= 1800) {
+                        claimAmount = 90000;
+                    } else if (betAmount >= 2000 && betAmount <= 8000) {
+                        claimAmount = 150000;
+                    } else if (betAmount >= 10000 && betAmount <= 18000) {
+                        claimAmount = 240000;
+                    } else if (betAmount >= 20000 && betAmount <= 100000) {
+                        claimAmount = 300000;
+                    }
                 }
             }
             
@@ -2056,6 +2126,7 @@
             const userId = document.getElementById('inputUserId').value.trim();
             const ticketCode = document.getElementById('inputTicketCode').value.trim();
             const betAmount = document.getElementById('inputBetAmount').value;
+            const scatterCount = document.getElementById('inputScatterCount').value;
             const scatterImage = document.getElementById('inputScatterImage').value.trim();
             const claimVia = document.getElementById('inputClaimVia').value;
             
@@ -2107,6 +2178,7 @@
                     accountNumber: document.getElementById('inputAccountNumber').value.trim() || '-',
                     ticketCode: ticketCode,
                     betAmount: betAmount,
+                    scatterCount: scatterCount,
                     claimAmount: document.getElementById('inputClaimAmount').value || 'Rp.0',
                     status: 'Waiting',
                     claimVia: claimVia,
@@ -2183,6 +2255,7 @@
             
             // Tampilkan channel dengan warna berbeda
             const channelClass = rowData.claimVia === 'Livechat' ? 'channel-livechat' : 'channel-line';
+            const scatterClass = rowData.scatterCount ? `scatter-count-${rowData.scatterCount}` : '';
             
             newRow.innerHTML = `
                 <td>${formatDate(claimDate)}</td>
@@ -2191,6 +2264,7 @@
                 <td>${rowData.accountNumber || '-'}</td>
                 <td>${rowData.ticketCode || '-'}</td>
                 <td>${rowData.betAmount || '-'}</td>
+                <td class="${scatterClass}">${rowData.scatterCount || '-'}</td>
                 <td>${rowData.claimAmount || '-'}</td>
                 <td>
                     <span class="status-badge ${getStatusBadgeClass(rowData.status || 'Waiting')}">
@@ -2299,6 +2373,7 @@
                 date: claimData.date,
                 userId: claimData.userId,
                 ticketCode: claimData.ticketCode,
+                scatterCount: claimData.scatterCount,
                 claimAmount: claimData.claimAmount,
                 status: claimData.status,
                 processedBy: currentUser.email,
@@ -2341,11 +2416,13 @@
                         historyArray.forEach(item => {
                             const row = document.createElement('tr');
                             const channelClass = item.claimVia === 'Livechat' ? 'channel-livechat' : 'channel-line';
+                            const scatterClass = item.scatterCount ? `scatter-count-${item.scatterCount}` : '';
                             
                             row.innerHTML = `
                                 <td>${formatDate(item.date)}</td>
                                 <td>${item.userId}</td>
                                 <td>${item.ticketCode}</td>
+                                <td class="${scatterClass}">${item.scatterCount || '-'}</td>
                                 <td>${item.claimAmount}</td>
                                 <td><span class="status-badge ${getStatusBadgeClass(item.status)}">${item.status}</span></td>
                                 <td class="${channelClass}">${item.claimVia || 'Livechat'}</td>
@@ -2366,7 +2443,7 @@
                     } else {
                         tbody.innerHTML = `
                             <tr>
-                                <td colspan="9" class="empty-state">
+                                <td colspan="10" class="empty-state">
                                     <i class="fas fa-history"></i>
                                     <p>Belum ada riwayat claim</p>
                                 </td>
@@ -2391,7 +2468,7 @@
                 
                 const userId = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
                 const ticketCode = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-                const status = row.querySelector('td:nth-child(5) span').textContent;
+                const status = row.querySelector('td:nth-child(6) span').textContent;
                 const date = row.querySelector('td:nth-child(1)').textContent;
                 const formattedFilterDate = dateFilter ? formatDate(dateFilter) : '';
                 
@@ -2429,6 +2506,7 @@
                                     <p><strong>Nominal Betting:</strong> ${claimData.betAmount}</p>
                                 </div>
                                 <div>
+                                    <p><strong>Jumlah Scatter:</strong> <span class="scatter-count-${claimData.scatterCount}">${claimData.scatterCount}</span></p>
                                     <p><strong>Nominal Claim:</strong> ${claimData.claimAmount}</p>
                                     <p><strong>Status:</strong> <span class="status-badge ${getStatusBadgeClass(claimData.status)}">${claimData.status}</span></p>
                                     <p><strong>Claim Via:</strong> ${claimData.claimVia}</p>
@@ -2475,7 +2553,7 @@
                 if (!data || Object.keys(data).length === 0) {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="12" class="empty-state">
+                            <td colspan="13" class="empty-state">
                                 <i class="fas fa-ticket-alt"></i>
                                 <p>Belum ada data claim</p>
                             </td>
@@ -2548,6 +2626,7 @@
                     historyArray.slice(0, 5).forEach(item => {
                         const row = document.createElement('tr');
                         const channelClass = item.claimVia === 'Livechat' ? 'channel-livechat' : 'channel-line';
+                        const scatterClass = item.scatterCount ? `scatter-count-${item.scatterCount}` : '';
                         
                         row.innerHTML = `
                             <td>${formatDateTime(item.processedAt)}</td>
@@ -2674,32 +2753,37 @@
             row.querySelector('td:nth-child(4)').textContent = rowData.accountNumber || '-';
             row.querySelector('td:nth-child(5)').textContent = rowData.ticketCode;
             row.querySelector('td:nth-child(6)').textContent = rowData.betAmount;
-            row.querySelector('td:nth-child(7)').textContent = rowData.claimAmount;
+            row.querySelector('td:nth-child(7)').textContent = rowData.scatterCount || '-';
+            row.querySelector('td:nth-child(8)').textContent = rowData.claimAmount;
+            
+            // Update scatter count class
+            const scatterCell = row.querySelector('td:nth-child(7)');
+            scatterCell.className = rowData.scatterCount ? `scatter-count-${rowData.scatterCount}` : '';
             
             // Update status badge
-            const statusCell = row.querySelector('td:nth-child(8)');
+            const statusCell = row.querySelector('td:nth-child(9)');
             statusCell.innerHTML = `<span class="status-badge ${getStatusBadgeClass(rowData.status)}">${rowData.status}</span>`;
             
             // Update channel with color
-            const channelCell = row.querySelector('td:nth-child(9)');
+            const channelCell = row.querySelector('td:nth-child(10)');
             const channelClass = rowData.claimVia === 'Livechat' ? 'channel-livechat' : 'channel-line';
             channelCell.className = channelClass;
             channelCell.textContent = rowData.claimVia;
             
             // Update scatter image
-            const scatterCell = row.querySelector('td:nth-child(10)');
-            scatterCell.innerHTML = rowData.scatterImage ? 
+            const scatterImageCell = row.querySelector('td:nth-child(11)');
+            scatterImageCell.innerHTML = rowData.scatterImage ? 
                 `<img src="${rowData.scatterImage}" class="image-preview" onclick="openModal(this.src)">` : 
                 '-';
             
             // Update win image
-            const winCell = row.querySelector('td:nth-child(11)');
-            winCell.innerHTML = rowData.winImage ? 
+            const winImageCell = row.querySelector('td:nth-child(12)');
+            winImageCell.innerHTML = rowData.winImage ? 
                 `<img src="${rowData.winImage}" class="image-preview" onclick="openModal(this.src)">` : 
                 '-';
             
             // Update action buttons based on status
-            const actionCell = row.querySelector('td:nth-child(12)');
+            const actionCell = row.querySelector('td:nth-child(13)');
             let actionButtons = '';
             
             if (rowData.status === 'Waiting') {
@@ -2744,7 +2828,7 @@
                 
                 const userId = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
                 const ticketCode = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
-                const status = row.querySelector('td:nth-child(8) span').textContent;
+                const status = row.querySelector('td:nth-child(9) span').textContent;
                 
                 const matchesSearch = userId.includes(searchTerm) || ticketCode.includes(searchTerm);
                 const matchesStatus = !statusFilter || status === statusFilter;
