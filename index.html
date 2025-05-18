@@ -1064,7 +1064,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="inputDate">Tanggal</label>
-                                <input type="date" id="inputDate" disabled>
+                                <input type="date" id="inputDate" onchange="handleDateChange(this.value)">
                             </div>
                             <div class="form-group">
                                 <label for="inputUserId">User ID</label>
@@ -1359,6 +1359,7 @@
         let isInitialLoad = true;
         let MAX_CLAIMS_PER_CHANNEL = 3; // Maksimal 3 claim per channel per user per hari
         let currentSection = 'dashboard';
+        let selectedDate = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
 
         // Initialize default admin
         async function initializeDefaultAdmin() {
@@ -1458,6 +1459,9 @@
             document.getElementById('appContent').style.display = 'block';
             document.getElementById('currentUserEmail').textContent = currentUser.email;
             
+            // Set default date to today
+            updateSelectedDate(new Date());
+            
             // Load settings
             loadSettings();
             
@@ -1471,13 +1475,48 @@
             // Load logo if exists
             loadLogo();
             
-            // Set default date to today and disable editing
-            document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('inputDate').disabled = true;
-            
             // Setup image link preview
             setupImageLinkPreview('inputScatterImage', 'scatterPreview');
             setupImageLinkPreview('inputWinImage', 'winPreview');
+            
+            // Mulai pemeriksaan pergantian hari
+            checkDateChange();
+        }
+
+        // Update selected date
+        function updateSelectedDate(date) {
+            selectedDate = date.toISOString().split('T')[0];
+            document.getElementById('inputDate').value = selectedDate;
+        }
+
+        // Handle date change
+        function handleDateChange(newDate) {
+            const today = new Date().toISOString().split('T')[0];
+            const selected = new Date(newDate).toISOString().split('T')[0];
+            
+            if (selected > today) {
+                showNotification("Tidak bisa memilih tanggal di masa depan", "error");
+                document.getElementById('inputDate').value = selectedDate;
+                return;
+            }
+            
+            selectedDate = selected;
+            showNotification(`Tanggal diubah ke ${formatDate(selectedDate)}`, "success");
+        }
+
+        // Check for date change (every minute)
+        function checkDateChange() {
+            const now = new Date();
+            const currentDate = now.toISOString().split('T')[0];
+            
+            // Jika tanggal berbeda dengan yang dipilih dan sebelumnya adalah hari ini
+            if (selectedDate !== currentDate && selectedDate === new Date().toISOString().split('T')[0]) {
+                updateSelectedDate(now);
+                showNotification(`Tanggal otomatis diubah ke ${formatDate(currentDate)}`, "info");
+            }
+            
+            // Cek setiap menit
+            setTimeout(checkDateChange, 60000);
         }
 
         // Setup image link preview
@@ -1571,7 +1610,7 @@
             document.getElementById('winPreview').style.display = 'none';
             
             // Reset date to today
-            document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
+            updateSelectedDate(new Date());
         }
 
         // Format currency input
@@ -1640,7 +1679,7 @@
 
         // Fungsi validasi claim per channel
         async function validateClaim(userId, ticketCode, claimVia) {
-            const today = new Date().toISOString().split('T')[0];
+            const claimDate = selectedDate; // Gunakan selectedDate bukan tanggal hari ini
             
             try {
                 const [claimsSnapshot, historySnapshot] = await Promise.all([
@@ -1657,7 +1696,7 @@
                 // Cek di waiting list
                 Object.values(claimsData).forEach(claim => {
                     if (claim.userId === userId && 
-                        claim.date === today && 
+                        claim.date === claimDate && 
                         claim.claimVia === claimVia) {
                         claimCount++;
                     }
@@ -1666,7 +1705,7 @@
                 // Cek di history
                 Object.values(historyData).forEach(history => {
                     if (history.userId === userId && 
-                        history.date === today && 
+                        history.date === claimDate && 
                         history.claimVia === claimVia) {
                         claimCount++;
                     }
@@ -1752,7 +1791,7 @@
                 const claimId = database.ref('claims').push().key;
                 const claimData = {
                     id: claimId,
-                    date: new Date().toISOString().split('T')[0], // Always use today's date
+                    date: selectedDate, // Gunakan selectedDate
                     userId: userId,
                     accountName: document.getElementById('inputAccountName').value.trim() || '-',
                     accountNumber: document.getElementById('inputAccountNumber').value.trim() || '-',
@@ -1791,13 +1830,13 @@
             }
             
             const rowId = rowData.id;
-            const today = new Date().toISOString().split('T')[0];
+            const claimDate = rowData.date || selectedDate;
             
             // Hitung claim per channel untuk user ini
             let userClaimCount = 0;
             Object.values(currentRows).forEach(row => {
                 if (row.dataset.userId === rowData.userId && 
-                    row.dataset.date === today && 
+                    row.dataset.date === claimDate && 
                     row.dataset.channel === rowData.claimVia) {
                     userClaimCount++;
                 }
@@ -1824,7 +1863,7 @@
             const newRow = document.createElement('tr');
             newRow.setAttribute('data-id', rowId);
             newRow.setAttribute('data-user-id', rowData.userId);
-            newRow.setAttribute('data-date', rowData.date || today);
+            newRow.setAttribute('data-date', claimDate);
             newRow.setAttribute('data-ticket-code', rowData.ticketCode || '');
             newRow.setAttribute('data-channel', rowData.claimVia || 'Livechat');
             
@@ -1836,7 +1875,7 @@
             const channelClass = rowData.claimVia === 'Livechat' ? 'channel-livechat' : 'channel-line';
             
             newRow.innerHTML = `
-                <td>${formatDate(rowData.date || '')}</td>
+                <td>${formatDate(claimDate)}</td>
                 <td>${rowData.userId || '-'}</td>
                 <td>${rowData.accountName || '-'}</td>
                 <td>${rowData.accountNumber || '-'}</td>
