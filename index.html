@@ -1201,63 +1201,6 @@
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
-
-        /* Settings Tabs */
-        .settings-tabs {
-            display: flex;
-            border-bottom: 1px solid var(--gray-light);
-            margin-bottom: 20px;
-        }
-
-        .settings-tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            font-weight: 500;
-            transition: var(--transition);
-        }
-
-        .settings-tab.active {
-            border-bottom-color: var(--primary);
-            color: var(--primary);
-        }
-
-        .settings-tab:hover:not(.active) {
-            background-color: rgba(99, 102, 241, 0.1);
-        }
-
-        .settings-tab-content {
-            display: none;
-        }
-
-        .settings-tab-content.active {
-            display: block;
-        }
-
-        /* Cleanup Modal */
-        .cleanup-options {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .cleanup-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .cleanup-option input[type="number"] {
-            width: 80px;
-            margin-left: 10px;
-        }
-
-        /* Reset Modal */
-        #confirmResetText {
-            width: 100%;
-            margin: 15px 0;
-        }
     </style>
 </head>
 <body>
@@ -1298,67 +1241,6 @@
         <span class="close-modal" onclick="closeModal()">&times;</span>
         <div class="modal-content">
             <img id="modalImage" src="" alt="Preview">
-        </div>
-    </div>
-
-    <!-- Cleanup Data Modal -->
-    <div id="cleanupModal" class="modal">
-        <span class="close-modal" onclick="closeModal()">&times;</span>
-        <div class="modal-content">
-            <div class="modal-title">
-                <i class="fas fa-broom"></i> Cleanup Data
-            </div>
-            <p>Pilih data yang ingin dibersihkan:</p>
-            
-            <div class="cleanup-options">
-                <div class="cleanup-option">
-                    <input type="checkbox" id="cleanupOldClaims" checked>
-                    <label for="cleanupOldClaims">Hapus claim yang lebih lama dari</label>
-                    <input type="number" id="cleanupDays" value="30" min="1"> hari
-                </div>
-                
-                <div class="cleanup-option">
-                    <input type="checkbox" id="cleanupRejected">
-                    <label for="cleanupRejected">Hapus semua claim yang ditolak (Rejected)</label>
-                </div>
-                
-                <div class="cleanup-option">
-                    <input type="checkbox" id="cleanupCompleted">
-                    <label for="cleanupCompleted">Hapus semua claim yang selesai (Done)</label>
-                </div>
-            </div>
-            
-            <div class="form-actions">
-                <button class="ghost" onclick="closeModal()">
-                    <i class="fas fa-times"></i> Batal
-                </button>
-                <button class="danger" onclick="performCleanup()">
-                    <i class="fas fa-broom"></i> Bersihkan Data
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Reset Data Modal -->
-    <div id="resetModal" class="modal">
-        <span class="close-modal" onclick="closeModal()">&times;</span>
-        <div class="modal-content">
-            <div class="modal-title">
-                <i class="fas fa-exclamation-triangle"></i> Reset Semua Data
-            </div>
-            <p>Ini akan menghapus SEMUA data claim dan riwayat. Tindakan ini tidak dapat dibatalkan!</p>
-            <p>Untuk melanjutkan, ketik <strong>HAPUS SEMUA</strong> pada kolom di bawah:</p>
-            
-            <input type="text" id="confirmResetText" placeholder="Ketik HAPUS SEMUA">
-            
-            <div class="form-actions">
-                <button class="ghost" onclick="closeModal()">
-                    <i class="fas fa-times"></i> Batal
-                </button>
-                <button class="danger" id="resetButton" onclick="performReset()" disabled>
-                    <i class="fas fa-trash"></i> Reset Semua Data
-                </button>
-            </div>
         </div>
     </div>
 
@@ -1716,186 +1598,52 @@
                         </h1>
                     </div>
                     
-                    <!-- Settings Tabs -->
-                    <div class="settings-tabs">
-                        <div class="settings-tab active" onclick="showSettingsTab('branding')">
-                            <i class="fas fa-paint-brush"></i> Branding
-                        </div>
-                        <div class="settings-tab" onclick="showSettingsTab('claim')">
-                            <i class="fas fa-ticket-alt"></i> Claim
-                        </div>
-                        <div class="settings-tab" onclick="showSettingsTab('notification')">
-                            <i class="fas fa-bell"></i> Notifikasi
-                        </div>
-                        <div class="settings-tab" onclick="showSettingsTab('security')">
-                            <i class="fas fa-shield-alt"></i> Keamanan
-                        </div>
-                        <div class="settings-tab" onclick="showSettingsTab('maintenance')">
-                            <i class="fas fa-tools"></i> Maintenance
-                        </div>
-                    </div>
-                    
-                    <!-- Branding Tab -->
-                    <div id="brandingTab" class="settings-tab-content active">
-                        <div class="note-container">
-                            <h3>
-                                <i class="fas fa-image"></i> Logo & Nama Aplikasi
-                            </h3>
-                            <div style="display: flex; gap: 20px; align-items: center; margin-top: 15px; flex-wrap: wrap;">
-                                <img id="currentLogo" src="https://angkabet33524.com/resources/images/logo.png" alt="Current Logo" style="max-width: 200px; max-height: 80px; border-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                                <div style="flex: 1; min-width: 250px;">
-                                    <div class="form-group">
-                                        <label for="appName">Nama Aplikasi</label>
-                                        <input type="text" id="appName" placeholder="Masukkan nama aplikasi">
-                                    </div>
-                                    <label class="file-upload-label" for="logoUpload">
-                                        <i class="fas fa-upload"></i> Pilih File Logo
-                                    </label>
-                                    <input type="file" id="logoUpload" class="file-upload" accept="image/*">
-                                    <div style="margin-top: 10px; font-size: 12px; color: var(--gray);">
-                                        Format: JPG, PNG (Maksimal 2MB)
-                                    </div>
-                                    <button class="primary" onclick="saveBranding()" style="margin-top: 15px;">
-                                        <i class="fas fa-save"></i> Simpan Branding
-                                    </button>
+                    <div class="note-container">
+                        <h3>
+                            <i class="fas fa-image"></i> Logo Aplikasi
+                        </h3>
+                        <div style="display: flex; gap: 20px; align-items: center; margin-top: 15px; flex-wrap: wrap;">
+                            <img id="currentLogo" src="https://angkabet33524.com/resources/images/logo.png" alt="Current Logo" style="max-width: 200px; max-height: 80px; border-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                            <div style="flex: 1; min-width: 250px;">
+                                <label class="file-upload-label" for="logoUpload">
+                                    <i class="fas fa-upload"></i> Pilih File Logo
+                                </label>
+                                <input type="file" id="logoUpload" class="file-upload" accept="image/*">
+                                <div style="margin-top: 10px; font-size: 12px; color: var(--gray);">
+                                    Format: JPG, PNG (Maksimal 2MB)
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Claim Settings Tab -->
-                    <div id="claimTab" class="settings-tab-content">
-                        <div class="note-container">
-                            <h3>
-                                <i class="fas fa-ticket-alt"></i> Pengaturan Claim
-                            </h3>
-                            <div style="margin-top: 15px;">
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="maxClaims">Maksimal Claim per User per Channel:</label>
-                                        <input type="number" id="maxClaims" value="3" min="1">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="minBetAmount">Minimal Nominal Betting:</label>
-                                        <input type="text" id="minBetAmount" placeholder="Rp.0" onfocus="this.value=''" onblur="formatCurrency(this)">
-                                    </div>
-                                </div>
-                                
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="autoApprove">Auto Approve Claim:</label>
-                                        <select id="autoApprove">
-                                            <option value="false">Nonaktif</option>
-                                            <option value="true">Aktif</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="claimExpiry">Batas Waktu Claim (jam):</label>
-                                        <input type="number" id="claimExpiry" value="24" min="1">
-                                    </div>
-                                </div>
-                                
-                                <button class="primary" onclick="saveClaimSettings()">
-                                    <i class="fas fa-save"></i> Simpan Pengaturan Claim
+                                <button class="primary" onclick="uploadLogo()" style="margin-top: 15px;">
+                                    <i class="fas fa-save"></i> Simpan Logo
                                 </button>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Notification Settings Tab -->
-                    <div id="notificationTab" class="settings-tab-content">
-                        <div class="note-container">
-                            <h3>
-                                <i class="fas fa-bell"></i> Pengaturan Notifikasi
-                            </h3>
-                            <div style="margin-top: 15px;">
-                                <div class="form-group">
-                                    <label>
-                                        <input type="checkbox" id="emailNotifications"> Aktifkan Notifikasi Email
-                                    </label>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="notificationEmail">Email Notifikasi:</label>
-                                    <input type="email" id="notificationEmail" placeholder="Masukkan email untuk notifikasi">
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>
-                                        <input type="checkbox" id="soundNotifications" checked> Aktifkan Suara Notifikasi
-                                    </label>
-                                </div>
-                                
-                                <button class="primary" onclick="saveNotificationSettings()">
-                                    <i class="fas fa-save"></i> Simpan Pengaturan Notifikasi
-                                </button>
+                    <div class="note-container">
+                        <h3>
+                            <i class="fas fa-ticket-alt"></i> Pengaturan Claim
+                        </h3>
+                        <div style="margin-top: 15px;">
+                            <div class="form-group">
+                                <label for="maxClaims">Maksimal Claim per User per Channel:</label>
+                                <input type="number" id="maxClaims" value="3" min="1" style="width: 100px;">
                             </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Security Settings Tab -->
-                    <div id="securityTab" class="settings-tab-content">
-                        <div class="note-container">
-                            <h3>
-                                <i class="fas fa-shield-alt"></i> Pengaturan Keamanan
-                            </h3>
-                            <div style="margin-top: 15px;">
-                                <div class="form-group">
-                                    <label>
-                                        <input type="checkbox" id="twoFactorAuth"> Aktifkan Two-Factor Authentication
-                                    </label>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="sessionTimeout">Timeout Sesi (menit):</label>
-                                    <input type="number" id="sessionTimeout" value="30" min="1">
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="ipRestriction">Restriksi IP (pisahkan dengan koma):</label>
-                                    <input type="text" id="ipRestriction" placeholder="Contoh: 192.168.1.1, 192.168.1.2">
-                                </div>
-                                
-                                <button class="primary" onclick="saveSecuritySettings()">
-                                    <i class="fas fa-save"></i> Simpan Pengaturan Keamanan
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Maintenance Tab -->
-                    <div id="maintenanceTab" class="settings-tab-content">
-                        <div class="note-container">
-                            <h3>
-                                <i class="fas fa-database"></i> Backup Data
-                            </h3>
-                            <div class="action-buttons">
-                                <button class="secondary" onclick="backupData()">
-                                    <i class="fas fa-download"></i> Backup Data
-                                </button>
-                                <button class="info" onclick="restoreData()">
-                                    <i class="fas fa-upload"></i> Restore Data
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="note-container">
-                            <h3>
-                                <i class="fas fa-broom"></i> Cleanup Data
-                            </h3>
-                            <p>Hapus data yang tidak diperlukan untuk mengoptimalkan penyimpanan.</p>
-                            <button class="warning" onclick="showCleanupModal()">
-                                <i class="fas fa-broom"></i> Bersihkan Data
+                            <button class="primary" onclick="saveSettings()">
+                                <i class="fas fa-save"></i> Simpan Pengaturan
                             </button>
                         </div>
-                        
-                        <div class="note-container">
-                            <h3>
-                                <i class="fas fa-exclamation-triangle"></i> Reset Data
-                            </h3>
-                            <p>Hapus SEMUA data claim dan riwayat. Tindakan ini tidak dapat dibatalkan!</p>
-                            <button class="danger" onclick="showResetModal()">
-                                <i class="fas fa-trash"></i> Reset Semua Data
+                    </div>
+                    
+                    <div class="note-container">
+                        <h3>
+                            <i class="fas fa-database"></i> Backup Data
+                        </h3>
+                        <div class="action-buttons">
+                            <button class="secondary" onclick="backupData()">
+                                <i class="fas fa-download"></i> Backup Data
+                            </button>
+                            <button class="info" onclick="restoreData()">
+                                <i class="fas fa-upload"></i> Restore Data
                             </button>
                         </div>
                     </div>
@@ -2089,7 +1837,7 @@
             updateSelectedDate(new Date());
             
             // Load settings
-            loadAllSettings();
+            loadSettings();
             
             // Setup realtime listeners
             setupRealtimeListeners();
@@ -2191,23 +1939,6 @@
             if (section === 'history') {
                 loadHistoryData();
             }
-        }
-
-        // Show settings tab
-        function showSettingsTab(tab) {
-            // Hide all tab contents
-            document.querySelectorAll('.settings-tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            // Remove active class from all tabs
-            document.querySelectorAll('.settings-tab').forEach(tabEl => {
-                tabEl.classList.remove('active');
-            });
-            
-            // Show selected tab
-            document.getElementById(`${tab}Tab`).classList.add('active');
-            document.querySelector(`.settings-tab[onclick="showSettingsTab('${tab}')"]`).classList.add('active');
         }
 
         // Toggle sidebar for mobile
@@ -2353,13 +2084,13 @@
                     }
                 } else if (claimVia === 'Livechat') {
                     if (betAmount >= 1600 && betAmount <= 1800) {
-                        claimAmount = 150000;
+                        claimAmount = 90000;
                     } else if (betAmount >= 2000 && betAmount <= 8000) {
-                        claimAmount = 200000;
+                        claimAmount = 150000;
                     } else if (betAmount >= 10000 && betAmount <= 18000) {
-                        claimAmount = 300000;
+                        claimAmount = 240000;
                     } else if (betAmount >= 20000 && betAmount <= 100000) {
-                        claimAmount = 500000;
+                        claimAmount = 300000;
                     }
                 }
             }
@@ -3294,8 +3025,6 @@
 
         function closeModal() {
             document.getElementById('imageModal').style.display = 'none';
-            document.getElementById('cleanupModal').style.display = 'none';
-            document.getElementById('resetModal').style.display = 'none';
         }
 
         function showModal(content) {
@@ -3334,294 +3063,95 @@
             toggleButton.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i> Light Mode' : '<i class="fas fa-moon"></i> Dark Mode';
         }
 
-        // Fungsi untuk memuat semua pengaturan
-        function loadAllSettings() {
-            showLoading('Memuat pengaturan...');
-            
+        // Load settings from Firebase
+        function loadSettings() {
             database.ref('settings').once('value')
                 .then(snapshot => {
-                    const settings = snapshot.val() || {};
-                    
-                    // Branding settings
-                    if (settings.branding) {
-                        document.getElementById('appName').value = settings.branding.appName || 'SCATTER ANGKABET167';
-                        if (settings.branding.logoUrl) {
-                            document.getElementById('logoImage').src = settings.branding.logoUrl;
-                            document.getElementById('currentLogo').src = settings.branding.logoUrl;
+                    const settings = snapshot.val();
+                    if (settings) {
+                        MAX_CLAIMS_PER_CHANNEL = settings.maxClaims || 3;
+                        document.getElementById('maxClaims').value = MAX_CLAIMS_PER_CHANNEL;
+                        
+                        if (settings.logoUrl) {
+                            document.getElementById('logoImage').src = settings.logoUrl;
+                            document.getElementById('currentLogo').src = settings.logoUrl;
                         }
                     }
-                    
-                    // Claim settings
-                    if (settings.claim) {
-                        document.getElementById('maxClaims').value = settings.claim.maxClaims || 3;
-                        document.getElementById('minBetAmount').value = settings.claim.minBetAmount ? 'Rp.' + parseInt(settings.claim.minBetAmount).toLocaleString('id-ID') : 'Rp.0';
-                        document.getElementById('autoApprove').value = settings.claim.autoApprove ? 'true' : 'false';
-                        document.getElementById('claimExpiry').value = settings.claim.claimExpiry || 24;
-                    }
-                    
-                    // Notification settings
-                    if (settings.notification) {
-                        document.getElementById('emailNotifications').checked = settings.notification.emailNotifications || false;
-                        document.getElementById('notificationEmail').value = settings.notification.notificationEmail || '';
-                        document.getElementById('soundNotifications').checked = settings.notification.soundNotifications !== false;
-                    }
-                    
-                    // Security settings
-                    if (settings.security) {
-                        document.getElementById('twoFactorAuth').checked = settings.security.twoFactorAuth || false;
-                        document.getElementById('sessionTimeout').value = settings.security.sessionTimeout || 30;
-                        document.getElementById('ipRestriction').value = settings.security.ipRestriction ? settings.security.ipRestriction.join(', ') : '';
-                    }
-                    
-                    hideLoading();
                 })
-                .catch(error => {
-                    showNotification("Gagal memuat pengaturan: " + error.message, "error");
-                    hideLoading();
-                });
+                .catch(error => console.error("Error loading settings:", error));
         }
 
-        // Fungsi untuk menyimpan branding
-        function saveBranding() {
-            const logoFile = document.getElementById('logoUpload').files[0];
-            const appName = document.getElementById('appName').value.trim();
-            
-            if (!appName) {
-                showNotification("Nama aplikasi harus diisi", "error");
-                return;
-            }
-            
-            showLoading('Menyimpan branding...');
-            
-            const updates = {
-                'branding/appName': appName
-            };
-            
-            // Jika ada file logo yang diupload
-            if (logoFile) {
-                const storageRef = storage.ref('logo/' + logoFile.name);
-                
-                storageRef.put(logoFile).then((snapshot) => {
-                    snapshot.ref.getDownloadURL().then((url) => {
-                        updates['branding/logoUrl'] = url;
-                        
-                        database.ref('settings').update(updates)
-                            .then(() => {
-                                document.getElementById('logoImage').src = url;
-                                document.getElementById('currentLogo').src = url;
-                                showNotification("Branding berhasil disimpan", "success");
-                                hideLoading();
-                            });
-                    });
-                }).catch(error => {
-                    showNotification("Gagal upload logo: " + error.message, "error");
-                    hideLoading();
-                });
-            } else {
-                database.ref('settings').update(updates)
-                    .then(() => {
-                        showNotification("Branding berhasil disimpan", "success");
-                        hideLoading();
-                    })
-                    .catch(error => {
-                        showNotification("Gagal menyimpan branding: " + error.message, "error");
-                        hideLoading();
-                    });
-            }
-        }
-
-        // Fungsi untuk menyimpan pengaturan claim
-        function saveClaimSettings() {
+        // Save settings to Firebase
+        function saveSettings() {
             const maxClaims = parseInt(document.getElementById('maxClaims').value) || 3;
-            const minBetAmount = currencyToNumber(document.getElementById('minBetAmount').value) || 0;
-            const autoApprove = document.getElementById('autoApprove').value === 'true';
-            const claimExpiry = parseInt(document.getElementById('claimExpiry').value) || 24;
             
-            showLoading('Menyimpan pengaturan claim...');
-            
-            database.ref('settings/claim').update({
-                maxClaims: maxClaims,
-                minBetAmount: minBetAmount,
-                autoApprove: autoApprove,
-                claimExpiry: claimExpiry
+            database.ref('settings').update({
+                maxClaims: maxClaims
             })
             .then(() => {
                 MAX_CLAIMS_PER_CHANNEL = maxClaims;
-                showNotification("Pengaturan claim berhasil disimpan", "success");
-                hideLoading();
+                showNotification("Pengaturan disimpan", "success");
             })
-            .catch(error => {
-                showNotification("Gagal menyimpan pengaturan claim: " + error.message, "error");
-                hideLoading();
-            });
+            .catch(error => showNotification("Gagal menyimpan pengaturan: " + error.message, "error"));
         }
 
-        // Fungsi untuk menyimpan pengaturan notifikasi
-        function saveNotificationSettings() {
-            const emailNotifications = document.getElementById('emailNotifications').checked;
-            const notificationEmail = document.getElementById('notificationEmail').value.trim();
-            const soundNotifications = document.getElementById('soundNotifications').checked;
-            
-            if (emailNotifications && !notificationEmail) {
-                showNotification("Email notifikasi harus diisi jika notifikasi email aktif", "error");
+        // Upload logo to Firebase Storage
+        function uploadLogo() {
+            const fileInput = document.getElementById('logoUpload');
+            if (!fileInput.files || !fileInput.files[0]) {
+                showNotification("Pilih file logo terlebih dahulu", "error");
                 return;
             }
             
-            showLoading('Menyimpan pengaturan notifikasi...');
+            const file = fileInput.files[0];
             
-            database.ref('settings/notification').update({
-                emailNotifications: emailNotifications,
-                notificationEmail: notificationEmail,
-                soundNotifications: soundNotifications
-            })
-            .then(() => {
-                showNotification("Pengaturan notifikasi berhasil disimpan", "success");
-                hideLoading();
-            })
-            .catch(error => {
-                showNotification("Gagal menyimpan pengaturan notifikasi: " + error.message, "error");
-                hideLoading();
-            });
-        }
-
-        // Fungsi untuk menyimpan pengaturan keamanan
-        function saveSecuritySettings() {
-            const twoFactorAuth = document.getElementById('twoFactorAuth').checked;
-            const sessionTimeout = parseInt(document.getElementById('sessionTimeout').value) || 30;
-            const ipRestriction = document.getElementById('ipRestriction').value.trim();
-            
-            const ipArray = ipRestriction.split(',').map(ip => ip.trim()).filter(ip => ip);
-            
-            showLoading('Menyimpan pengaturan keamanan...');
-            
-            database.ref('settings/security').update({
-                twoFactorAuth: twoFactorAuth,
-                sessionTimeout: sessionTimeout,
-                ipRestriction: ipArray
-            })
-            .then(() => {
-                showNotification("Pengaturan keamanan berhasil disimpan", "success");
-                hideLoading();
-            })
-            .catch(error => {
-                showNotification("Gagal menyimpan pengaturan keamanan: " + error.message, "error");
-                hideLoading();
-            });
-        }
-
-        // Tampilkan modal cleanup data
-        function showCleanupModal() {
-            document.getElementById('cleanupModal').style.display = 'flex';
-        }
-
-        // Tampilkan modal reset data
-        function showResetModal() {
-            document.getElementById('resetModal').style.display = 'flex';
-            document.getElementById('confirmResetText').value = '';
-            document.getElementById('resetButton').disabled = true;
-            
-            // Enable reset button hanya jika text "HAPUS SEMUA" diketik
-            document.getElementById('confirmResetText').addEventListener('input', function() {
-                document.getElementById('resetButton').disabled = this.value !== 'HAPUS SEMUA';
-            });
-        }
-
-        // Eksekusi cleanup data
-        function performCleanup() {
-            const cleanupOldClaims = document.getElementById('cleanupOldClaims').checked;
-            const cleanupDays = parseInt(document.getElementById('cleanupDays').value) || 30;
-            const cleanupRejected = document.getElementById('cleanupRejected').checked;
-            const cleanupCompleted = document.getElementById('cleanupCompleted').checked;
-            
-            if (!cleanupOldClaims && !cleanupRejected && !cleanupCompleted) {
-                showNotification("Pilih setidaknya satu opsi untuk dibersihkan", "error");
+            // Validate file type
+            if (!file.type.match('image.*')) {
+                showNotification("Hanya file gambar yang diperbolehkan", "error");
                 return;
             }
             
-            if (!confirm(`Apakah Anda yakin ingin membersihkan data sesuai pilihan?`)) {
+            // Validate file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                showNotification("Ukuran file maksimal 2MB", "error");
                 return;
             }
             
-            showLoading('Membersihkan data...');
+            const storageRef = storage.ref('logo/' + file.name);
             
-            const cutoffDate = new Date();
-            cutoffDate.setDate(cutoffDate.getDate() - cleanupDays);
-            const cutoffDateString = cutoffDate.toISOString().split('T')[0];
+            showLoading('Mengupload logo...');
             
-            let promises = [];
-            
-            // Cleanup old claims
-            if (cleanupOldClaims) {
-                promises.push(
-                    database.ref('claims').once('value').then(snapshot => {
-                        const updates = {};
-                        snapshot.forEach(child => {
-                            const claimDate = child.val().date;
-                            if (claimDate < cutoffDateString) {
-                                updates[child.key] = null;
-                            }
-                        });
-                        return database.ref('claims').update(updates);
+            storageRef.put(file).then((snapshot) => {
+                snapshot.ref.getDownloadURL().then((url) => {
+                    // Save logo URL to settings
+                    database.ref('settings').update({
+                        logoUrl: url
                     })
-                );
-            }
-            
-            // Cleanup rejected claims
-            if (cleanupRejected) {
-                promises.push(
-                    database.ref('claims').orderByChild('status').equalTo('Rejected').once('value').then(snapshot => {
-                        const updates = {};
-                        snapshot.forEach(child => {
-                            updates[child.key] = null;
-                        });
-                        return database.ref('claims').update(updates);
-                    })
-                );
-            }
-            
-            // Cleanup completed claims
-            if (cleanupCompleted) {
-                promises.push(
-                    database.ref('claims').orderByChild('status').equalTo('Done').once('value').then(snapshot => {
-                        const updates = {};
-                        snapshot.forEach(child => {
-                            updates[child.key] = null;
-                        });
-                        return database.ref('claims').update(updates);
-                    })
-                );
-            }
-            
-            Promise.all(promises)
-                .then(() => {
-                    showNotification("Data berhasil dibersihkan", "success");
-                    closeModal();
-                    hideLoading();
-                })
-                .catch(error => {
-                    showNotification("Gagal membersihkan data: " + error.message, "error");
-                    hideLoading();
+                    .then(() => {
+                        // Update logo images
+                        document.getElementById('logoImage').src = url;
+                        document.getElementById('currentLogo').src = url;
+                        showNotification("Logo berhasil diubah", "success");
+                        hideLoading();
+                    });
                 });
-        }
-
-        // Eksekusi reset semua data
-        function performReset() {
-            showLoading('Mereset semua data...');
-            
-            // Hapus semua data kecuali settings dan admin
-            database.ref().update({
-                claims: null,
-                history: null
-            })
-            .then(() => {
-                showNotification("Semua data berhasil direset", "success");
-                closeModal();
-                hideLoading();
-            })
-            .catch(error => {
-                showNotification("Gagal mereset data: " + error.message, "error");
+            }).catch(error => {
+                showNotification("Gagal upload logo: " + error.message, "error");
                 hideLoading();
             });
+        }
+
+        // Load logo from settings
+        function loadLogo() {
+            database.ref('settings/logoUrl').once('value')
+                .then(snapshot => {
+                    const logoUrl = snapshot.val();
+                    if (logoUrl) {
+                        document.getElementById('logoImage').src = logoUrl;
+                        document.getElementById('currentLogo').src = logoUrl;
+                    }
+                })
+                .catch(error => console.error("Error loading logo:", error));
         }
 
         // Backup data
