@@ -1687,7 +1687,55 @@
         let isInitialLoad = true;
         let MAX_CLAIMS_PER_CHANNEL = 3;
         let currentSection = 'dashboard';
-        let selectedDate = new Date().toISOString().split('T')[0];
+        let selectedDate = new Date().toISOString().split('T')[0]; // Tanggal yang dipilih
+
+        // ==================== FUNGSI TIMEZONE GMT+7 ====================
+        // Fungsi format tanggal (DD/MM/YYYY) GMT+7
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                // Tambahkan 7 jam untuk GMT+7
+                date.setHours(date.getHours() + 7);
+                return date.toLocaleDateString('id-ID', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    timeZone: 'Asia/Jakarta'
+                });
+            } catch (e) {
+                console.error("Error formatting date:", e);
+                return dateString;
+            }
+        }
+
+        // Fungsi format tanggal dan waktu (DD/MM/YYYY HH:mm) GMT+7
+        function formatDateTime(dateTimeString) {
+            if (!dateTimeString) return '';
+            try {
+                const date = new Date(dateTimeString);
+                // Tambahkan 7 jam untuk GMT+7
+                date.setHours(date.getHours() + 7);
+                return date.toLocaleString('id-ID', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZone: 'Asia/Jakarta'
+                });
+            } catch (e) {
+                console.error("Error formatting datetime:", e);
+                return dateTimeString;
+            }
+        }
+
+        // Fungsi untuk mendapatkan waktu sekarang dalam GMT+7
+        function getCurrentGMT7Time() {
+            const now = new Date();
+            now.setHours(now.getHours() + 7);
+            return now.toISOString();
+        }
 
         // Initialize default admin
         async function initializeDefaultAdmin() {
@@ -1820,6 +1868,7 @@
             const today = new Date().toISOString().split('T')[0];
             const selected = new Date(newDate).toISOString().split('T')[0];
             
+            // Hanya tampilkan warning jika memilih tanggal di masa depan
             if (selected > today) {
                 showNotification("Tidak bisa memilih tanggal di masa depan", "error");
                 document.getElementById('inputDate').value = selectedDate;
@@ -1835,11 +1884,13 @@
             const now = new Date();
             const currentDate = now.toISOString().split('T')[0];
             
+            // Jika tanggal berbeda dengan yang dipilih dan yang dipilih adalah hari ini
             if (selectedDate !== currentDate && selectedDate === new Date().toISOString().split('T')[0]) {
                 updateSelectedDate(now);
                 showNotification(`Tanggal otomatis diubah ke ${formatDate(currentDate)}`, "info");
             }
             
+            // Periksa lagi dalam 1 menit
             setTimeout(checkDateChange, 60000);
         }
 
@@ -2184,7 +2235,7 @@
                     claimVia: claimVia,
                     scatterImage: scatterImage,
                     winImage: document.getElementById('inputWinImage').value.trim() || '',
-                    createdAt: firebase.database.ServerValue.TIMESTAMP,
+                    createdAt: getCurrentGMT7Time(),  // Menggunakan waktu GMT+7
                     updatedBy: currentUser.uid
                 };
                 
@@ -2330,9 +2381,9 @@
             
             const updates = {
                 status: status,
-                processedAt: firebase.database.ServerValue.TIMESTAMP,
+                processedAt: getCurrentGMT7Time(),  // Menggunakan waktu GMT+7
                 processedBy: currentUser.email,
-                lastUpdated: firebase.database.ServerValue.TIMESTAMP,
+                lastUpdated: getCurrentGMT7Time(),  // Menggunakan waktu GMT+7
                 updatedBy: currentUser.uid
             };
             
@@ -2377,7 +2428,7 @@
                 claimAmount: claimData.claimAmount,
                 status: claimData.status,
                 processedBy: currentUser.email,
-                processedAt: new Date().toISOString(),
+                processedAt: getCurrentGMT7Time(),  // Menggunakan waktu GMT+7
                 claimVia: claimData.claimVia,
                 betAmount: claimData.betAmount,
                 accountName: claimData.accountName,
@@ -3010,28 +3061,6 @@
             
             const toggleButton = document.getElementById('darkModeToggle');
             toggleButton.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i> Light Mode' : '<i class="fas fa-moon"></i> Dark Mode';
-        }
-
-        function formatDate(dateString) {
-            if (!dateString) return '';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('id-ID', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-        }
-
-        function formatDateTime(dateTimeString) {
-            if (!dateTimeString) return '';
-            const date = new Date(dateTimeString);
-            return date.toLocaleString('id-ID', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
         }
 
         // Load settings from Firebase
