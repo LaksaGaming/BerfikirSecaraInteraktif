@@ -659,56 +659,42 @@
         }
         
         /* Notification */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            border-radius: var(--radius-sm);
-            z-index: 1000;
-            box-shadow: var(--shadow-md);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transform: translateX(150%);
-            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            max-width: 350px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: var(--glass-border);
-        }
-        
-        .notification.show {
-            transform: translateX(0);
-        }
-        
-        .notification.success {
-            background: var(--glass);
-            background-color: rgba(16, 185, 129, 0.9);
-            color: white;
-        }
-        
-        .notification.warning {
-            background: var(--glass);
-            background-color: rgba(245, 158, 11, 0.9);
-            color: white;
-        }
-        
-        .notification.error {
-            background: var(--glass);
-            background-color: rgba(239, 68, 68, 0.9);
-            color: white;
-        }
-        
-        .notification.info {
-            background: var(--glass);
-            background-color: rgba(59, 130, 246, 0.9);
-            color: white;
-        }
-        
-        .notification i {
-            font-size: 20px;
-        }
+       .notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    z-index: 1000;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transform: translateX(150%);
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    max-width: 350px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification.success {
+    background-color: rgba(16, 185, 129, 0.9);
+    color: white;
+}
+
+.notification.error {
+    background-color: rgba(239, 68, 68, 0.9);
+    color: white;
+}
+
+.notification i {
+    font-size: 20px;
+}
         
         /* Loading Indicator */
         .loading-overlay {
@@ -1289,9 +1275,9 @@
 
     <!-- Notification -->
     <div id="notification" class="notification">
-        <i class="fas fa-info-circle"></i>
-        <span id="notificationMessage"></span>
-    </div>
+    <i class="fas fa-check-circle"></i>
+    <span id="notificationMessage"></span>
+</div>
 
     <!-- Modal for Image Preview and Details -->
     <div id="imageModal" class="modal">
@@ -2027,32 +2013,30 @@
 
         // Login function
         function login() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const loginMessage = document.getElementById('loginMessage');
-            
-            if (!email || !password) {
-                loginMessage.textContent = "Email dan password harus diisi";
-                return;
-            }
-            
-            showLoading('Sedang masuk...');
-            
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    currentUser = userCredential.user;
-                    initApp();
-                    showNotification("Login berhasil", "success");
-                })
-                .catch((error) => {
-                    loginMessage.textContent = getAuthErrorMessage(error.code);
-                    console.error("Login error:", error);
-                    showNotification("Login gagal: " + getAuthErrorMessage(error.code), "error");
-                })
-                .finally(() => {
-                    hideLoading();
-                });
-        }
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const loginMessage = document.getElementById('loginMessage');
+    
+    if (!email || !password) {
+        loginMessage.textContent = "Email dan password harus diisi";
+        return;
+    }
+    
+    showLoading('Sedang masuk...');
+    
+    auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            currentUser = userCredential.user;
+            initApp(); // Ini akan memicu notifikasi sukses
+        })
+        .catch((error) => {
+            loginMessage.textContent = getAuthErrorMessage(error.code);
+            showNotification("Login gagal: " + getAuthErrorMessage(error.code), "error");
+        })
+        .finally(() => {
+            hideLoading();
+        });
+}
 
         // Logout function
         function logout() {
@@ -2089,33 +2073,36 @@
 
         // Initialize app after login
         function initApp() {
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('appContent').style.display = 'block';
-            document.getElementById('currentUserEmail').textContent = currentUser.email;
-            
-            // Set default date to today (WIB)
-            updateSelectedDate(new Date());
-            
-            // Load settings
-            loadAllSettings();
-            
-            // Setup realtime listeners
-            setupRealtimeListeners();
-            
-            // Initialize UI
-            initDarkMode();
-            setupResponsiveSidebar();
-            
-            // Load logo if exists
-            loadLogo();
-            
-            // Setup image link preview
-            setupImageLinkPreview('inputScatterImage', 'scatterPreview');
-            setupImageLinkPreview('inputWinImage', 'winPreview');
-            
-            // Mulai pemeriksaan pergantian hari
-            checkDateChange();
-        }
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('appContent').style.display = 'block';
+    document.getElementById('currentUserEmail').textContent = currentUser.email;
+    
+    // Tampilkan notifikasi login sukses
+    showNotification(`Login berhasil sebagai ${currentUser.email}`, "success");
+    
+    // Set default date to today (WIB)
+    updateSelectedDate(new Date());
+    
+    // Load settings
+    loadAllSettings();
+    
+    // Setup realtime listeners
+    setupRealtimeListeners();
+    
+    // Initialize UI
+    initDarkMode();
+    setupResponsiveSidebar();
+    
+    // Load logo if exists
+    loadLogo();
+    
+    // Setup image link preview
+    setupImageLinkPreview('inputScatterImage', 'scatterPreview');
+    setupImageLinkPreview('inputWinImage', 'winPreview');
+    
+    // Mulai pemeriksaan pergantian hari
+    checkDateChange();
+}
 
         // Update selected date
         function updateSelectedDate(date) {
@@ -3270,15 +3257,21 @@
 
         // ==================== UTILITY FUNCTIONS ====================
         function showNotification(message, type = "success") {
-            const notification = document.getElementById('notification');
-            notification.className = `notification ${type}`;
-            document.getElementById('notificationMessage').textContent = message;
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
+    const notification = document.getElementById('notification');
+    notification.className = `notification ${type}`;
+    
+    // Update icon berdasarkan jenis notifikasi
+    const icon = type === 'success' ? '<i class="fas fa-check-circle"></i>' : 
+                 type === 'error' ? '<i class="fas fa-exclamation-circle"></i>' : 
+                 '<i class="fas fa-info-circle"></i>';
+    
+    document.getElementById('notificationMessage').innerHTML = `${icon} ${message}`;
+    notification.classList.add('show');
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
 
         function showLoading(message) {
             document.getElementById('loadingText').textContent = message || 'Memuat data...';
