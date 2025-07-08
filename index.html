@@ -3,379 +3,381 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WhatsApp-like Dashboard</title>
-  <!-- Libraries -->
+  <title>CollabSpace - Workspace Communication</title>
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary-color: #008069;
-      --secondary-color: #f0f2f5;
-      --sidebar-bg: #f0f2f5;
-      --chat-bg: #e5ddd5;
-      --sent-bubble: #d9fdd3;
-      --received-bubble: #ffffff;
-      --text-dark: #111b21;
-      --text-light: #fff;
-      --online-dot: #00a884;
+      --primary: #6C5CE7;
+      --secondary: #00B894;
+      --dark: #2D3436;
+      --light: #F5F6FA;
+      --warning: #FDCB6E;
+      --danger: #E17055;
     }
     
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', system-ui, sans-serif;
     }
     
     body {
-      background: #e5ddd5;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background: var(--light);
+      color: var(--dark);
     }
     
     .app-container {
-      width: 100%;
-      max-width: 1200px;
-      height: 90vh;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-      display: flex;
-      overflow: hidden;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      height: 100vh;
     }
     
-    /* Sidebar */
-    .sidebar {
-      width: 30%;
-      background: var(--sidebar-bg);
-      border-right: 1px solid #ddd;
+    /* Workspace Sidebar */
+    .workspace-sidebar {
+      background: var(--dark);
+      color: white;
+      padding: 20px;
       display: flex;
       flex-direction: column;
     }
     
-    .sidebar-header {
-      background: var(--primary-color);
-      color: white;
-      padding: 12px 16px;
+    .workspace-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      margin-bottom: 30px;
     }
     
-    .profile-pic {
+    .workspace-logo {
       width: 40px;
       height: 40px;
-      border-radius: 50%;
-      background: #ccc;
-      overflow: hidden;
-    }
-    
-    .profile-pic img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    .search-bar {
-      padding: 8px 16px;
-      background: white;
-      border-bottom: 1px solid #eee;
-    }
-    
-    .search-input {
-      width: 100%;
-      padding: 8px 12px;
-      border-radius: 18px;
-      border: none;
-      background: #f0f2f5;
-      outline: none;
-    }
-    
-    .chat-list {
-      flex: 1;
-      overflow-y: auto;
-    }
-    
-    .chat-item {
+      background: var(--primary);
+      border-radius: 8px;
       display: flex;
-      padding: 12px 16px;
-      border-bottom: 1px solid #eee;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    
-    .chat-item:hover {
-      background: #f5f5f5;
-    }
-    
-    .chat-item.active {
-      background: #e5e5e5;
-    }
-    
-    .chat-avatar {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      margin-right: 12px;
-      overflow: hidden;
-    }
-    
-    .chat-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    .chat-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: center;
+      margin-right: 12px;
+      font-weight: bold;
     }
     
-    .chat-name {
+    .workspace-name {
+      font-size: 18px;
       font-weight: 600;
-      margin-bottom: 4px;
+    }
+    
+    .workspace-menu {
+      margin-top: 30px;
+      flex-grow: 1;
+    }
+    
+    .menu-item {
       display: flex;
-      justify-content: space-between;
-    }
-    
-    .chat-last-message {
-      font-size: 13px;
-      color: #667781;
-      display: flex;
-      justify-content: space-between;
-    }
-    
-    .chat-time {
-      font-size: 11px;
-      color: #667781;
-    }
-    
-    .unread-count {
-      background: var(--primary-color);
-      color: white;
-      font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 50%;
-      margin-left: 6px;
-    }
-    
-    /* Chat Area */
-    .chat-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .chat-header {
-      background: var(--secondary-color);
+      align-items: center;
       padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .menu-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .menu-item.active {
+      background: var(--primary);
+    }
+    
+    .menu-icon {
+      margin-right: 12px;
+      font-size: 18px;
+    }
+    
+    .workspace-footer {
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .user-profile {
       display: flex;
       align-items: center;
-      border-bottom: 1px solid #ddd;
     }
     
-    .chat-title {
-      margin-left: 12px;
-      flex: 1;
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--secondary);
+      margin-right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
     }
     
-    .chat-title h3 {
+    /* Main Content */
+    .main-content {
+      display: grid;
+      grid-template-rows: 60px 1fr 80px;
+    }
+    
+    .channel-header {
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .channel-title {
+      font-size: 20px;
       font-weight: 600;
     }
     
-    .chat-status {
-      font-size: 13px;
-      color: #667781;
-      margin-top: 2px;
-      display: flex;
-      align-items: center;
-    }
-    
-    .online-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--online-dot);
-      border-radius: 50%;
-      margin-right: 6px;
-    }
-    
-    .chat-actions {
+    .channel-actions {
+      margin-left: auto;
       display: flex;
       gap: 20px;
     }
     
-    .chat-action-btn {
-      color: #54656f;
+    .action-button {
+      background: none;
+      border: none;
       font-size: 18px;
       cursor: pointer;
+      color: var(--dark);
     }
     
+    /* Messages Area */
     .messages-container {
-      flex: 1;
-      padding: 16px;
+      padding: 20px;
       overflow-y: auto;
-      background: var(--chat-bg);
-      background-image: url("https://web.whatsapp.com/img/bg-chat-tile-light_a4be512e.png");
-      background-blend-mode: overlay;
+      background: white;
     }
     
     .message {
-      max-width: 60%;
-      margin-bottom: 16px;
-      position: relative;
-    }
-    
-    .message-content {
-      padding: 8px 12px;
-      border-radius: 8px;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-      word-wrap: break-word;
-    }
-    
-    .sent {
-      margin-left: auto;
-    }
-    
-    .sent .message-content {
-      background: var(--sent-bubble);
-      border-top-right-radius: 0;
-    }
-    
-    .received {
-      margin-right: auto;
-    }
-    
-    .received .message-content {
-      background: var(--received-bubble);
-      border-top-left-radius: 0;
-    }
-    
-    .group-message .sender-name {
-      font-weight: 600;
-      font-size: 12px;
-      color: #667781;
-      margin-bottom: 4px;
-    }
-    
-    .message-time {
-      font-size: 11px;
-      color: #667781;
-      margin-top: 4px;
-      text-align: right;
-    }
-    
-    .message-status {
-      margin-left: 4px;
-    }
-    
-    .sent .message-status {
-      color: #4fc3f7;
-    }
-    
-    .input-area {
-      background: var(--secondary-color);
-      padding: 12px 16px;
       display: flex;
-      align-items: center;
-      border-top: 1px solid #ddd;
+      margin-bottom: 20px;
+      max-width: 80%;
     }
     
-    .input-container {
-      flex: 1;
-      background: white;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      padding: 8px 12px;
-      margin: 0 8px;
-    }
-    
-    .message-input {
-      flex: 1;
-      border: none;
-      outline: none;
-      padding: 8px 12px;
-      font-size: 14px;
-      background: transparent;
-    }
-    
-    .input-icon {
-      color: #54656f;
-      font-size: 20px;
-      cursor: pointer;
-      margin: 0 5px;
-    }
-    
-    .send-button {
-      background: var(--primary-color);
-      color: white;
-      border: none;
+    .message-avatar {
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      width: 40px;
-      height: 40px;
+      background: var(--warning);
+      margin-right: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    
+    .message-content {
+      flex-grow: 1;
+    }
+    
+    .message-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    
+    .message-sender {
+      font-weight: 600;
+      margin-right: 10px;
+    }
+    
+    .message-time {
+      font-size: 12px;
+      color: #7f8c8d;
+    }
+    
+    .message-text {
+      line-height: 1.5;
+    }
+    
+    .message-actions {
+      display: flex;
+      margin-top: 8px;
+    }
+    
+    .message-action {
+      background: none;
+      border: none;
+      color: #7f8c8d;
+      font-size: 12px;
+      margin-right: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    
+    .message-action:hover {
+      color: var(--primary);
+    }
+    
+    /* Input Area */
+    .input-area {
+      padding: 15px 20px;
+      border-top: 1px solid #e0e0e0;
+      background: white;
+    }
+    
+    .message-input {
+      width: 100%;
+      height: 50px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px 15px;
+      font-size: 14px;
+      outline: none;
+      resize: none;
+    }
+    
+    .input-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+    
+    .action-icons {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .input-icon {
+      font-size: 18px;
+      color: #7f8c8d;
       cursor: pointer;
     }
     
-    .emoji-picker {
-      position: absolute;
-      bottom: 70px;
-      right: 20px;
-      z-index: 100;
+    .send-button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 15px;
+      font-weight: 500;
+      cursor: pointer;
     }
     
-    /* Group Info */
-    .group-info {
-      display: flex;
-      flex-wrap: wrap;
-      padding: 8px;
-      margin-bottom: 16px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    /* Task Feature */
+    .task-message {
+      background: #f1f3fe;
+      border-left: 3px solid var(--primary);
+      padding: 12px;
+      border-radius: 0 6px 6px 0;
+      margin-top: 8px;
     }
     
-    .group-member {
+    .task-header {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      margin: 8px;
-      width: 60px;
+      margin-bottom: 8px;
     }
     
-    .group-member-avatar {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      overflow: hidden;
-      margin-bottom: 4px;
+    .task-title {
+      font-weight: 600;
+      margin-right: 10px;
     }
     
-    .group-member-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    .group-member-name {
+    .task-status {
       font-size: 12px;
-      text-align: center;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: var(--secondary);
+      color: white;
+    }
+    
+    .task-status.pending {
+      background: var(--warning);
+      color: var(--dark);
+    }
+    
+    .task-deadline {
+      font-size: 12px;
+      color: #7f8c8d;
+      margin-top: 6px;
+    }
+    
+    /* File Attachment */
+    .file-attachment {
+      display: flex;
+      align-items: center;
+      background: #f1f3fe;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-top: 8px;
+      width: fit-content;
+    }
+    
+    .file-icon {
+      margin-right: 10px;
+      color: var(--primary);
+    }
+    
+    .file-name {
+      font-size: 14px;
+      margin-right: 10px;
+    }
+    
+    .file-size {
+      font-size: 12px;
+      color: #7f8c8d;
+    }
+    
+    /* Unique Features */
+    .decision-message {
+      background: #e3f9f4;
+      border-left: 3px solid var(--secondary);
+      padding: 12px;
+      border-radius: 0 6px 6px 0;
+      margin-top: 8px;
+    }
+    
+    .decision-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .decision-options {
+      margin-top: 10px;
+    }
+    
+    .decision-option {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .option-radio {
+      margin-right: 8px;
+    }
+    
+    .option-label {
+      flex-grow: 1;
+    }
+    
+    .option-votes {
+      font-size: 12px;
+      color: #7f8c8d;
+    }
+    
+    .decision-button {
+      background: var(--secondary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      margin-top: 10px;
+      cursor: pointer;
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
   <div id="root"></div>
@@ -383,335 +385,380 @@
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
-    // ======================== Firebase Config ========================
-    const firebaseConfig = {
-      apiKey: "AIzaSyDUxwEXAMPLE-KEY-123",
-      authDomain: "your-project.firebaseapp.com",
-      projectId: "your-project-id",
-      storageBucket: "your-bucket.appspot.com",
-      messagingSenderId: "1234567890",
-      appId: "1:1234567890:web:abc123def456"
-    };
-
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore(app);
-    const storage = firebase.storage(app);
-
-    // ======================== Socket.io Client ========================
-    const socket = io('https://your-socketio-server.com');
-
-    // ======================== React App ========================
     function App() {
-      const [currentUser, setCurrentUser] = useState({
-        id: 'user_' + Math.floor(Math.random() * 1000),
-        name: 'User' + Math.floor(Math.random() * 1000),
-        avatar: 'https://i.pravatar.cc/150?img=' + Math.floor(Math.random() * 70)
-      });
-      
-      const [chats, setChats] = useState([
+      const [activeChannel, setActiveChannel] = useState('general');
+      const [message, setMessage] = useState('');
+      const [messages, setMessages] = useState([
         {
-          id: 'chat_1',
-          name: 'John Doe',
-          avatar: 'https://i.pravatar.cc/150?img=1',
-          lastMessage: 'Hey, how are you?',
+          id: '1',
+          sender: {
+            id: 'user1',
+            name: 'Alex Johnson',
+            avatar: 'AJ'
+          },
           time: '10:30 AM',
-          unread: 2,
-          type: 'personal',
-          online: true
+          text: 'Team, I\'ve created a new task for the homepage redesign',
+          type: 'task',
+          task: {
+            id: 'task1',
+            title: 'Homepage Redesign',
+            status: 'in-progress',
+            deadline: 'Due tomorrow at 2:00 PM'
+          }
         },
         {
-          id: 'chat_2',
-          name: 'Family Group',
-          avatar: 'https://i.pravatar.cc/150?img=5',
-          lastMessage: 'Mom: Dinner at 8pm',
-          time: 'Yesterday',
-          unread: 0,
-          type: 'group',
-          members: [
-            { id: 'user_1', name: 'Mom', avatar: 'https://i.pravatar.cc/150?img=10' },
-            { id: 'user_2', name: 'Dad', avatar: 'https://i.pravatar.cc/150?img=11' },
-            { id: 'user_3', name: 'Sister', avatar: 'https://i.pravatar.cc/150?img=12' }
-          ]
+          id: '2',
+          sender: {
+            id: 'user2',
+            name: 'Sam Lee',
+            avatar: 'SL'
+          },
+          time: '10:35 AM',
+          text: 'I need everyone\'s input on the new branding colors',
+          type: 'decision',
+          decision: {
+            id: 'dec1',
+            title: 'Brand Color Selection',
+            options: [
+              { id: 'opt1', label: 'Violet Gradient', votes: 3 },
+              { id: 'opt2', label: 'Teal Monochrome', votes: 2 },
+              { id: 'opt3', label: 'Warm Orange Palette', votes: 1 }
+            ],
+            voted: false
+          }
         },
         {
-          id: 'chat_3',
-          name: 'Work Team',
-          avatar: 'https://i.pravatar.cc/150?img=8',
-          lastMessage: 'Meeting at 3pm',
-          time: 'Monday',
-          unread: 5,
-          type: 'group',
-          members: [
-            { id: 'user_4', name: 'Boss', avatar: 'https://i.pravatar.cc/150?img=20' },
-            { id: 'user_5', name: 'Colleague 1', avatar: 'https://i.pravatar.cc/150?img=21' },
-            { id: 'user_6', name: 'Colleague 2', avatar: 'https://i.pravatar.cc/150?img=22' }
-          ]
+          id: '3',
+          sender: {
+            id: 'user3',
+            name: 'Taylor Chen',
+            avatar: 'TC'
+          },
+          time: '10:40 AM',
+          text: 'Here\'s the latest mockup for the product page',
+          type: 'file',
+          file: {
+            name: 'product-mockup-v3.fig',
+            size: '2.4 MB'
+          }
+        },
+        {
+          id: '4',
+          sender: {
+            id: 'user1',
+            name: 'Alex Johnson',
+            avatar: 'AJ'
+          },
+          time: '10:42 AM',
+          text: 'The violet gradient looks most aligned with our brand identity. I\'ve attached some analytics data supporting this.',
+          type: 'text'
+        },
+        {
+          id: '5',
+          sender: {
+            id: 'user4',
+            name: 'You',
+            avatar: 'YO'
+          },
+          time: '10:45 AM',
+          text: 'I agree with Alex. The data shows better conversion with cooler colors.',
+          type: 'text'
         }
       ]);
       
-      const [activeChat, setActiveChat] = useState(null);
-      const [messages, setMessages] = useState([]);
-      const [message, setMessage] = useState('');
-      const [showEmojiPicker, setShowEmojiPicker] = useState(false);
       const messagesEndRef = useRef(null);
-
-      // Load messages when active chat changes
-      useEffect(() => {
-        if (!activeChat) return;
-        
-        // In a real app, you would fetch messages from Firebase
-        const demoMessages = [
-          {
-            id: 'msg_1',
-            text: 'Hey there!',
-            sender: {
-              id: activeChat.type === 'personal' ? activeChat.id : 'user_1',
-              name: activeChat.type === 'personal' ? activeChat.name : 'Mom',
-              avatar: activeChat.type === 'personal' ? activeChat.avatar : 'https://i.pravatar.cc/150?img=10'
-            },
-            time: '10:30 AM',
-            status: 'read'
-          },
-          {
-            id: 'msg_2',
-            text: 'How are you doing?',
-            sender: {
-              id: activeChat.type === 'personal' ? activeChat.id : 'user_1',
-              name: activeChat.type === 'personal' ? activeChat.name : 'Mom',
-              avatar: activeChat.type === 'personal' ? activeChat.avatar : 'https://i.pravatar.cc/150?img=10'
-            },
-            time: '10:31 AM',
-            status: 'read'
-          },
-          {
-            id: 'msg_3',
-            text: "I'm good, thanks! How about you?",
-            sender: {
-              id: currentUser.id,
-              name: currentUser.name,
-              avatar: currentUser.avatar
-            },
-            time: '10:32 AM',
-            status: 'delivered'
-          }
-        ];
-        
-        setMessages(demoMessages);
-      }, [activeChat]);
-
-      // Auto-scroll to bottom
-      useEffect(() => {
+      
+      const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }, [messages]);
-
-      // Add emoji to message
-      const addEmoji = (e) => {
-        const emoji = e.detail.unicode;
-        setMessage(prev => prev + emoji);
       };
-
-      // Send message
-      const sendMessage = (e) => {
+      
+      useEffect(() => {
+        scrollToBottom();
+      }, [messages]);
+      
+      const handleSendMessage = (e) => {
         e.preventDefault();
         if (!message.trim()) return;
-
+        
         const newMessage = {
-          id: 'msg_' + Date.now(),
-          text: message,
+          id: Date.now().toString(),
           sender: {
-            id: currentUser.id,
-            name: currentUser.name,
-            avatar: currentUser.avatar
+            id: 'user4',
+            name: 'You',
+            avatar: 'YO'
           },
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          status: 'sent'
+          text: message,
+          type: 'text'
         };
-
-        setMessages(prev => [...prev, newMessage]);
-        setMessage('');
-        setShowEmojiPicker(false);
         
-        // In a real app, you would save to Firebase and send via Socket.io
-        setTimeout(() => {
-          if (activeChat.type === 'personal') {
-            const replyMessage = {
-              id: 'msg_' + Date.now(),
-              text: 'Thanks for your message!',
-              sender: {
-                id: activeChat.id,
-                name: activeChat.name,
-                avatar: activeChat.avatar
-              },
-              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-              status: 'delivered'
+        setMessages([...messages, newMessage]);
+        setMessage('');
+      };
+      
+      const handleVote = (decisionId, optionId) => {
+        setMessages(messages.map(msg => {
+          if (msg.type === 'decision' && msg.decision.id === decisionId) {
+            return {
+              ...msg,
+              decision: {
+                ...msg.decision,
+                voted: true,
+                options: msg.decision.options.map(opt => {
+                  if (opt.id === optionId) {
+                    return { ...opt, votes: opt.votes + 1 };
+                  }
+                  return opt;
+                })
+              }
             };
-            setMessages(prev => [...prev, replyMessage]);
           }
-        }, 1000);
+          return msg;
+        }));
+      };
+      
+      const handleTaskUpdate = (taskId, status) => {
+        setMessages(messages.map(msg => {
+          if (msg.type === 'task' && msg.task.id === taskId) {
+            return {
+              ...msg,
+              task: {
+                ...msg.task,
+                status: status
+              }
+            };
+          }
+          return msg;
+        }));
       };
 
       return (
         <div className="app-container">
-          {/* Sidebar */}
-          <div className="sidebar">
-            <div className="sidebar-header">
-              <div className="profile-pic">
-                <img src={currentUser.avatar} alt="Profile" />
+          {/* Workspace Sidebar */}
+          <div className="workspace-sidebar">
+            <div className="workspace-header">
+              <div className="workspace-logo">CS</div>
+              <div className="workspace-name">CollabSpace</div>
+            </div>
+            
+            <div className="workspace-menu">
+              <div 
+                className={`menu-item ${activeChannel === 'general' ? 'active' : ''}`}
+                onClick={() => setActiveChannel('general')}
+              >
+                <i className="fas fa-hashtag menu-icon"></i>
+                General
               </div>
-              <div>
-                <i className="fas fa-comment-dots" style={{ marginRight: '20px', cursor: 'pointer' }}></i>
-                <i className="fas fa-ellipsis-vertical" style={{ cursor: 'pointer' }}></i>
+              
+              <div 
+                className={`menu-item ${activeChannel === 'design' ? 'active' : ''}`}
+                onClick={() => setActiveChannel('design')}
+              >
+                <i className="fas fa-palette menu-icon"></i>
+                Design Team
+              </div>
+              
+              <div 
+                className={`menu-item ${activeChannel === 'dev' ? 'active' : ''}`}
+                onClick={() => setActiveChannel('dev')}
+              >
+                <i className="fas fa-code menu-icon"></i>
+                Development
+              </div>
+              
+              <div 
+                className={`menu-item ${activeChannel === 'marketing' ? 'active' : ''}`}
+                onClick={() => setActiveChannel('marketing')}
+              >
+                <i className="fas fa-bullhorn menu-icon"></i>
+                Marketing
+              </div>
+              
+              <div 
+                className={`menu-item ${activeChannel === 'projects' ? 'active' : ''}`}
+                onClick={() => setActiveChannel('projects')}
+              >
+                <i className="fas fa-tasks menu-icon"></i>
+                Projects
               </div>
             </div>
             
-            <div className="search-bar">
-              <input 
-                type="text" 
-                className="search-input" 
-                placeholder="Search or start new chat"
-              />
+            <div className="workspace-footer">
+              <div className="user-profile">
+                <div className="user-avatar">YO</div>
+                <div>
+                  <div style={{ fontWeight: 600 }}>You</div>
+                  <div style={{ fontSize: 12, opacity: 0.8 }}>Online</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Main Content */}
+          <div className="main-content">
+            <div className="channel-header">
+              <div className="channel-title">
+                {activeChannel === 'general' && 'General Workspace'}
+                {activeChannel === 'design' && 'Design Team'}
+                {activeChannel === 'dev' && 'Development Team'}
+                {activeChannel === 'marketing' && 'Marketing Team'}
+                {activeChannel === 'projects' && 'Project Discussions'}
+              </div>
+              
+              <div className="channel-actions">
+                <button className="action-button">
+                  <i className="fas fa-search"></i>
+                </button>
+                <button className="action-button">
+                  <i className="fas fa-ellipsis"></i>
+                </button>
+              </div>
             </div>
             
-            <div className="chat-list">
-              {chats.map(chat => (
-                <div 
-                  key={chat.id}
-                  className={`chat-item ${activeChat?.id === chat.id ? 'active' : ''}`}
-                  onClick={() => setActiveChat(chat)}
-                >
-                  <div className="chat-avatar">
-                    <img src={chat.avatar} alt={chat.name} />
+            <div className="messages-container">
+              {messages.map(msg => (
+                <div key={msg.id} className="message">
+                  <div className="message-avatar">
+                    {msg.sender.avatar}
                   </div>
-                  <div className="chat-info">
-                    <div className="chat-name">
-                      {chat.name}
-                      {chat.unread > 0 && <span className="unread-count">{chat.unread}</span>}
+                  
+                  <div className="message-content">
+                    <div className="message-header">
+                      <div className="message-sender">
+                        {msg.sender.name}
+                      </div>
+                      <div className="message-time">
+                        {msg.time}
+                      </div>
                     </div>
-                    <div className="chat-last-message">
-                      {chat.lastMessage}
-                      <span className="chat-time">{chat.time}</span>
+                    
+                    <div className="message-text">
+                      {msg.text}
+                    </div>
+                    
+                    {/* Task Message */}
+                    {msg.type === 'task' && (
+                      <div className="task-message">
+                        <div className="task-header">
+                          <div className="task-title">
+                            {msg.task.title}
+                          </div>
+                          <div className={`task-status ${msg.task.status === 'in-progress' ? 'pending' : ''}`}>
+                            {msg.task.status === 'in-progress' ? 'In Progress' : 'Completed'}
+                          </div>
+                        </div>
+                        <div className="task-deadline">
+                          {msg.task.deadline}
+                        </div>
+                        {msg.sender.id === 'user4' && (
+                          <div style={{ marginTop: 10 }}>
+                            <button 
+                              className="decision-button"
+                              onClick={() => handleTaskUpdate(msg.task.id, 'completed')}
+                              style={{ marginRight: 8 }}
+                            >
+                              Mark Complete
+                            </button>
+                            <button 
+                              className="decision-button"
+                              onClick={() => handleTaskUpdate(msg.task.id, 'in-progress')}
+                              style={{ background: '#E17055' }}
+                            >
+                              Reopen Task
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    {/* Decision Message */}
+                    {msg.type === 'decision' && (
+                      <div className="decision-message">
+                        <div className="decision-title">
+                          {msg.decision.title}
+                        </div>
+                        
+                        <div className="decision-options">
+                          {msg.decision.options.map(option => (
+                            <div key={option.id} className="decision-option">
+                              <input 
+                                type="radio" 
+                                id={option.id} 
+                                name={msg.decision.id}
+                                className="option-radio"
+                                disabled={msg.decision.voted}
+                                onChange={() => handleVote(msg.decision.id, option.id)}
+                              />
+                              <label htmlFor={option.id} className="option-label">
+                                {option.label}
+                              </label>
+                              <div className="option-votes">
+                                ({option.votes} votes)
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        {msg.decision.voted && (
+                          <div style={{ marginTop: 8, fontSize: 12, color: '#00B894' }}>
+                            <i className="fas fa-check"></i> Thanks for voting!
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    {/* File Attachment */}
+                    {msg.type === 'file' && (
+                      <div className="file-attachment">
+                        <i className="fas fa-file-alt file-icon"></i>
+                        <div className="file-name">
+                          {msg.file.name}
+                        </div>
+                        <div className="file-size">
+                          {msg.file.size}
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="message-actions">
+                      <button className="message-action">
+                        <i className="far fa-thumbs-up"></i> Like
+                      </button>
+                      <button className="message-action">
+                        <i className="fas fa-reply"></i> Reply
+                      </button>
+                      <button className="message-action">
+                        <i className="fas fa-ellipsis-h"></i>
+                      </button>
                     </div>
                   </div>
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
-          </div>
-          
-          {/* Chat Area */}
-          <div className="chat-area">
-            {activeChat ? (
-              <>
-                <div className="chat-header">
-                  <div className="profile-pic">
-                    <img src={activeChat.avatar} alt={activeChat.name} />
-                  </div>
-                  <div className="chat-title">
-                    <h3>{activeChat.name}</h3>
-                    {activeChat.type === 'personal' ? (
-                      <div className="chat-status">
-                        <span className="online-dot"></span>
-                        {activeChat.online ? 'online' : 'last seen today at 12:45 PM'}
-                      </div>
-                    ) : (
-                      <div className="chat-status">
-                        {activeChat.members.length} members
-                      </div>
-                    )}
-                  </div>
-                  <div className="chat-actions">
-                    <i className="fas fa-search chat-action-btn"></i>
-                    <i className="fas fa-ellipsis-vertical chat-action-btn"></i>
-                  </div>
-                </div>
+            
+            <div className="input-area">
+              <form onSubmit={handleSendMessage}>
+                <textarea
+                  className="message-input"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder={`Message ${activeChannel === 'general' ? 'General' : activeChannel}...`}
+                />
                 
-                <div className="messages-container">
-                  {activeChat.type === 'group' && (
-                    <div className="group-info">
-                      {activeChat.members.map(member => (
-                        <div key={member.id} className="group-member">
-                          <div className="group-member-avatar">
-                            <img src={member.avatar} alt={member.name} />
-                          </div>
-                          <div className="group-member-name">
-                            {member.name}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {messages.map(msg => (
-                    <div 
-                      key={msg.id}
-                      className={`message ${msg.sender.id === currentUser.id ? 'sent' : 'received'}`}
-                    >
-                      <div className="message-content">
-                        {msg.sender.id !== currentUser.id && activeChat.type === 'group' && (
-                          <div className="sender-name">{msg.sender.name}</div>
-                        )}
-                        {msg.text}
-                        <div className="message-time">
-                          {msg.time}
-                          {msg.sender.id === currentUser.id && (
-                            <span className="message-status">
-                              {msg.status === 'sent' && <i className="fas fa-check"></i>}
-                              {msg.status === 'delivered' && <i className="fas fa-check-double"></i>}
-                              {msg.status === 'read' && <i className="fas fa-check-double" style={{ color: '#4fc3f7' }}></i>}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  <div ref={messagesEndRef} />
-                </div>
-                
-                <form onSubmit={sendMessage} className="input-area">
-                  <i className="far fa-smile input-icon" onClick={() => setShowEmojiPicker(!showEmojiPicker)}></i>
-                  <div className="input-container">
-                    <input
-                      type="text"
-                      className="message-input"
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      placeholder="Type a message"
-                    />
+                <div className="input-actions">
+                  <div className="action-icons">
                     <i className="fas fa-paperclip input-icon"></i>
+                    <i className="fas fa-tasks input-icon"></i>
+                    <i className="fas fa-poll input-icon"></i>
                   </div>
+                  
                   <button type="submit" className="send-button">
-                    <i className="fas fa-paper-plane"></i>
+                    Send <i className="fas fa-paper-plane"></i>
                   </button>
-                </form>
-                
-                {showEmojiPicker && (
-                  <emoji-picker 
-                    class="emoji-picker"
-                    onemoji-click={addEmoji}
-                  ></emoji-picker>
-                )}
-              </>
-            ) : (
-              <div style={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: '#f0f2f5',
-                color: '#54656f'
-              }}>
-                <div style={{
-                  width: '300px',
-                  textAlign: 'center',
-                  padding: '20px'
-                }}>
-                  <i className="fas fa-comments" style={{ fontSize: '60px', marginBottom: '20px' }}></i>
-                  <h2 style={{ marginBottom: '10px' }}>WhatsApp Web</h2>
-                  <p style={{ marginBottom: '20px' }}>Select a chat to start messaging</p>
-                  <p style={{ fontSize: '12px' }}>End-to-end encrypted</p>
                 </div>
-              </div>
-            )}
+              </form>
+            </div>
           </div>
         </div>
       );
