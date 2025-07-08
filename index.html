@@ -4,13 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SecureChat - Aplikasi Chat dengan Login</title>
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
   <style>
     :root {
       --primary: #6C5CE7;
@@ -322,7 +321,7 @@
       apiKey: "AIzaSyCH05exvW9is7JYTqT0PFAzWDJoBji6uWQ",
       authDomain: "interaktifberfikir-70ac0.firebaseapp.com",
       projectId: "interaktifberfikir-70ac0",
-      storageBucket: "interaktifberfikir-70ac0.firebasestorage.app",
+      storageBucket: "interaktifberfikir-70ac0.appspot.com",
       messagingSenderId: "931930581619",
       appId: "1:931930581619:web:561a85ddcdfd478638d806"
     };
@@ -331,13 +330,12 @@
     const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-    const storage = firebase.storage();
 
     function App() {
       const [user, setUser] = useState(null);
       const [isLogin, setIsLogin] = useState(true);
-      const [email, setEmail] = useState('');
-      const [password, setPassword] = useState('');
+      const [email, setEmail] = useState('test@example.com');
+      const [password, setPassword] = useState('123456');
       const [error, setError] = useState('');
       const [loading, setLoading] = useState(false);
       
@@ -389,8 +387,13 @@
               avatar: user.email.charAt(0).toUpperCase()
             });
             
-            // Load user chats
-            loadChats(user.uid);
+            // Load demo chats
+            const demoChats = [
+              { id: 'chat1', name: 'General Chat', lastMessage: 'Welcome to the group!' },
+              { id: 'chat2', name: 'Team Discussion', lastMessage: 'Meeting at 3pm' }
+            ];
+            setChats(demoChats);
+            setActiveChat(demoChats[0].id);
           } else {
             setUser(null);
           }
@@ -399,23 +402,11 @@
         return () => unsubscribe();
       }, []);
       
-      // Load user chats
-      const loadChats = async (userId) => {
-        // In a real app, you would fetch from Firestore
-        const demoChats = [
-          { id: 'chat1', name: 'General Chat', lastMessage: 'Welcome to the group!' },
-          { id: 'chat2', name: 'Team Discussion', lastMessage: 'Meeting at 3pm' },
-          { id: 'chat3', name: 'Project Updates', lastMessage: 'New features deployed' }
-        ];
-        setChats(demoChats);
-        setActiveChat(demoChats[0].id);
-      };
-      
       // Load messages when chat changes
       useEffect(() => {
         if (!activeChat) return;
         
-        // In a real app, you would fetch from Firestore
+        // Demo messages
         const demoMessages = [
           {
             id: 'msg1',
@@ -428,12 +419,6 @@
             sender: { id: user?.uid, name: 'You', avatar: user?.avatar },
             text: 'Thanks! Glad to be here.',
             timestamp: new Date(Date.now() - 1800000)
-          },
-          {
-            id: 'msg3',
-            sender: { id: 'user2', name: 'John', avatar: 'J' },
-            text: 'Hello everyone!',
-            timestamp: new Date(Date.now() - 900000)
           }
         ];
         setMessages(demoMessages);
@@ -443,28 +428,6 @@
       useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
       }, [messages]);
-      
-      // Typing indicator logic
-      useEffect(() => {
-        if (message.trim()) {
-          if (!isTyping) {
-            setIsTyping(true);
-            // In a real app, you would emit socket.io event here
-          }
-          
-          const timer = setTimeout(() => {
-            setIsTyping(false);
-            // In a real app, you would emit socket.io event here
-          }, 2000);
-          
-          return () => clearTimeout(timer);
-        } else {
-          if (isTyping) {
-            setIsTyping(false);
-            // In a real app, you would emit socket.io event here
-          }
-        }
-      }, [message]);
       
       // Send message
       const sendMessage = async (e) => {
@@ -482,7 +445,6 @@
           timestamp: new Date()
         };
         
-        // In a real app, you would save to Firestore
         setMessages([...messages, newMessage]);
         setMessage('');
         
