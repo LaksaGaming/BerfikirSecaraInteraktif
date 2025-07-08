@@ -3,10 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CollabSpace - Workspace Communication</title>
+  <title>CollabSpace - Final Version</title>
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
   <style>
     :root {
       --primary: #6C5CE7;
@@ -224,6 +228,7 @@
       padding: 15px 20px;
       border-top: 1px solid #e0e0e0;
       background: white;
+      position: relative;
     }
     
     .message-input {
@@ -312,6 +317,7 @@
       border-radius: 6px;
       margin-top: 8px;
       width: fit-content;
+      cursor: pointer;
     }
     
     .file-icon {
@@ -329,7 +335,7 @@
       color: #7f8c8d;
     }
     
-    /* Unique Features */
+    /* Decision Feature */
     .decision-message {
       background: #e3f9f4;
       border-left: 3px solid var(--secondary);
@@ -353,10 +359,6 @@
       margin-bottom: 8px;
     }
     
-    .option-radio {
-      margin-right: 8px;
-    }
-    
     .option-label {
       flex-grow: 1;
     }
@@ -376,6 +378,151 @@
       margin-top: 10px;
       cursor: pointer;
     }
+    
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .modal {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      width: 400px;
+      max-width: 90%;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .form-textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      resize: vertical;
+      min-height: 80px;
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .form-button {
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .form-button.primary {
+      background: var(--primary);
+      color: white;
+      border: none;
+    }
+    
+    .form-button.secondary {
+      background: none;
+      border: 1px solid #ddd;
+    }
+    
+    /* Progress Bar */
+    .progress-bar {
+      height: 6px;
+      background: #eee;
+      border-radius: 3px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--secondary);
+      width: 0%;
+      transition: width 0.3s;
+    }
+    
+    /* Typing Indicator */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      margin-left: 48px;
+      margin-bottom: 10px;
+    }
+    
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: #7f8c8d;
+      border-radius: 50%;
+      margin-right: 4px;
+      animation: typing 1.4s infinite ease-in-out;
+    }
+    
+    .typing-dot:nth-child(1) {
+      animation-delay: 0s;
+    }
+    
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes typing {
+      0%, 60%, 100% {
+        transform: translateY(0);
+      }
+      30% {
+        transform: translateY(-5px);
+      }
+    }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -385,140 +532,280 @@
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDUxwEXAMPLE-KEY-123",
+      authDomain: "your-project.firebaseapp.com",
+      projectId: "your-project-id",
+      storageBucket: "your-bucket.appspot.com",
+      messagingSenderId: "1234567890",
+      appId: "1:1234567890:web:abc123def456"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore(app);
+    const storage = firebase.storage(app);
+
+    // Socket.io Client
+    const socket = io('https://your-socketio-server.com');
+
     function App() {
+      // User state
+      const [currentUser, setCurrentUser] = useState({
+        id: 'user_' + Math.floor(Math.random() * 1000),
+        name: 'You',
+        avatar: 'YO',
+        online: true
+      });
+      
+      // App state
       const [activeChannel, setActiveChannel] = useState('general');
-      const [message, setMessage] = useState('');
-      const [messages, setMessages] = useState([
-        {
-          id: '1',
-          sender: {
-            id: 'user1',
-            name: 'Alex Johnson',
-            avatar: 'AJ'
-          },
-          time: '10:30 AM',
-          text: 'Team, I\'ve created a new task for the homepage redesign',
-          type: 'task',
-          task: {
-            id: 'task1',
-            title: 'Homepage Redesign',
-            status: 'in-progress',
-            deadline: 'Due tomorrow at 2:00 PM'
-          }
-        },
-        {
-          id: '2',
-          sender: {
-            id: 'user2',
-            name: 'Sam Lee',
-            avatar: 'SL'
-          },
-          time: '10:35 AM',
-          text: 'I need everyone\'s input on the new branding colors',
-          type: 'decision',
-          decision: {
-            id: 'dec1',
-            title: 'Brand Color Selection',
-            options: [
-              { id: 'opt1', label: 'Violet Gradient', votes: 3 },
-              { id: 'opt2', label: 'Teal Monochrome', votes: 2 },
-              { id: 'opt3', label: 'Warm Orange Palette', votes: 1 }
-            ],
-            voted: false
-          }
-        },
-        {
-          id: '3',
-          sender: {
-            id: 'user3',
-            name: 'Taylor Chen',
-            avatar: 'TC'
-          },
-          time: '10:40 AM',
-          text: 'Here\'s the latest mockup for the product page',
-          type: 'file',
-          file: {
-            name: 'product-mockup-v3.fig',
-            size: '2.4 MB'
-          }
-        },
-        {
-          id: '4',
-          sender: {
-            id: 'user1',
-            name: 'Alex Johnson',
-            avatar: 'AJ'
-          },
-          time: '10:42 AM',
-          text: 'The violet gradient looks most aligned with our brand identity. I\'ve attached some analytics data supporting this.',
-          type: 'text'
-        },
-        {
-          id: '5',
-          sender: {
-            id: 'user4',
-            name: 'You',
-            avatar: 'YO'
-          },
-          time: '10:45 AM',
-          text: 'I agree with Alex. The data shows better conversion with cooler colors.',
-          type: 'text'
-        }
+      const [channels, setChannels] = useState([
+        { id: 'general', name: 'General', icon: 'hashtag' },
+        { id: 'design', name: 'Design Team', icon: 'palette' },
+        { id: 'dev', name: 'Development', icon: 'code' },
+        { id: 'marketing', name: 'Marketing', icon: 'bullhorn' },
+        { id: 'projects', name: 'Projects', icon: 'tasks' }
       ]);
       
+      const [messages, setMessages] = useState([]);
+      const [message, setMessage] = useState('');
+      const [isTyping, setIsTyping] = useState(false);
+      const [otherTyping, setOtherTyping] = useState(false);
+      const [showTaskModal, setShowTaskModal] = useState(false);
+      const [showPollModal, setShowPollModal] = useState(false);
+      const [uploadProgress, setUploadProgress] = useState(0);
+      const [file, setFile] = useState(null);
+      const fileInputRef = useRef(null);
       const messagesEndRef = useRef(null);
       
-      const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-      };
+      // Form states
+      const [taskForm, setTaskForm] = useState({
+        title: '',
+        description: '',
+        deadline: ''
+      });
       
+      const [pollForm, setPollForm] = useState({
+        question: '',
+        options: ['', '']
+      });
+      
+      // Load initial messages
+      useEffect(() => {
+        const demoMessages = [
+          {
+            id: '1',
+            sender: { id: 'user1', name: 'Alex Johnson', avatar: 'AJ' },
+            time: '10:30 AM',
+            text: "Let's discuss the Q3 roadmap",
+            type: 'text',
+            channel: 'general'
+          },
+          {
+            id: '2',
+            sender: { id: 'user2', name: 'Sam Lee', avatar: 'SL' },
+            time: '10:32 AM',
+            text: "I've created a task for the homepage redesign",
+            type: 'task',
+            task: {
+              id: 'task1',
+              title: 'Homepage Redesign',
+              description: 'Update the homepage with new branding',
+              status: 'in-progress',
+              deadline: '2023-12-15',
+              assignee: 'user1'
+            },
+            channel: 'general'
+          },
+          {
+            id: '3',
+            sender: { id: 'user3', name: 'Taylor Chen', avatar: 'TC' },
+            time: '10:35 AM',
+            text: "Should we use React or Vue for the new project?",
+            type: 'poll',
+            poll: {
+              id: 'poll1',
+              question: 'Framework for new project',
+              options: [
+                { id: 'opt1', text: 'React', votes: 3, voters: ['user1', 'user2', 'user4'] },
+                { id: 'opt2', text: 'Vue', votes: 1, voters: ['user3'] }
+              ],
+              voted: false
+            },
+            channel: 'general'
+          }
+        ];
+        
+        setMessages(demoMessages);
+        
+        // In a real app, you would subscribe to Firestore/Socket.io here
+        socket.on('newMessage', (newMessage) => {
+          setMessages(prev => [...prev, newMessage]);
+        });
+        
+        socket.on('typing', (typing) => {
+          setOtherTyping(typing);
+        });
+        
+        return () => {
+          socket.off('newMessage');
+          socket.off('typing');
+        };
+      }, []);
+      
+      // Auto-scroll to bottom when messages change
       useEffect(() => {
         scrollToBottom();
       }, [messages]);
       
+      // Typing indicator logic
+      useEffect(() => {
+        if (message.trim()) {
+          if (!isTyping) {
+            socket.emit('typing', true);
+            setIsTyping(true);
+          }
+          
+          const timer = setTimeout(() => {
+            socket.emit('typing', false);
+            setIsTyping(false);
+          }, 2000);
+          
+          return () => clearTimeout(timer);
+        } else {
+          if (isTyping) {
+            socket.emit('typing', false);
+            setIsTyping(false);
+          }
+        }
+      }, [message]);
+      
+      // Helper functions
+      const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      };
+      
+      const formatTime = (date) => {
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      };
+      
+      // Message handlers
       const handleSendMessage = (e) => {
         e.preventDefault();
         if (!message.trim()) return;
         
         const newMessage = {
           id: Date.now().toString(),
-          sender: {
-            id: 'user4',
-            name: 'You',
-            avatar: 'YO'
-          },
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          sender: currentUser,
+          time: formatTime(new Date()),
           text: message,
-          type: 'text'
+          type: 'text',
+          channel: activeChannel
         };
         
-        setMessages([...messages, newMessage]);
+        // In a real app, you would save to Firestore and emit via Socket.io
+        setMessages(prev => [...prev, newMessage]);
+        socket.emit('sendMessage', newMessage);
         setMessage('');
       };
       
-      const handleVote = (decisionId, optionId) => {
-        setMessages(messages.map(msg => {
-          if (msg.type === 'decision' && msg.decision.id === decisionId) {
+      const handleCreateTask = (e) => {
+        e.preventDefault();
+        
+        const newTask = {
+          id: 'task_' + Date.now(),
+          title: taskForm.title,
+          description: taskForm.description,
+          status: 'in-progress',
+          deadline: taskForm.deadline,
+          assignee: null
+        };
+        
+        const newMessage = {
+          id: 'msg_' + Date.now(),
+          sender: currentUser,
+          time: formatTime(new Date()),
+          text: `Created task: ${taskForm.title}`,
+          type: 'task',
+          task: newTask,
+          channel: activeChannel
+        };
+        
+        setMessages(prev => [...prev, newMessage]);
+        socket.emit('sendMessage', newMessage);
+        setShowTaskModal(false);
+        setTaskForm({ title: '', description: '', deadline: '' });
+      };
+      
+      const handleCreatePoll = (e) => {
+        e.preventDefault();
+        
+        const newPoll = {
+          id: 'poll_' + Date.now(),
+          question: pollForm.question,
+          options: pollForm.options
+            .filter(opt => opt.trim())
+            .map((opt, idx) => ({
+              id: 'opt_' + idx,
+              text: opt,
+              votes: 0,
+              voters: []
+            })),
+          voted: false
+        };
+        
+        const newMessage = {
+          id: 'msg_' + Date.now(),
+          sender: currentUser,
+          time: formatTime(new Date()),
+          text: `New poll: ${pollForm.question}`,
+          type: 'poll',
+          poll: newPoll,
+          channel: activeChannel
+        };
+        
+        setMessages(prev => [...prev, newMessage]);
+        socket.emit('sendMessage', newMessage);
+        setShowPollModal(false);
+        setPollForm({ question: '', options: ['', ''] });
+      };
+      
+      const handleVote = (pollId, optionId) => {
+        const updatedMessages = messages.map(msg => {
+          if (msg.type === 'poll' && msg.poll.id === pollId) {
+            const updatedOptions = msg.poll.options.map(opt => {
+              if (opt.id === optionId) {
+                return {
+                  ...opt,
+                  votes: opt.votes + 1,
+                  voters: [...opt.voters, currentUser.id]
+                };
+              }
+              return opt;
+            });
+            
             return {
               ...msg,
-              decision: {
-                ...msg.decision,
-                voted: true,
-                options: msg.decision.options.map(opt => {
-                  if (opt.id === optionId) {
-                    return { ...opt, votes: opt.votes + 1 };
-                  }
-                  return opt;
-                })
+              poll: {
+                ...msg.poll,
+                options: updatedOptions,
+                voted: true
               }
             };
           }
           return msg;
-        }));
+        });
+        
+        setMessages(updatedMessages);
+        socket.emit('updateMessage', updatedMessages.find(msg => 
+          msg.type === 'poll' && msg.poll.id === pollId
+        ));
       };
       
       const handleTaskUpdate = (taskId, status) => {
-        setMessages(messages.map(msg => {
+        const updatedMessages = messages.map(msg => {
           if (msg.type === 'task' && msg.task.id === taskId) {
             return {
               ...msg,
@@ -529,8 +816,55 @@
             };
           }
           return msg;
-        }));
+        });
+        
+        setMessages(updatedMessages);
+        socket.emit('updateMessage', updatedMessages.find(msg => 
+          msg.type === 'task' && msg.task.id === taskId
+        ));
       };
+      
+      const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        if (!selectedFile) return;
+        
+        setFile(selectedFile);
+        
+        // Simulate upload progress
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += 10;
+          setUploadProgress(progress);
+          
+          if (progress >= 100) {
+            clearInterval(interval);
+            
+            // After upload completes
+            setTimeout(() => {
+              const newMessage = {
+                id: 'msg_' + Date.now(),
+                sender: currentUser,
+                time: formatTime(new Date()),
+                text: `Shared file: ${selectedFile.name}`,
+                type: 'file',
+                file: {
+                  name: selectedFile.name,
+                  size: (selectedFile.size / 1024 / 1024).toFixed(1) + ' MB',
+                  url: URL.createObjectURL(selectedFile)
+                },
+                channel: activeChannel
+              };
+              
+              setMessages(prev => [...prev, newMessage]);
+              socket.emit('sendMessage', newMessage);
+              setFile(null);
+              setUploadProgress(0);
+            }, 500);
+          }
+        }, 200);
+      };
+      
+      const filteredMessages = messages.filter(msg => msg.channel === activeChannel);
 
       return (
         <div className="app-container">
@@ -542,53 +876,26 @@
             </div>
             
             <div className="workspace-menu">
-              <div 
-                className={`menu-item ${activeChannel === 'general' ? 'active' : ''}`}
-                onClick={() => setActiveChannel('general')}
-              >
-                <i className="fas fa-hashtag menu-icon"></i>
-                General
-              </div>
-              
-              <div 
-                className={`menu-item ${activeChannel === 'design' ? 'active' : ''}`}
-                onClick={() => setActiveChannel('design')}
-              >
-                <i className="fas fa-palette menu-icon"></i>
-                Design Team
-              </div>
-              
-              <div 
-                className={`menu-item ${activeChannel === 'dev' ? 'active' : ''}`}
-                onClick={() => setActiveChannel('dev')}
-              >
-                <i className="fas fa-code menu-icon"></i>
-                Development
-              </div>
-              
-              <div 
-                className={`menu-item ${activeChannel === 'marketing' ? 'active' : ''}`}
-                onClick={() => setActiveChannel('marketing')}
-              >
-                <i className="fas fa-bullhorn menu-icon"></i>
-                Marketing
-              </div>
-              
-              <div 
-                className={`menu-item ${activeChannel === 'projects' ? 'active' : ''}`}
-                onClick={() => setActiveChannel('projects')}
-              >
-                <i className="fas fa-tasks menu-icon"></i>
-                Projects
-              </div>
+              {channels.map(channel => (
+                <div 
+                  key={channel.id}
+                  className={`menu-item ${activeChannel === channel.id ? 'active' : ''}`}
+                  onClick={() => setActiveChannel(channel.id)}
+                >
+                  <i className={`fas fa-${channel.icon} menu-icon`}></i>
+                  {channel.name}
+                </div>
+              ))}
             </div>
             
             <div className="workspace-footer">
               <div className="user-profile">
-                <div className="user-avatar">YO</div>
+                <div className="user-avatar">{currentUser.avatar}</div>
                 <div>
-                  <div style={{ fontWeight: 600 }}>You</div>
-                  <div style={{ fontSize: 12, opacity: 0.8 }}>Online</div>
+                  <div style={{ fontWeight: 600 }}>{currentUser.name}</div>
+                  <div style={{ fontSize: 12, opacity: 0.8 }}>
+                    {currentUser.online ? 'Online' : 'Offline'}
+                  </div>
                 </div>
               </div>
             </div>
@@ -598,11 +905,7 @@
           <div className="main-content">
             <div className="channel-header">
               <div className="channel-title">
-                {activeChannel === 'general' && 'General Workspace'}
-                {activeChannel === 'design' && 'Design Team'}
-                {activeChannel === 'dev' && 'Development Team'}
-                {activeChannel === 'marketing' && 'Marketing Team'}
-                {activeChannel === 'projects' && 'Project Discussions'}
+                {channels.find(c => c.id === activeChannel)?.name || 'General'}
               </div>
               
               <div className="channel-actions">
@@ -616,7 +919,7 @@
             </div>
             
             <div className="messages-container">
-              {messages.map(msg => (
+              {filteredMessages.map(msg => (
                 <div key={msg.id} className="message">
                   <div className="message-avatar">
                     {msg.sender.avatar}
@@ -647,10 +950,20 @@
                             {msg.task.status === 'in-progress' ? 'In Progress' : 'Completed'}
                           </div>
                         </div>
-                        <div className="task-deadline">
-                          {msg.task.deadline}
-                        </div>
-                        {msg.sender.id === 'user4' && (
+                        
+                        {msg.task.description && (
+                          <div style={{ margin: '8px 0', fontSize: '14px' }}>
+                            {msg.task.description}
+                          </div>
+                        )}
+                        
+                        {msg.task.deadline && (
+                          <div className="task-deadline">
+                            Deadline: {msg.task.deadline}
+                          </div>
+                        )}
+                        
+                        {(msg.sender.id === currentUser.id || msg.task.assignee === currentUser.id) && (
                           <div style={{ marginTop: 10 }}>
                             <button 
                               className="decision-button"
@@ -671,45 +984,56 @@
                       </div>
                     )}
                     
-                    {/* Decision Message */}
-                    {msg.type === 'decision' && (
+                    {/* Poll Message */}
+                    {msg.type === 'poll' && (
                       <div className="decision-message">
                         <div className="decision-title">
-                          {msg.decision.title}
+                          {msg.poll.question}
                         </div>
                         
                         <div className="decision-options">
-                          {msg.decision.options.map(option => (
+                          {msg.poll.options.map(option => (
                             <div key={option.id} className="decision-option">
-                              <input 
-                                type="radio" 
-                                id={option.id} 
-                                name={msg.decision.id}
-                                className="option-radio"
-                                disabled={msg.decision.voted}
-                                onChange={() => handleVote(msg.decision.id, option.id)}
-                              />
-                              <label htmlFor={option.id} className="option-label">
-                                {option.label}
-                              </label>
-                              <div className="option-votes">
-                                ({option.votes} votes)
-                              </div>
+                              {!msg.poll.voted ? (
+                                <>
+                                  <input 
+                                    type="radio" 
+                                    id={`${msg.poll.id}_${option.id}`}
+                                    name={msg.poll.id}
+                                    onChange={() => handleVote(msg.poll.id, option.id)}
+                                  />
+                                  <label htmlFor={`${msg.poll.id}_${option.id}`} className="option-label">
+                                    {option.text}
+                                  </label>
+                                </>
+                              ) : (
+                                <>
+                                  <div className="option-label">
+                                    {option.text}
+                                  </div>
+                                  <div className="option-votes">
+                                    ({option.votes} votes)
+                                  </div>
+                                </>
+                              )}
                             </div>
                           ))}
                         </div>
                         
-                        {msg.decision.voted && (
+                        {msg.poll.voted && (
                           <div style={{ marginTop: 8, fontSize: 12, color: '#00B894' }}>
-                            <i className="fas fa-check"></i> Thanks for voting!
+                            <i className="fas fa-check"></i> You voted in this poll
                           </div>
                         )}
                       </div>
                     )}
                     
-                    {/* File Attachment */}
+                    {/* File Message */}
                     {msg.type === 'file' && (
-                      <div className="file-attachment">
+                      <div 
+                        className="file-attachment"
+                        onClick={() => window.open(msg.file.url, '_blank')}
+                      >
                         <i className="fas fa-file-alt file-icon"></i>
                         <div className="file-name">
                           {msg.file.name}
@@ -727,39 +1051,263 @@
                       <button className="message-action">
                         <i className="fas fa-reply"></i> Reply
                       </button>
-                      <button className="message-action">
-                        <i className="fas fa-ellipsis-h"></i>
-                      </button>
                     </div>
                   </div>
                 </div>
               ))}
+              
+              {otherTyping && (
+                <div className="typing-indicator">
+                  <div className="typing-dot"></div>
+                  <div className="typing-dot"></div>
+                  <div className="typing-dot"></div>
+                  <span style={{ marginLeft: '8px', fontSize: '12px', color: '#7f8c8d' }}>
+                    Someone is typing...
+                  </span>
+                </div>
+              )}
+              
               <div ref={messagesEndRef} />
             </div>
             
             <div className="input-area">
+              {file && (
+                <div style={{ 
+                  marginBottom: '10px',
+                  padding: '10px',
+                  background: '#f1f3fe',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <div>
+                    <i className="fas fa-file-alt" style={{ marginRight: '8px' }}></i>
+                    {file.name}
+                  </div>
+                  <button 
+                    onClick={() => setFile(null)}
+                    style={{ 
+                      background: 'none',
+                      border: 'none',
+                      color: '#E17055',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <i className="fas fa-times"></i>
+                  </button>
+                </div>
+              )}
+              
+              {uploadProgress > 0 && (
+                <div style={{ marginBottom: '10px' }}>
+                  <div style={{ 
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontSize: '12px',
+                    marginBottom: '4px'
+                  }}>
+                    <span>Uploading...</span>
+                    <span>{uploadProgress}%</span>
+                  </div>
+                  <div className="progress-bar">
+                    <div 
+                      className="progress-fill" 
+                      style={{ width: `${uploadProgress}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
+              
               <form onSubmit={handleSendMessage}>
                 <textarea
                   className="message-input"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder={`Message ${activeChannel === 'general' ? 'General' : activeChannel}...`}
+                  placeholder={`Message ${channels.find(c => c.id === activeChannel)?.name || 'General'}...`}
                 />
                 
                 <div className="input-actions">
                   <div className="action-icons">
-                    <i className="fas fa-paperclip input-icon"></i>
-                    <i className="fas fa-tasks input-icon"></i>
-                    <i className="fas fa-poll input-icon"></i>
+                    <input 
+                      type="file" 
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      style={{ display: 'none' }}
+                    />
+                    <i 
+                      className="fas fa-paperclip input-icon"
+                      onClick={() => fileInputRef.current.click()}
+                    ></i>
+                    <i 
+                      className="fas fa-tasks input-icon"
+                      onClick={() => setShowTaskModal(true)}
+                    ></i>
+                    <i 
+                      className="fas fa-poll input-icon"
+                      onClick={() => setShowPollModal(true)}
+                    ></i>
                   </div>
                   
-                  <button type="submit" className="send-button">
+                  <button 
+                    type="submit" 
+                    className="send-button"
+                    disabled={!message.trim() && !file}
+                  >
                     Send <i className="fas fa-paper-plane"></i>
                   </button>
                 </div>
               </form>
             </div>
           </div>
+          
+          {/* Task Modal */}
+          {showTaskModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <div className="modal-header">
+                  <div className="modal-title">Create New Task</div>
+                  <button 
+                    className="modal-close"
+                    onClick={() => setShowTaskModal(false)}
+                  >
+                    &times;
+                  </button>
+                </div>
+                
+                <form onSubmit={handleCreateTask}>
+                  <div className="form-group">
+                    <label className="form-label">Task Title</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={taskForm.title}
+                      onChange={(e) => setTaskForm({...taskForm, title: e.target.value})}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label className="form-label">Description</label>
+                    <textarea
+                      className="form-textarea"
+                      value={taskForm.description}
+                      onChange={(e) => setTaskForm({...taskForm, description: e.target.value})}
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label className="form-label">Deadline</label>
+                    <input
+                      type="date"
+                      className="form-input"
+                      value={taskForm.deadline}
+                      onChange={(e) => setTaskForm({...taskForm, deadline: e.target.value})}
+                    />
+                  </div>
+                  
+                  <div className="form-actions">
+                    <button 
+                      type="button"
+                      className="form-button secondary"
+                      onClick={() => setShowTaskModal(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      type="submit"
+                      className="form-button primary"
+                    >
+                      Create Task
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+          
+          {/* Poll Modal */}
+          {showPollModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <div className="modal-header">
+                  <div className="modal-title">Create New Poll</div>
+                  <button 
+                    className="modal-close"
+                    onClick={() => setShowPollModal(false)}
+                  >
+                    &times;
+                  </button>
+                </div>
+                
+                <form onSubmit={handleCreatePoll}>
+                  <div className="form-group">
+                    <label className="form-label">Question</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={pollForm.question}
+                      onChange={(e) => setPollForm({...pollForm, question: e.target.value})}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label className="form-label">Options</label>
+                    {pollForm.options.map((option, index) => (
+                      <input
+                        key={index}
+                        type="text"
+                        className="form-input"
+                        style={{ marginBottom: '8px' }}
+                        value={option}
+                        onChange={(e) => {
+                          const newOptions = [...pollForm.options];
+                          newOptions[index] = e.target.value;
+                          setPollForm({...pollForm, options: newOptions});
+                        }}
+                        required={index < 2}
+                      />
+                    ))}
+                    
+                    <button
+                      type="button"
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: 'var(--primary)',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        marginTop: '8px'
+                      }}
+                      onClick={() => setPollForm({
+                        ...pollForm,
+                        options: [...pollForm.options, '']
+                      })}
+                    >
+                      <i className="fas fa-plus"></i> Add Option
+                    </button>
+                  </div>
+                  
+                  <div className="form-actions">
+                    <button 
+                      type="button"
+                      className="form-button secondary"
+                      onClick={() => setShowPollModal(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      type="submit"
+                      className="form-button primary"
+                    >
+                      Create Poll
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
         </div>
       );
     }
