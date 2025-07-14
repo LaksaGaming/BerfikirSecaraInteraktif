@@ -3,124 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SecureChat - Aplikasi Chat dengan Login</title>
+  <title>NexaChat Premium</title>
+  <!-- Load React dan Babel dari CDN yang reliable -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Load Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  
+  <!-- Load Font Awesome untuk ikon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    :root {
-      --primary: #6C5CE7;
-      --secondary: #00B894;
-      --dark: #2D3436;
-      --light: #F5F6FA;
-      --danger: #E17055;
-    }
-    
+    /* Reset CSS */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     
     body {
-      background: var(--light);
+      background-color: #f5f7fa;
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
     }
     
-    /* Auth Styles */
-    .auth-container {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      width: 400px;
-      padding: 30px;
-    }
-    
-    .auth-title {
-      text-align: center;
-      margin-bottom: 30px;
-      color: var(--dark);
-    }
-    
-    .auth-form {
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .form-group {
-      margin-bottom: 20px;
-    }
-    
-    .form-label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
-    
-    .form-input {
-      width: 100%;
-      padding: 12px 15px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-    
-    .auth-button {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 6px;
-      font-weight: 500;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    
-    .auth-button.secondary {
-      background: white;
-      color: var(--primary);
-      border: 1px solid var(--primary);
-    }
-    
-    .auth-footer {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 14px;
-    }
-    
-    .auth-link {
-      color: var(--primary);
-      cursor: pointer;
-      font-weight: 500;
-    }
-    
-    .error-message {
-      color: var(--danger);
-      font-size: 13px;
-      margin-top: 5px;
-    }
-    
-    /* App Styles */
+    /* Container Aplikasi */
     .app-container {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      height: 100vh;
       width: 100%;
       max-width: 1200px;
+      height: 90vh;
       background: white;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       overflow: hidden;
+      display: grid;
+      grid-template-columns: 300px 1fr;
     }
     
+    /* Sidebar Styles */
     .sidebar {
-      background: var(--dark);
+      background: #2D3436;
       color: white;
       display: flex;
       flex-direction: column;
@@ -134,8 +63,10 @@
     .sidebar-title {
       font-size: 18px;
       font-weight: 600;
+      color: white;
     }
     
+    /* Chat List Styles */
     .chat-list {
       flex: 1;
       overflow-y: auto;
@@ -152,46 +83,7 @@
       background: rgba(255,255,255,0.1);
     }
     
-    .chat-item.active {
-      background: var(--primary);
-    }
-    
-    .sidebar-footer {
-      padding: 15px 20px;
-      border-top: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    .user-profile {
-      display: flex;
-      align-items: center;
-    }
-    
-    .user-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--secondary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 12px;
-      font-weight: bold;
-    }
-    
-    .user-name {
-      font-weight: 500;
-    }
-    
-    .logout-button {
-      background: none;
-      border: none;
-      color: var(--danger);
-      margin-top: 5px;
-      font-size: 13px;
-      cursor: pointer;
-    }
-    
-    /* Chat Area */
+    /* Chat Area Styles */
     .chat-area {
       display: flex;
       flex-direction: column;
@@ -200,113 +92,69 @@
     .chat-header {
       padding: 15px 20px;
       border-bottom: 1px solid #eee;
-      display: flex;
-      align-items: center;
     }
     
-    .chat-title {
-      font-weight: 600;
-    }
-    
-    .messages-container {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-      background: #f5f5f5;
-    }
-    
-    .message {
-      display: flex;
-      margin-bottom: 15px;
-    }
-    
-    .message-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--secondary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 12px;
-      font-weight: bold;
-      flex-shrink: 0;
-    }
-    
-    .message-content {
-      max-width: 70%;
-    }
-    
-    .message-sender {
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-    
-    .message-bubble {
+    /* Auth Styles */
+    .auth-container {
       background: white;
-      padding: 10px 15px;
-      border-radius: 18px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      width: 400px;
+      padding: 40px;
     }
     
-    .message-time {
-      font-size: 12px;
-      color: #7f8c8d;
-      margin-top: 5px;
+    .auth-title {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #2D3436;
     }
     
-    .input-area {
-      padding: 15px 20px;
-      border-top: 1px solid #eee;
-      background: white;
+    .form-group {
+      margin-bottom: 20px;
     }
     
-    .message-input {
+    .form-input {
       width: 100%;
       padding: 12px 15px;
       border: 1px solid #ddd;
-      border-radius: 24px;
-      font-size: 14px;
-      outline: none;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+    
+    .auth-button {
+      background: #6C5CE7;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      width: 100%;
+      cursor: pointer;
+    }
+    
+    /* Tambahan styling untuk versi premium */
+    .message-bubble {
+      background: white;
+      padding: 12px 16px;
+      border-radius: 18px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      max-width: 70%;
     }
     
     .typing-indicator {
       display: flex;
       align-items: center;
-      margin-left: 48px;
-      margin-bottom: 10px;
+      color: #636E72;
       font-size: 13px;
-      color: #7f8c8d;
     }
     
-    .typing-dot {
-      width: 8px;
-      height: 8px;
-      background: #7f8c8d;
-      border-radius: 50%;
-      margin-right: 4px;
-      animation: typing 1.4s infinite ease-in-out;
+    /* Animasi */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
-    .typing-dot:nth-child(1) {
-      animation-delay: 0s;
-    }
-    
-    .typing-dot:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-    
-    .typing-dot:nth-child(3) {
-      animation-delay: 0.4s;
-    }
-    
-    @keyframes typing {
-      0%, 60%, 100% {
-        transform: translateY(0);
-      }
-      30% {
-        transform: translateY(-5px);
-      }
+    .message {
+      animation: fadeIn 0.3s ease;
     }
   </style>
 </head>
@@ -315,8 +163,8 @@
 
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
-
-    // Firebase Configuration
+    
+    // Konfigurasi Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCH05exvW9is7JYTqT0PFAzWDJoBji6uWQ",
       authDomain: "interaktifberfikir-70ac0.firebaseapp.com",
@@ -325,48 +173,48 @@
       messagingSenderId: "931930581619",
       appId: "1:931930581619:web:561a85ddcdfd478638d806"
     };
-
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    
+    // Inisialisasi Firebase dengan error handling
+    let app, auth, db;
+    try {
+      app = firebase.initializeApp(firebaseConfig);
+      auth = firebase.auth();
+      db = firebase.firestore();
+      console.log("Firebase initialized successfully");
+    } catch (error) {
+      console.error("Firebase initialization error:", error);
+    }
 
     function App() {
       const [user, setUser] = useState(null);
-      const [isLogin, setIsLogin] = useState(true);
       const [email, setEmail] = useState('test@example.com');
       const [password, setPassword] = useState('123456');
       const [error, setError] = useState('');
       const [loading, setLoading] = useState(false);
       
-      // Chat states
+      // State untuk chat
       const [activeChat, setActiveChat] = useState(null);
       const [chats, setChats] = useState([]);
       const [messages, setMessages] = useState([]);
       const [message, setMessage] = useState('');
-      const [isTyping, setIsTyping] = useState(false);
-      const [otherTyping, setOtherTyping] = useState(false);
       const messagesEndRef = useRef(null);
 
-      // Handle authentication
-      const handleAuth = async (e) => {
+      // Handle login
+      const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
         
         try {
-          if (isLogin) {
-            await auth.signInWithEmailAndPassword(email, password);
-          } else {
-            await auth.createUserWithEmailAndPassword(email, password);
-          }
+          await auth.signInWithEmailAndPassword(email, password);
         } catch (err) {
           setError(err.message);
+          console.error("Login error:", err);
         } finally {
           setLoading(false);
         }
       };
-      
+
       // Handle logout
       const handleLogout = async () => {
         try {
@@ -375,25 +223,24 @@
           console.error("Logout error:", err);
         }
       };
-      
-      // Listen for auth state changes
+
+      // Listen for auth changes
       useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
           if (user) {
             setUser({
-              uid: user.uid,
               email: user.email,
+              uid: user.uid,
               name: user.email.split('@')[0],
               avatar: user.email.charAt(0).toUpperCase()
             });
             
-            // Load demo chats
-            const demoChats = [
-              { id: 'chat1', name: 'General Chat', lastMessage: 'Welcome to the group!' },
-              { id: 'chat2', name: 'Team Discussion', lastMessage: 'Meeting at 3pm' }
-            ];
-            setChats(demoChats);
-            setActiveChat(demoChats[0].id);
+            // Load dummy chats
+            setChats([
+              { id: '1', name: 'General Chat', lastMessage: 'Welcome to NexaChat!' },
+              { id: '2', name: 'Support', lastMessage: 'How can we help you?' }
+            ]);
+            setActiveChat('1');
           } else {
             setUser(null);
           }
@@ -401,139 +248,58 @@
         
         return () => unsubscribe();
       }, []);
-      
-      // Load messages when chat changes
-      useEffect(() => {
-        if (!activeChat) return;
-        
-        // Demo messages
-        const demoMessages = [
-          {
-            id: 'msg1',
-            sender: { id: 'user1', name: 'Admin', avatar: 'A' },
-            text: 'Welcome to the chat!',
-            timestamp: new Date(Date.now() - 3600000)
-          },
-          {
-            id: 'msg2',
-            sender: { id: user?.uid, name: 'You', avatar: user?.avatar },
-            text: 'Thanks! Glad to be here.',
-            timestamp: new Date(Date.now() - 1800000)
-          }
-        ];
-        setMessages(demoMessages);
-      }, [activeChat, user]);
-      
+
       // Auto-scroll to bottom
       useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
       }, [messages]);
-      
+
       // Send message
-      const sendMessage = async (e) => {
+      const sendMessage = (e) => {
         e.preventDefault();
-        if (!message.trim() || !user) return;
+        if (!message.trim()) return;
         
         const newMessage = {
-          id: Date.now().toString(),
-          sender: {
-            id: user.uid,
-            name: 'You',
-            avatar: user.avatar
-          },
+          id: Date.now(),
           text: message,
+          sender: user.uid,
           timestamp: new Date()
         };
         
         setMessages([...messages, newMessage]);
         setMessage('');
-        
-        // Simulate reply
-        setTimeout(() => {
-          const replyMessage = {
-            id: Date.now().toString(),
-            sender: {
-              id: 'bot1',
-              name: 'Bot',
-              avatar: 'B'
-            },
-            text: 'Thanks for your message!',
-            timestamp: new Date()
-          };
-          setMessages(prev => [...prev, replyMessage]);
-        }, 1000);
-      };
-      
-      // Format time
-      const formatTime = (date) => {
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       };
 
       if (!user) {
         return (
           <div className="auth-container">
-            <h2 className="auth-title">
-              {isLogin ? 'MASUK UNTUK MEMULAI CHAT' : 'Create Account'}
-            </h2>
-            
-            <form className="auth-form" onSubmit={handleAuth}>
+            <h2 className="auth-title">Welcome to NexaChat</h2>
+            <form onSubmit={handleLogin}>
               <div className="form-group">
-                <label className="form-label">Email</label>
                 <input
                   type="email"
                   className="form-input"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
                   required
                 />
               </div>
-              
               <div className="form-group">
-                <label className="form-label">Password</label>
                 <input
                   type="password"
                   className="form-input"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
                   required
-                  minLength="6"
                 />
               </div>
-              
-              {error && <div className="error-message">{error}</div>}
-              
-              <button 
-                type="submit" 
-                className="auth-button"
-                disabled={loading}
-              >
-                {loading ? 'Processing...' : isLogin ? 'Login' : 'Register'}
+              {error && <div style={{color: 'red', marginBottom: '15px'}}>{error}</div>}
+              <button className="auth-button" disabled={loading}>
+                {loading ? 'Logging in...' : 'Login'}
               </button>
             </form>
-            
-            <div className="auth-footer">
-              {isLogin ? (
-                <p>
-                  Don't have an account?{' '}
-                  <span 
-                    className="auth-link" 
-                    onClick={() => setIsLogin(false)}
-                  >
-                    Register
-                  </span>
-                </p>
-              ) : (
-                <p>
-                  Already have an account?{' '}
-                  <span 
-                    className="auth-link" 
-                    onClick={() => setIsLogin(true)}
-                  >
-                    Login
-                  </span>
-                </p>
-              )}
-            </div>
           </div>
         );
       }
@@ -543,7 +309,7 @@
           {/* Sidebar */}
           <div className="sidebar">
             <div className="sidebar-header">
-              <div className="sidebar-title">SecureChat</div>
+              <div className="sidebar-title">NexaChat</div>
             </div>
             
             <div className="chat-list">
@@ -553,20 +319,38 @@
                   className={`chat-item ${activeChat === chat.id ? 'active' : ''}`}
                   onClick={() => setActiveChat(chat.id)}
                 >
-                  <div style={{ fontWeight: 500 }}>{chat.name}</div>
-                  <div style={{ fontSize: 13, opacity: 0.8 }}>{chat.lastMessage}</div>
+                  <div style={{fontWeight: '500'}}>{chat.name}</div>
+                  <div style={{fontSize: '13px', opacity: 0.8}}>{chat.lastMessage}</div>
                 </div>
               ))}
             </div>
             
-            <div className="sidebar-footer">
-              <div className="user-profile">
-                <div className="user-avatar">{user.avatar}</div>
+            <div style={{padding: '15px', borderTop: '1px solid rgba(255,255,255,0.1)'}}>
+              <div style={{display: 'flex', alignItems: 'center'}}>
+                <div style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  background: '#00B894',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginRight: '12px',
+                  fontWeight: 'bold'
+                }}>
+                  {user.avatar}
+                </div>
                 <div>
-                  <div className="user-name">{user.name}</div>
+                  <div style={{fontWeight: '500'}}>{user.name}</div>
                   <button 
-                    className="logout-button"
                     onClick={handleLogout}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#E17055',
+                      fontSize: '13px',
+                      cursor: 'pointer'
+                    }}
                   >
                     Logout
                   </button>
@@ -578,73 +362,84 @@
           {/* Chat Area */}
           <div className="chat-area">
             <div className="chat-header">
-              <div className="chat-title">
-                {chats.find(c => c.id === activeChat)?.name || 'Chat'}
-              </div>
+              <h3>{chats.find(c => c.id === activeChat)?.name || 'Chat'}</h3>
             </div>
             
-            <div className="messages-container">
-              {messages.map(msg => (
-                <div 
-                  key={msg.id} 
-                  className="message"
-                  style={{ 
-                    justifyContent: msg.sender.id === user.uid ? 'flex-end' : 'flex-start',
-                    marginLeft: msg.sender.id === user.uid ? 'auto' : '0'
-                  }}
-                >
-                  {msg.sender.id !== user.uid && (
-                    <div className="message-avatar">
-                      {msg.sender.avatar}
-                    </div>
-                  )}
-                  
-                  <div className="message-content">
-                    {msg.sender.id !== user.uid && (
-                      <div className="message-sender">
-                        {msg.sender.name}
-                      </div>
-                    )}
-                    
+            <div style={{flex: 1, padding: '20px', overflowY: 'auto', background: '#f5f5f5'}}>
+              {messages.length === 0 ? (
+                <div style={{textAlign: 'center', color: '#636E72', padding: '40px'}}>
+                  <i className="fas fa-comments" style={{fontSize: '48px', marginBottom: '15px', opacity: 0.3}}></i>
+                  <p>No messages yet. Start the conversation!</p>
+                </div>
+              ) : (
+                messages.map(msg => (
+                  <div 
+                    key={msg.id}
+                    style={{
+                      display: 'flex',
+                      marginBottom: '15px',
+                      justifyContent: msg.sender === user.uid ? 'flex-end' : 'flex-start'
+                    }}
+                  >
                     <div className="message-bubble">
                       {msg.text}
                     </div>
-                    
-                    <div className="message-time">
-                      {formatTime(msg.timestamp)}
-                    </div>
                   </div>
-                </div>
-              ))}
-              
-              {otherTyping && (
-                <div className="typing-indicator">
-                  <div className="typing-dot"></div>
-                  <div className="typing-dot"></div>
-                  <div className="typing-dot"></div>
-                  <span style={{ marginLeft: '5px' }}>typing...</span>
-                </div>
+                ))
               )}
-              
               <div ref={messagesEndRef} />
             </div>
             
-            <form className="input-area" onSubmit={sendMessage}>
-              <input
-                type="text"
-                className="message-input"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Type a message..."
-              />
+            <form onSubmit={sendMessage} style={{padding: '15px', borderTop: '1px solid #eee'}}>
+              <div style={{display: 'flex', gap: '10px'}}>
+                <input
+                  type="text"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Type a message..."
+                  style={{
+                    flex: 1,
+                    padding: '12px 15px',
+                    border: '1px solid #ddd',
+                    borderRadius: '24px',
+                    outline: 'none'
+                  }}
+                />
+                <button 
+                  type="submit"
+                  style={{
+                    background: '#6C5CE7',
+                    color: 'white',
+                    border: 'none',
+                    width: '42px',
+                    height: '42px',
+                    borderRadius: '50%',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <i className="fas fa-paper-plane"></i>
+                </button>
+              </div>
             </form>
           </div>
         </div>
       );
     }
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
+    // Render aplikasi dengan error handling
+    try {
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+    } catch (error) {
+      console.error("Error rendering app:", error);
+      document.getElementById('root').innerHTML = `
+        <div style="color: red; padding: 20px; text-align: center;">
+          <h2>Application Error</h2>
+          <p>${error.message}</p>
+          <p>Please check console for details.</p>
+        </div>
+      `;
+    }
   </script>
 </body>
 </html>
