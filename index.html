@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>InteraktifBerfikir | Portofolio</title>
+  <title>Laksmana | Portofolio Afro Klasik</title>
   <link rel="icon" type="image/png" href="https://i.ibb.co/hJ24JGZs/Chat-GPT-Image-21-Apr-2025-06-32-08.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
@@ -13,12 +13,16 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css">
   <style>
     :root {
-      --sky: #57c7f1;
-      --dark: #121212;
-      --light: #ffffff;
+      --primary: #E8B959;
+      --secondary: #5E3023;
+      --accent: #D85A42;
+      --dark: #1A120B;
+      --light: #F5F5DC;
       --success: #4CAF50;
-      --danger: #f44336;
-      --warning: #ff9800;
+      --danger: #D85A42;
+      --warning: #FF9800;
+      --text: #3A2D1F;
+      --text-light: #F5F5DC;
     }
 
     html {
@@ -32,54 +36,76 @@
     }
 
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Playfair Display', serif;
       background: var(--light);
-      color: #333;
+      color: var(--text);
       transition: background 0.3s, color 0.3s;
+      line-height: 1.6;
     }
 
     body.dark {
       background: var(--dark);
-      color: #fff;
+      color: var(--text-light);
     }
 
     header {
       position: sticky;
       top: 0;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(245, 245, 220, 0.95);
       padding: 1rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       z-index: 1000;
       transition: background 0.3s;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
     body.dark header {
-      background: rgba(18, 18, 18, 0.95);
+      background: rgba(26, 18, 11, 0.95);
     }
 
     .logo {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       font-weight: bold;
-      color: var(--sky);
+      color: var(--primary);
+      font-family: 'Abril Fatface', cursive;
+      letter-spacing: 1px;
     }
 
     nav a {
       margin: 0 1rem;
       text-decoration: none;
       color: inherit;
-      font-weight: bold;
+      font-weight: 500;
       transition: 0.3s;
+      position: relative;
+      font-size: 1.1rem;
     }
 
     nav a:hover {
-      color: var(--sky);
+      color: var(--primary);
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -5px;
+      left: 0;
+      background-color: var(--primary);
+      transition: width 0.3s;
+    }
+
+    nav a:hover::after {
+      width: 100%;
     }
 
     .hero {
       height: 100vh;
-      background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb');
+      background: linear-gradient(rgba(26, 18, 11, 0.7), rgba(26, 18, 11, 0.7)), 
+                  url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
       background-size: cover;
       background-position: center;
       display: flex;
@@ -102,122 +128,269 @@
     .hero-content {
       position: relative;
       z-index: 2;
+      max-width: 800px;
+      padding: 0 2rem;
     }
 
     .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+      font-family: 'Abril Fatface', cursive;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
 
     .hero p {
-      font-size: 1.2rem;
+      font-size: 1.4rem;
+      margin: 0 auto 2rem;
       max-width: 600px;
-      margin: 0 auto;
+      font-style: italic;
+    }
+
+    .hero-btn {
+      display: inline-block;
+      background: var(--primary);
+      color: var(--dark);
+      padding: 0.8rem 2rem;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s;
+      border: 2px solid var(--primary);
+    }
+
+    .hero-btn:hover {
+      background: transparent;
+      color: var(--primary);
+      transform: translateY(-3px);
     }
 
     section {
-      padding: 4rem 2rem;
+      padding: 5rem 2rem;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 3rem;
+      font-size: 2.5rem;
+      color: var(--primary);
+      font-family: 'Abril Fatface', cursive;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: var(--primary);
+      margin: 0.5rem auto;
     }
 
     .card {
       background: white;
-      padding: 2rem;
-      border-radius: 1rem;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      padding: 3rem;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
       margin: 1rem auto;
-      max-width: 800px;
-      transition: background 0.3s, box-shadow 0.3s;
+      max-width: 900px;
+      transition: all 0.3s;
+      border: 1px solid rgba(232, 185, 89, 0.3);
     }
 
     body.dark .card {
-      background: #1e1e1e;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      background: #2A2118;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      border-color: rgba(232, 185, 89, 0.2);
     }
 
     .gallery {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
     }
 
-    .gallery img {
-      max-width: 300px;
-      border-radius: 1rem;
-      cursor: pointer;
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s;
+      aspect-ratio: 1/1;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.1);
+    }
+
+    .gallery-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      color: white;
+      padding: 1rem;
+      transform: translateY(100%);
       transition: transform 0.3s;
     }
 
-    .gallery img:hover {
-      transform: scale(1.05);
+    .gallery-item:hover .gallery-caption {
+      transform: translateY(0);
     }
 
     .skills .skill {
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
     }
 
     .skill p {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.8rem;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
     }
 
     .skill-bar-container {
       width: 100%;
-      height: 20px;
-      background-color: #f0f0f0;
+      height: 12px;
+      background-color: #e0e0e0;
       border-radius: 10px;
       overflow: hidden;
     }
 
     body.dark .skill-bar-container {
-      background-color: #2a2a2a;
+      background-color: #3A2D1F;
     }
 
     .skill-bar {
       height: 100%;
-      background-color: var(--sky);
+      background: linear-gradient(90deg, var(--primary), var(--accent));
       width: 0;
       border-radius: 10px;
       transition: width 1.5s ease-out;
+      position: relative;
+    }
+
+    .skill-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, 
+                rgba(255,255,255,0.3) 0%, 
+                rgba(255,255,255,0.1) 100%);
+      border-radius: 10px;
     }
 
     .testimonial {
       font-style: italic;
-      background-color: #f5f5f5;
-      padding: 1.5rem;
-      border-left: 5px solid var(--sky);
-      margin-bottom: 1rem;
-      border-radius: 0.5rem;
-      transition: background-color 0.3s;
+      background-color: rgba(232, 185, 89, 0.1);
+      padding: 2rem;
+      border-left: 5px solid var(--primary);
+      margin-bottom: 1.5rem;
+      border-radius: 8px;
+      transition: all 0.3s;
+      position: relative;
     }
 
     body.dark .testimonial {
-      background-color: #2a2a2a;
+      background-color: rgba(26, 18, 11, 0.5);
+    }
+
+    .testimonial::before {
+      content: '\201C';
+      font-size: 4rem;
+      color: var(--primary);
+      opacity: 0.2;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-family: serif;
+    }
+
+    .testimonial p:first-of-type {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      line-height: 1.8;
+    }
+
+    .testimonial-author {
+      font-weight: bold;
+      color: var(--primary);
+      margin-top: 1rem;
+      font-style: normal;
     }
 
     footer {
       text-align: center;
-      padding: 2rem;
-      background: #eee;
+      padding: 3rem 2rem;
+      background: var(--secondary);
+      color: white;
       transition: background 0.3s;
     }
 
     body.dark footer {
-      background: #1a1a1a;
+      background: #1A120B;
+    }
+
+    .footer-logo {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      font-family: 'Abril Fatface', cursive;
+    }
+
+    .footer-text {
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+    .socials {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
     }
 
     .socials a {
-      margin: 0 0.5rem;
-      color: #333;
-      font-size: 1.2rem;
-      transition: 0.3s;
-    }
-
-    body.dark .socials a {
-      color: #fff;
+      color: white;
+      font-size: 1.5rem;
+      transition: all 0.3s;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
     }
 
     .socials a:hover {
-      color: var(--sky);
+      color: var(--primary);
+      background: rgba(232, 185, 89, 0.2);
+      transform: translateY(-5px);
+    }
+
+    .copyright {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      opacity: 0.8;
     }
 
     #toTopBtn {
@@ -225,23 +398,25 @@
       bottom: 20px;
       right: 20px;
       z-index: 99;
-      background-color: var(--sky);
-      color: white;
+      background-color: var(--primary);
+      color: var(--dark);
       border: none;
-      padding: 12px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       cursor: pointer;
       display: none;
       font-size: 1.2rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       transition: all 0.3s;
     }
 
     #toTopBtn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transform: translateY(-5px) scale(1.1);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     }
 
+    /* Loader styles */
     #loader {
       position: fixed;
       width: 100vw;
@@ -257,50 +432,96 @@
 
     .loader-content {
       text-align: center;
-      margin-top: 20px;
-      color: white;
-      font-size: 1.2rem;
+      margin-top: 30px;
+      color: var(--primary);
+      font-size: 1.5rem;
+      font-family: 'Abril Fatface', cursive;
     }
 
-    .spinner {
-      border: 5px solid rgba(255, 255, 255, 0.3);
+    .afro-spinner {
+      width: 80px;
+      height: 80px;
+      position: relative;
+    }
+
+    .afro-spinner::before,
+    .afro-spinner::after {
+      content: '';
+      position: absolute;
       border-radius: 50%;
-      border-top: 5px solid var(--sky);
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
+      animation: afroSpin 2s linear infinite;
     }
 
-    @keyframes spin {
+    .afro-spinner::before {
+      width: 100%;
+      height: 100%;
+      border: 8px solid transparent;
+      border-top-color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .afro-spinner::after {
+      width: 60%;
+      height: 60%;
+      top: 20%;
+      left: 20%;
+      border: 8px solid transparent;
+      border-left-color: var(--accent);
+      border-right-color: var(--accent);
+      animation-direction: reverse;
+    }
+
+    @keyframes afroSpin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
 
+    /* Dark mode toggle */
     #darkToggle {
       cursor: pointer;
       font-size: 1.5rem;
-      transition: transform 0.3s;
+      transition: all 0.3s;
+      color: var(--text);
+      background: rgba(232, 185, 89, 0.1);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body.dark #darkToggle {
+      color: var(--primary);
     }
 
     #darkToggle:hover {
-      transform: rotate(30deg);
+      transform: rotate(30deg) scale(1.1);
+      background: rgba(232, 185, 89, 0.2);
     }
 
+    /* Clock styles */
     #clock {
       position: fixed;
       bottom: 20px;
       left: 20px;
-      background: var(--sky);
-      color: white;
-      padding: 8px 12px;
-      border-radius: 10px;
+      background: var(--primary);
+      color: var(--dark);
+      padding: 10px 15px;
+      border-radius: 30px;
       font-weight: bold;
       font-size: 14px;
-      font-family: monospace;
+      font-family: 'Courier New', monospace;
       z-index: 999;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s;
     }
 
+    #clock:hover {
+      transform: translateY(-3px);
+    }
+
+    /* WhatsApp float button */
     .wa-float {
       position: fixed;
       bottom: 80px;
@@ -314,71 +535,87 @@
       align-items: center;
       justify-content: center;
       font-size: 30px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       transition: all 0.3s ease;
       z-index: 999;
       text-decoration: none;
     }
 
     .wa-float:hover {
-      transform: scale(1.1);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+      transform: scale(1.1) translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
     }
 
     /* Form styles */
     form input,
-    form textarea {
+    form textarea,
+    form select {
       display: block;
       width: 100%;
-      padding: 0.75rem;
-      margin-bottom: 1rem;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
       border: 1px solid #ddd;
       border-radius: 5px;
       font-family: inherit;
       font-size: 1rem;
-      transition: border-color 0.3s, box-shadow 0.3s;
+      transition: all 0.3s;
+      background: rgba(255, 255, 255, 0.8);
     }
 
     body.dark form input,
-    body.dark form textarea {
-      background-color: #2a2a2a;
-      border-color: #444;
-      color: #fff;
+    body.dark form textarea,
+    body.dark form select {
+      background: rgba(58, 45, 31, 0.8);
+      border-color: #3A2D1F;
+      color: var(--text-light);
     }
 
     form input:focus,
-    form textarea:focus {
+    form textarea:focus,
+    form select:focus {
       outline: none;
-      border-color: var(--sky);
-      box-shadow: 0 0 0 2px rgba(87, 199, 241, 0.2);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(232, 185, 89, 0.2);
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--primary);
     }
 
     form button {
-      background-color: var(--sky);
-      color: white;
+      background-color: var(--primary);
+      color: var(--dark);
       border: none;
-      padding: 0.75rem 2rem;
-      border-radius: 5px;
+      padding: 1rem 2.5rem;
+      border-radius: 30px;
       cursor: pointer;
       font-size: 1rem;
       font-weight: bold;
-      transition: background-color 0.3s, transform 0.3s;
+      transition: all 0.3s;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     form button:hover {
-      background-color: #3ab7e8;
-      transform: translateY(-2px);
+      background-color: var(--accent);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(216, 90, 66, 0.3);
     }
 
     /* Success message styles */
     .form-success {
       display: none;
-      background: #4CAF50;
+      background: var(--success);
       color: white;
-      padding: 1.5rem;
-      border-radius: 8px;
+      padding: 2rem;
+      border-radius: 10px;
       text-align: center;
-      margin-top: 1rem;
+      margin-top: 2rem;
       animation: fadeIn 0.5s ease-out;
     }
 
@@ -390,27 +627,32 @@
     /* Finance Section Styles */
     .finance-summary {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin-bottom: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
     }
 
     .summary-card {
-      padding: 1.5rem;
+      padding: 2rem;
       border-radius: 10px;
       text-align: center;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-      transition: transform 0.3s;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+      border-top: 5px solid;
     }
 
     .summary-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
     }
 
     .summary-card h3 {
       margin-top: 0;
-      font-size: 1rem;
+      font-size: 1.1rem;
       color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
     }
 
     body.dark .summary-card h3 {
@@ -418,51 +660,63 @@
     }
 
     .summary-card p {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       font-weight: bold;
-      margin-bottom: 0;
+      margin: 1rem 0 0;
     }
 
     .income-card {
       background: rgba(76, 175, 80, 0.1);
-      border-left: 4px solid var(--success);
+      border-top-color: var(--success);
     }
 
     .expense-card {
-      background: rgba(244, 67, 54, 0.1);
-      border-left: 4px solid var(--danger);
+      background: rgba(216, 90, 66, 0.1);
+      border-top-color: var(--danger);
     }
 
     .balance-card {
-      background: rgba(87, 199, 241, 0.1);
-      border-left: 4px solid var(--sky);
+      background: rgba(232, 185, 89, 0.1);
+      border-top-color: var(--primary);
     }
 
     .tabs {
       display: flex;
-      border-bottom: 1px solid #ddd;
-      margin-bottom: 1.5rem;
+      border-bottom: 2px solid rgba(232, 185, 89, 0.3);
+      margin-bottom: 2rem;
     }
 
     body.dark .tabs {
-      border-bottom-color: #444;
+      border-bottom-color: rgba(232, 185, 89, 0.2);
     }
 
     .tab {
-      padding: 0.75rem 1.5rem;
+      padding: 1rem 2rem;
       cursor: pointer;
       border-bottom: 3px solid transparent;
       transition: all 0.3s;
+      font-weight: 500;
+      position: relative;
     }
 
     .tab.active {
-      border-bottom-color: var(--sky);
-      color: var(--sky);
+      color: var(--primary);
       font-weight: bold;
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary);
     }
 
     .tab-content {
       display: none;
+      animation: fadeIn 0.5s ease-out;
     }
 
     .tab-content.active {
@@ -472,39 +726,50 @@
     .finance-controls {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 1.5rem;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
 
     .filter-group button {
-      padding: 0.5rem 1rem;
+      padding: 0.7rem 1.5rem;
       border: none;
       background: #f0f0f0;
-      border-radius: 5px;
+      border-radius: 30px;
       cursor: pointer;
       transition: all 0.3s;
+      font-weight: 500;
     }
 
     body.dark .filter-group button {
-      background: #333;
-      color: #fff;
+      background: #3A2D1F;
+      color: var(--text-light);
     }
 
     .filter-group button.active {
-      background: var(--sky);
-      color: white;
+      background: var(--primary);
+      color: var(--dark);
     }
 
     .month-filter {
-      padding: 0.5rem;
-      border-radius: 5px;
+      padding: 0.7rem 1rem;
+      border-radius: 30px;
       border: 1px solid #ddd;
       background: white;
+      min-width: 180px;
     }
 
     body.dark .month-filter {
-      background: #2a2a2a;
-      border-color: #444;
-      color: #fff;
+      background: #3A2D1F;
+      border-color: #3A2D1F;
+      color: var(--text-light);
     }
 
     .transaction-list {
@@ -514,21 +779,23 @@
     .transaction-item {
       display: flex;
       justify-content: space-between;
-      padding: 1rem;
-      border-bottom: 1px solid #eee;
-      transition: background 0.3s;
+      align-items: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(232, 185, 89, 0.2);
+      transition: all 0.3s;
     }
 
     body.dark .transaction-item {
-      border-bottom-color: #333;
+      border-bottom-color: rgba(232, 185, 89, 0.1);
     }
 
     .transaction-item:hover {
-      background: rgba(0,0,0,0.03);
+      background: rgba(232, 185, 89, 0.05);
+      transform: translateX(5px);
     }
 
     body.dark .transaction-item:hover {
-      background: rgba(255,255,255,0.03);
+      background: rgba(232, 185, 89, 0.05);
     }
 
     .transaction-details {
@@ -537,6 +804,9 @@
 
     .transaction-amount {
       font-weight: bold;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
     }
 
     .income {
@@ -548,8 +818,9 @@
     }
 
     .transaction-date {
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       color: #666;
+      margin-top: 0.3rem;
     }
 
     body.dark .transaction-date {
@@ -558,20 +829,22 @@
 
     .transaction-category {
       display: inline-block;
-      padding: 0.2rem 0.5rem;
+      padding: 0.3rem 0.8rem;
       border-radius: 20px;
-      font-size: 0.7rem;
-      background: #f0f0f0;
+      font-size: 0.8rem;
+      background: rgba(232, 185, 89, 0.2);
       margin-right: 0.5rem;
+      color: var(--primary);
+      font-weight: 500;
     }
 
     body.dark .transaction-category {
-      background: #333;
+      background: rgba(232, 185, 89, 0.3);
     }
 
     .chart-container {
       position: relative;
-      height: 300px;
+      height: 400px;
       margin-top: 2rem;
     }
 
@@ -582,14 +855,31 @@
       cursor: pointer;
       margin-left: 1rem;
       opacity: 0.7;
-      transition: opacity 0.3s;
+      transition: all 0.3s;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .delete-btn:hover {
       opacity: 1;
+      background: rgba(216, 90, 66, 0.1);
     }
 
     /* Responsive styles */
+    @media (max-width: 992px) {
+      .hero h1 {
+        font-size: 2.8rem;
+      }
+      
+      .section-title {
+        font-size: 2.2rem;
+      }
+    }
+
     @media (max-width: 768px) {
       header {
         flex-direction: column;
@@ -597,7 +887,7 @@
       }
       
       nav {
-        margin-top: 1rem;
+        margin-top: 1.5rem;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
@@ -605,23 +895,27 @@
     
       nav a {
         margin: 0.5rem;
-        font-size: 0.9rem;
+        font-size: 1rem;
       }
       
       .hero h1 {
-        font-size: 2rem;
+        font-size: 2.2rem;
+      }
+      
+      .hero p {
+        font-size: 1.1rem;
       }
       
       section {
-        padding: 2rem 1rem;
+        padding: 3rem 1rem;
       }
       
       .card {
-        padding: 1.5rem;
+        padding: 2rem;
       }
       
-      .gallery img {
-        max-width: 100%;
+      .gallery {
+        grid-template-columns: 1fr;
       }
 
       #clock {
@@ -636,16 +930,52 @@
 
       .finance-controls {
         flex-direction: column;
-        gap: 1rem;
+        align-items: flex-start;
+      }
+      
+      .tabs {
+        flex-wrap: wrap;
+      }
+      
+      .tab {
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 {
+        font-size: 1.8rem;
+      }
+      
+      .section-title {
+        font-size: 1.8rem;
+      }
+      
+      .card {
+        padding: 1.5rem;
+      }
+      
+      .testimonial {
+        padding: 1.5rem;
+      }
+      
+      .testimonial::before {
+        font-size: 3rem;
+      }
+      
+      form button {
+        width: 100%;
       }
     }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
   <div id="loader">
-    <div class="spinner"></div>
-    <div class="loader-content">Memuat Portofolio...</div>
+    <div class="afro-spinner"></div>
+    <div class="loader-content">Laksmana Portofolio</div>
   </div>
 
   <header>
@@ -665,59 +995,84 @@
     <div id="particles-js"></div>
     <div class="hero-content">
       <h1><span id="typed"></span></h1>
-      <p>Selamat datang di website pribadi saya</p>
+      <p>Membawa kehangatan Afrika dalam setiap karya digital</p>
+      <a href="#portfolio" class="hero-btn">Lihat Karya Saya</a>
     </div>
   </section>
 
-  <section id="about" data-aos="fade-up" data-aos-delay="100">
-    <div class="card">
-      <h2>Tentang Saya</h2>
-      <p>Halo! Saya Laksmana, seorang web developer dan kreator digital yang bersemangat membangun hal-hal keren di dunia maya. Saya memiliki pengalaman lebih dari 3 tahun dalam pengembangan website dan aplikasi web.</p>
-      <p>Saya ahli dalam HTML, CSS, JavaScript, dan berbagai framework modern. Saya selalu berusaha menciptakan pengalaman pengguna yang menarik dan solusi teknologi yang inovatif.</p>
-    </div>
-  </section>
-
-  <section id="portfolio" data-aos="fade-up" data-aos-delay="150">
-    <div class="card">
-      <h2>Portofolio</h2>
-      <div class="gallery">
-        <img src="https://i.ibb.co/d4D5TFbg/Chat-GPT-Image-21-Apr-2025-06-20-11.png" alt="Proyek Website E-commerce">
-        <img src="https://i.ibb.co/1JwQW9c9/Chat-GPT-Image-21-Apr-2025-06-44-23.png" alt="Aplikasi Web Dashboard">
-        <img src="https://i.ibb.co/4Yf1L2Y/portfolio3.jpg" alt="Desain Landing Page">
-        <img src="https://i.ibb.co/0jQHhB3/portfolio4.jpg" alt="Aplikasi Mobile UI">
+  <section id="about">
+    <div class="card" data-aos="fade-up">
+      <h2 class="section-title">Tentang Saya</h2>
+      <div style="display: flex; flex-direction: column; gap: 2rem;">
+        <div style="display: flex; align-items: center; gap: 2rem;">
+          <img src="https://i.ibb.co/hR7prtt0/LAKSAGYM2.jpg" alt="Foto Profil" style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 5px solid var(--primary);">
+          <div>
+            <h3 style="color: var(--primary); margin-top: 0;">Laksmana - Web Developer & Desainer</h3>
+            <p>Halo! Saya Laksmana, seorang web developer dan kreator digital yang terinspirasi oleh keindahan budaya Afrika. Saya menggabungkan estetika klasik Afrika dengan teknologi modern untuk menciptakan pengalaman digital yang memukau.</p>
+            <p>Dengan lebih dari 3 tahun pengalaman dalam pengembangan website, saya berspesialisasi dalam menciptakan solusi yang indah, fungsional, dan berpusat pada pengguna.</p>
+          </div>
+        </div>
+        <div>
+          <h4 style="color: var(--primary);">Filosofi Desain</h4>
+          <p>Saya percaya bahwa desain yang baik adalah perpaduan antara bentuk dan fungsi, seperti halnya seni Afrika tradisional yang tidak hanya indah tetapi juga penuh makna dan tujuan. Setiap proyek yang saya kerjakan membawa sentuhan kehangatan dan keaslian Afrika yang klasik.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="skills" class="skills" data-aos="fade-up" data-aos-delay="200">
-    <div class="card">
-      <h2>Skill</h2>
+  <section id="portfolio">
+    <div class="card" data-aos="fade-up">
+      <h2 class="section-title">Portofolio</h2>
+      <div class="gallery">
+        <div class="gallery-item">
+          <img src="https://i.ibb.co/BH36DwGv/LAKSAGYM.jpg" alt="Proyek Gym">
+          <div class="gallery-caption">Desain Website Gym</div>
+        </div>
+        <div class="gallery-item">
+          <img src="https://i.ibb.co/hR7prtt0/LAKSAGYM2.jpg" alt="Proyek Gym 2">
+          <div class="gallery-caption">Aplikasi Fitness Mobile</div>
+        </div>
+        <div class="gallery-item">
+          <img src="https://i.ibb.co/1fCvL4gB/LAKSA3.jpg" alt="Proyek Artis">
+          <div class="gallery-caption">Portofolio Artis</div>
+        </div>
+        <div class="gallery-item">
+          <img src="https://i.ibb.co/sG1w4T2/LAKSA4.jpg" alt="Proyek Personal">
+          <div class="gallery-caption">Karya Fotografi Personal</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" class="skills">
+    <div class="card" data-aos="fade-up">
+      <h2 class="section-title">Skill</h2>
       <div class="skill">
-        <p>HTML</p>
+        <p>HTML <span>90%</span></p>
         <div class="skill-bar-container">
           <div class="skill-bar" data-level="90%"></div>
         </div>
       </div>
       <div class="skill">
-        <p>CSS</p>
+        <p>CSS <span>85%</span></p>
         <div class="skill-bar-container">
           <div class="skill-bar" data-level="85%"></div>
         </div>
       </div>
       <div class="skill">
-        <p>JavaScript</p>
+        <p>JavaScript <span>80%</span></p>
         <div class="skill-bar-container">
           <div class="skill-bar" data-level="80%"></div>
         </div>
       </div>
       <div class="skill">
-        <p>React</p>
+        <p>React <span>75%</span></p>
         <div class="skill-bar-container">
           <div class="skill-bar" data-level="75%"></div>
         </div>
       </div>
       <div class="skill">
-        <p>Node.js</p>
+        <p>Node.js <span>70%</span></p>
         <div class="skill-bar-container">
           <div class="skill-bar" data-level="70%"></div>
         </div>
@@ -725,9 +1080,9 @@
     </div>
   </section>
 
-  <section id="finance" data-aos="fade-up" data-aos-delay="225">
-    <div class="card">
-      <h2>Keuangan Pribadi</h2>
+  <section id="finance">
+    <div class="card" data-aos="fade-up">
+      <h2 class="section-title">Keuangan Pribadi</h2>
       
       <div class="finance-summary">
         <div class="summary-card income-card">
@@ -834,31 +1189,44 @@
     </div>
   </section>
 
-  <section id="testimoni" data-aos="fade-up" data-aos-delay="250">
-    <div class="card">
-      <h2>Testimoni</h2>
+  <section id="testimoni">
+    <div class="card" data-aos="fade-up">
+      <h2 class="section-title">Testimoni</h2>
       <div class="testimonial">
-        <p>"Laksmana sangat profesional dan komunikatif dalam bekerja! Dia memberikan solusi yang tepat untuk kebutuhan website perusahaan kami."</p>
-        <p><strong>- Budi, CEO PT. Maju Jaya</strong></p>
+        <p>"Laksmana membawa sentuhan unik Afrika ke dalam desain web yang modern. Karyanya tidak hanya indah tetapi juga sangat fungsional. Dia memahami kebutuhan klien dengan sangat baik dan selalu memberikan hasil yang melebihi ekspektasi."</p>
+        <p class="testimonial-author">- Budi, CEO PT. Maju Jaya</p>
       </div>
       <div class="testimonial">
-        <p>"Website yang dibuatnya keren banget dan cepat responsif. Proyek selesai tepat waktu dengan hasil melebihi ekspektasi."</p>
-        <p><strong>- Ani, Marketing Manager</strong></p>
+        <p>"Saya sangat terkesan dengan pendekatan kreatif Laksmana. Dia menggabungkan elemen-elemen budaya Afrika dengan teknologi modern untuk menciptakan pengalaman pengguna yang benar-benar unik dan memikat. Proyek kami selesai tepat waktu dengan kualitas yang luar biasa."</p>
+        <p class="testimonial-author">- Ani, Marketing Manager</p>
       </div>
     </div>
   </section>
 
-  <section id="contact" data-aos="fade-up" data-aos-delay="300">
-    <div class="card">
-      <h2>Kontak Saya</h2>
+  <section id="contact">
+    <div class="card" data-aos="fade-up">
+      <h2 class="section-title">Kontak Saya</h2>
       <form id="contactForm" action="https://formspree.io/f/xkgrrjbv" method="POST">
-        <input type="text" name="name" placeholder="Nama" required>
-        <input type="email" name="_replyto" placeholder="Email" required>
-        <textarea name="message" placeholder="Pesan" rows="5" required></textarea>
+        <div>
+          <label for="name">Nama</label>
+          <input type="text" id="name" name="name" placeholder="Nama Anda" required>
+        </div>
+        
+        <div>
+          <label for="email">Email</label>
+          <input type="email" id="email" name="_replyto" placeholder="Email Anda" required>
+        </div>
+        
+        <div>
+          <label for="message">Pesan</label>
+          <textarea id="message" name="message" placeholder="Pesan Anda" rows="5" required></textarea>
+        </div>
+        
         <!-- Hidden fields for Formspree features -->
         <input type="hidden" name="_subject" value="Pesan Baru dari Portofolio Laksmana">
         <input type="hidden" name="_next" value="?submit=success#contact">
         <input type="text" name="_gotcha" style="display:none"> <!-- Anti-spam -->
+        
         <button type="submit">Kirim Pesan</button>
       </form>
       <div id="formSuccess" class="form-success">
@@ -877,13 +1245,15 @@
   <div id="clock"></div>
 
   <footer>
-    <p>&copy; 2025 Interaktif Berfikir. All Rights Reserved.</p>
+    <div class="footer-logo">Laksmana</div>
+    <p class="footer-text">Membawa keindahan dan kehangatan Afrika ke dalam dunia digital</p>
     <div class="socials">
       <a href="https://instagram.com/laksawl" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
       <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
       <a href="https://github.com/LaksaGaming" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
       <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
     </div>
+    <p class="copyright">&copy; 2025 Laksmana. All Rights Reserved.</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js"></script>
@@ -901,7 +1271,7 @@
 
     // Typed.js untuk efek mengetik
     const typed = new Typed("#typed", {
-      strings: ["Halo, saya Laksmana", "Web Developer", "Frontend Specialist", "Pembuat Website Keren"],
+      strings: ["Halo, saya Laksmana", "Web Developer", "Desainer Afro Klasik", "Pencipta Pengalaman Digital"],
       typeSpeed: 60,
       backSpeed: 40,
       loop: true,
@@ -914,7 +1284,7 @@
       setTimeout(() => {
         document.getElementById("loader").style.opacity = '0';
         document.getElementById("loader").style.visibility = 'hidden';
-      }, 500);
+      }, 1500);
     });
 
     // Tombol kembali ke atas
@@ -1003,7 +1373,7 @@
     // Inisialisasi lightGallery
     document.addEventListener('DOMContentLoaded', () => {
       lightGallery(document.querySelector('.gallery'), {
-        selector: 'img',
+        selector: '.gallery-item',
         download: false,
         counter: false,
         enableDrag: false
@@ -1024,11 +1394,11 @@
     particlesJS('particles-js', {
       particles: {
         number: { value: 80, density: { enable: true, value_area: 800 } },
-        color: { value: "#ffffff" },
+        color: { value: "#E8B959" },
         shape: { type: "circle" },
         opacity: { value: 0.5, random: true },
         size: { value: 3, random: true },
-        line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+        line_linked: { enable: true, distance: 150, color: "#E8B959", opacity: 0.4, width: 1 },
         move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
       },
       interactivity: {
@@ -1201,7 +1571,7 @@
               {
                 label: 'Pengeluaran',
                 data: expenseData,
-                backgroundColor: '#f44336',
+                backgroundColor: '#D85A42',
                 borderRadius: 5
               }
             ]
