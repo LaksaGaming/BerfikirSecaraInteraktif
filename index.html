@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Laksmana | Portofolio Data Kerja</title>
+  <title>Laksmana | Portofolio Afro Klasik</title>
   <link rel="icon" type="image/png" href="https://i.ibb.co/hJ24JGZs/Chat-GPT-Image-21-Apr-2025-06-32-08.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
@@ -17,6 +17,9 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
   
+  <!-- Font tambahan untuk login -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --primary: #E8B959;
@@ -875,6 +878,183 @@
       background: rgba(216, 90, 66, 0.1);
     }
 
+    /* Login Page Styles */
+    .login-container {
+      display: flex;
+      min-height: 100vh;
+      background: linear-gradient(rgba(26, 18, 11, 0.8), rgba(26, 18, 11, 0.8)), 
+                  url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .login-wrapper {
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
+      padding: 2rem;
+      background: rgba(245, 245, 220, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      border: 2px solid var(--primary);
+    }
+
+    body.dark .login-wrapper {
+      background: rgba(26, 18, 11, 0.9);
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-header h1 {
+      font-family: 'Cinzel Decorative', cursive;
+      color: var(--primary);
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .login-header p {
+      color: var(--text);
+      font-style: italic;
+    }
+
+    body.dark .login-header p {
+      color: var(--text-light);
+    }
+
+    .login-form .form-group,
+    .register-form .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .login-form label,
+    .register-form label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .login-form input,
+    .register-form input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #ddd;
+      border-radius: 30px;
+      font-size: 1rem;
+      transition: all 0.3s;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    body.dark .login-form input,
+    body.dark .register-form input {
+      background: rgba(58, 45, 31, 0.8);
+      border-color: #3A2D1F;
+      color: var(--text-light);
+    }
+
+    .login-form input:focus,
+    .register-form input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(232, 185, 89, 0.3);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: var(--dark);
+      border: none;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 1rem;
+    }
+
+    .login-btn:hover {
+      background: var(--accent);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(216, 90, 66, 0.3);
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 2rem;
+      color: var(--text);
+    }
+
+    body.dark .login-footer {
+      color: var(--text-light);
+    }
+
+    .login-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .login-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .error-message {
+      color: var(--danger);
+      margin-top: 5px;
+      font-size: 0.9rem;
+    }
+
+    /* African Pattern Decorations */
+    .african-pattern {
+      position: absolute;
+      opacity: 0.1;
+      z-index: 0;
+    }
+
+    .pattern-1 {
+      top: 20px;
+      left: 20px;
+      width: 150px;
+      height: 150px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23E8B959" d="M50 0 L100 50 L50 100 L0 50 Z"/></svg>');
+      background-size: contain;
+    }
+
+    .pattern-2 {
+      bottom: 20px;
+      right: 20px;
+      width: 120px;
+      height: 120px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle fill="%23D85A42" cx="50" cy="50" r="40"/></svg>');
+      background-size: contain;
+    }
+
+    /* Switch between login and register */
+    .auth-switch {
+      display: none;
+    }
+
+    .auth-switch:checked ~ .login-form {
+      display: none;
+    }
+
+    .auth-switch:checked ~ .register-form {
+      display: block;
+    }
+
+    .register-form {
+      display: none;
+    }
+
     /* Responsive styles */
     @media (max-width: 992px) {
       .hero h1 {
@@ -947,6 +1127,11 @@
         padding: 0.8rem 1.2rem;
         font-size: 0.9rem;
       }
+
+      .login-wrapper {
+        width: 90%;
+        padding: 1.5rem;
+      }
     }
 
     @media (max-width: 480px) {
@@ -973,293 +1158,364 @@
       form button {
         width: 100%;
       }
+
+      .login-header h1 {
+        font-size: 2rem;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div id="loader">
-    <div class="afro-spinner"></div>
-    <div class="loader-content">Laksmana Portofolio</div>
+  <!-- Login Page -->
+  <div id="login-page" class="login-container">
+    <div class="african-pattern pattern-1"></div>
+    <div class="african-pattern pattern-2"></div>
+    
+    <div class="login-wrapper">
+      <div class="login-header">
+        <h1>Laksmana</h1>
+        <p>Masuk untuk mengakses portofolio lengkap</p>
+      </div>
+      
+      <input type="checkbox" id="switch-form" class="auth-switch">
+      
+      <!-- Login Form -->
+      <form id="login-form" class="login-form">
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" required>
+        </div>
+        
+        <button type="submit" class="login-btn">Masuk</button>
+        
+        <div class="login-footer">
+          Belum punya akun? <label for="switch-form" style="cursor: pointer; color: var(--primary);">Daftar disini</label>
+        </div>
+      </form>
+      
+      <!-- Register Form -->
+      <form id="register-form" class="register-form">
+        <div class="form-group">
+          <label for="register-name">Nama Lengkap</label>
+          <input type="text" id="register-name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="register-email">Email</label>
+          <input type="email" id="register-email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="register-password">Password</label>
+          <input type="password" id="register-password" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="register-confirm">Konfirmasi Password</label>
+          <input type="password" id="register-confirm" required>
+        </div>
+        
+        <button type="submit" class="login-btn">Daftar</button>
+        
+        <div class="login-footer">
+          Sudah punya akun? <label for="switch-form" style="cursor: pointer; color: var(--primary);">Masuk disini</label>
+        </div>
+      </form>
+    </div>
   </div>
 
-  <header>
-    <div class="logo">Laksmana</div>
-    <nav>
-      <a href="#about">Tentang</a>
-      <a href="#portfolio">Portofolio</a>
-      <a href="#skills">Skill</a>
-      <a href="#finance">Keuangan</a>
-      <a href="#testimoni">Testimoni</a>
-      <a href="#contact">Kontak</a>
-      <i id="darkToggle" class="fas fa-moon"></i>
-    </nav>
-  </header>
-
-  <section class="hero">
-    <div id="particles-js"></div>
-    <div class="hero-content">
-      <h1><span id="typed"></span></h1>
-      <p>Membawa kehangatan Afrika dalam setiap karya digital</p>
-      <a href="#portfolio" class="hero-btn">Lihat Karya Saya</a>
+  <!-- Main Content (akan ditampilkan setelah login) -->
+  <div id="main-content" style="display: none;">
+    <div id="loader">
+      <div class="afro-spinner"></div>
+      <div class="loader-content">Laksmana Portofolio</div>
     </div>
-  </section>
 
-  <section id="about">
-    <div class="card" data-aos="fade-up">
-      <h2 class="section-title">Tentang Saya</h2>
-      <div style="display: flex; flex-direction: column; gap: 2rem;">
-        <div style="display: flex; align-items: center; gap: 2rem;">
-          <img src="https://ik.imagekit.io/gcv2ysaez/LAKSAGYM.jpg?updatedAt=1753315908942" alt="Foto Profil" style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 5px solid var(--primary);">
-          <div>
-            <h3 style="color: var(--primary); margin-top: 0;">Laksmana - Web Developer & Desainer</h3>
-            <p>Halo! Saya Laksmana, seorang web developer dan kreator digital yang terinspirasi oleh keindahan budaya Afrika. Saya menggabungkan estetika klasik Afrika dengan teknologi modern untuk menciptakan pengalaman digital yang memukau.</p>
-            <p>Dengan lebih dari 3 tahun pengalaman dalam pengembangan website, saya berspesialisasi dalam menciptakan solusi yang indah, fungsional, dan berpusat pada pengguna.</p>
-          </div>
-        </div>
-        <div>
-          <h4 style="color: var(--primary);">Filosofi Desain</h4>
-          <p>Saya percaya bahwa desain yang baik adalah perpaduan antara bentuk dan fungsi, seperti halnya seni Afrika tradisional yang tidak hanya indah tetapi juga penuh makna dan tujuan. Setiap proyek yang saya kerjakan membawa sentuhan kehangatan dan keaslian Afrika yang klasik.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+    <header>
+      <div class="logo">Laksmana</div>
+      <nav>
+        <a href="#about">Tentang</a>
+        <a href="#portfolio">Portofolio</a>
+        <a href="#skills">Skill</a>
+        <a href="#finance">Keuangan</a>
+        <a href="#testimoni">Testimoni</a>
+        <a href="#contact">Kontak</a>
+        <i id="darkToggle" class="fas fa-moon"></i>
+        <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i></a>
+      </nav>
+    </header>
 
-  <section id="portfolio">
-    <div class="card" data-aos="fade-up">
-      <h2 class="section-title">Portofolio</h2>
-      <div class="gallery">
-        <div class="gallery-item">
-          <img src="https://ik.imagekit.io/gcv2ysaez/LAKSAGYM.jpg?updatedAt=1753315908942" alt="Proyek Gym">
-          <div class="gallery-caption">Desain Website Gym</div>
-        </div>
-        <div class="gallery-item">
-          <img src="https://ik.imagekit.io/gcv2ysaez/LAKSAGYM2.jpg?updatedAt=1753315908139" alt="Proyek Gym 2">
-          <div class="gallery-caption">Aplikasi Fitness Mobile</div>
-        </div>
-        <div class="gallery-item">
-          <img src="https://ik.imagekit.io/gcv2ysaez/LAKSA3.jpg?updatedAt=1753315907855" alt="Proyek Artis">
-          <div class="gallery-caption">Portofolio Artis</div>
-        </div>
-        <div class="gallery-item">
-          <img src="https://ik.imagekit.io/gcv2ysaez/LAKSA4.jpg?updatedAt=1753314348810" alt="Proyek Personal">
-          <div class="gallery-caption">Karya Fotografi Personal</div>
-        </div>
+    <section class="hero">
+      <div id="particles-js"></div>
+      <div class="hero-content">
+        <h1><span id="typed"></span></h1>
+        <p>Membawa kehangatan Afrika dalam setiap karya digital</p>
+        <a href="#portfolio" class="hero-btn">Lihat Karya Saya</a>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="skills" class="skills">
-    <div class="card" data-aos="fade-up">
-      <h2 class="section-title">Skill</h2>
-      <div class="skill">
-        <p>HTML <span>90%</span></p>
-        <div class="skill-bar-container">
-          <div class="skill-bar" data-level="90%"></div>
-        </div>
-      </div>
-      <div class="skill">
-        <p>CSS <span>85%</span></p>
-        <div class="skill-bar-container">
-          <div class="skill-bar" data-level="85%"></div>
-        </div>
-      </div>
-      <div class="skill">
-        <p>JavaScript <span>80%</span></p>
-        <div class="skill-bar-container">
-          <div class="skill-bar" data-level="80%"></div>
-        </div>
-      </div>
-      <div class="skill">
-        <p>React <span>75%</span></p>
-        <div class="skill-bar-container">
-          <div class="skill-bar" data-level="75%"></div>
-        </div>
-      </div>
-      <div class="skill">
-        <p>Node.js <span>70%</span></p>
-        <div class="skill-bar-container">
-          <div class="skill-bar" data-level="70%"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="finance">
-    <div class="card" data-aos="fade-up">
-      <h2 class="section-title">Keuangan Pribadi</h2>
-      
-      <div class="finance-summary">
-        <div class="summary-card income-card">
-          <h3>Total Pemasukan</h3>
-          <p id="total-income">Rp0</p>
-        </div>
-        <div class="summary-card expense-card">
-          <h3>Total Pengeluaran</h3>
-          <p id="total-expense">Rp0</p>
-        </div>
-        <div class="summary-card balance-card">
-          <h3>Saldo</h3>
-          <p id="total-balance">Rp0</p>
-        </div>
-      </div>
-      
-      <div class="tabs">
-        <div class="tab active" data-tab="transactions">Transaksi</div>
-        <div class="tab" data-tab="stats">Statistik</div>
-        <div class="tab" data-tab="add">Tambah Transaksi</div>
-      </div>
-      
-      <div class="tab-content active" id="transactions-tab">
-        <div class="finance-controls">
-          <div class="filter-group">
-            <button id="filter-all" class="active">Semua</button>
-            <button id="filter-income">Pemasukan</button>
-            <button id="filter-expense">Pengeluaran</button>
+    <section id="about">
+      <div class="card" data-aos="fade-up">
+        <h2 class="section-title">Tentang Saya</h2>
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+          <div style="display: flex; align-items: center; gap: 2rem;">
+            <img src="https://ik.imagekit.io/gcv2ysaez/LAKSAGYM.jpg?updatedAt=1753315908942" alt="Foto Profil" style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 5px solid var(--primary);">
+            <div>
+              <h3 style="color: var(--primary); margin-top: 0;">Laksmana - Web Developer & Desainer</h3>
+              <p>Halo! Saya Laksmana, seorang web developer dan kreator digital yang terinspirasi oleh keindahan budaya Afrika. Saya menggabungkan estetika klasik Afrika dengan teknologi modern untuk menciptakan pengalaman digital yang memukau.</p>
+              <p>Dengan lebih dari 3 tahun pengalaman dalam pengembangan website, saya berspesialisasi dalam menciptakan solusi yang indah, fungsional, dan berpusat pada pengguna.</p>
+            </div>
           </div>
           <div>
-            <select id="month-filter" class="month-filter">
-              <option value="all">Semua Bulan</option>
-              <option value="1">Januari</option>
-              <option value="2">Februari</option>
-              <option value="3">Maret</option>
-              <option value="4">April</option>
-              <option value="5">Mei</option>
-              <option value="6">Juni</option>
-              <option value="7">Juli</option>
-              <option value="8">Agustus</option>
-              <option value="9">September</option>
-              <option value="10">Oktober</option>
-              <option value="11">November</option>
-              <option value="12">Desember</option>
-            </select>
+            <h4 style="color: var(--primary);">Filosofi Desain</h4>
+            <p>Saya percaya bahwa desain yang baik adalah perpaduan antara bentuk dan fungsi, seperti halnya seni Afrika tradisional yang tidak hanya indah tetapi juga penuh makna dan tujuan. Setiap proyek yang saya kerjakan membawa sentuhan kehangatan dan keaslian Afrika yang klasik.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="portfolio">
+      <div class="card" data-aos="fade-up">
+        <h2 class="section-title">Portofolio</h2>
+        <div class="gallery">
+          <div class="gallery-item">
+            <img src="https://ik.imagekit.io/gcv2ysaez/LAKSAGYM.jpg?updatedAt=1753315908942" alt="Proyek Gym">
+            <div class="gallery-caption">Desain Website Gym</div>
+          </div>
+          <div class="gallery-item">
+            <img src="https://ik.imagekit.io/gcv2ysaez/LAKSAGYM2.jpg?updatedAt=1753315908139" alt="Proyek Gym 2">
+            <div class="gallery-caption">Aplikasi Fitness Mobile</div>
+          </div>
+          <div class="gallery-item">
+            <img src="https://ik.imagekit.io/gcv2ysaez/LAKSA3.jpg?updatedAt=1753315907855" alt="Proyek Artis">
+            <div class="gallery-caption">Portofolio Artis</div>
+          </div>
+          <div class="gallery-item">
+            <img src="https://ik.imagekit.io/gcv2ysaez/LAKSA4.jpg?updatedAt=1753314348810" alt="Proyek Personal">
+            <div class="gallery-caption">Karya Fotografi Personal</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="skills">
+      <div class="card" data-aos="fade-up">
+        <h2 class="section-title">Skill</h2>
+        <div class="skill">
+          <p>HTML <span>90%</span></p>
+          <div class="skill-bar-container">
+            <div class="skill-bar" data-level="90%"></div>
+          </div>
+        </div>
+        <div class="skill">
+          <p>CSS <span>85%</span></p>
+          <div class="skill-bar-container">
+            <div class="skill-bar" data-level="85%"></div>
+          </div>
+        </div>
+        <div class="skill">
+          <p>JavaScript <span>80%</span></p>
+          <div class="skill-bar-container">
+            <div class="skill-bar" data-level="80%"></div>
+          </div>
+        </div>
+        <div class="skill">
+          <p>React <span>75%</span></p>
+          <div class="skill-bar-container">
+            <div class="skill-bar" data-level="75%"></div>
+          </div>
+        </div>
+        <div class="skill">
+          <p>Node.js <span>70%</span></p>
+          <div class="skill-bar-container">
+            <div class="skill-bar" data-level="70%"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="finance">
+      <div class="card" data-aos="fade-up">
+        <h2 class="section-title">Keuangan Pribadi</h2>
+        
+        <div class="finance-summary">
+          <div class="summary-card income-card">
+            <h3>Total Pemasukan</h3>
+            <p id="total-income">Rp0</p>
+          </div>
+          <div class="summary-card expense-card">
+            <h3>Total Pengeluaran</h3>
+            <p id="total-expense">Rp0</p>
+          </div>
+          <div class="summary-card balance-card">
+            <h3>Saldo</h3>
+            <p id="total-balance">Rp0</p>
           </div>
         </div>
         
-        <div class="transaction-list" id="transaction-list">
-          <!-- Transaksi akan dimuat di sini -->
+        <div class="tabs">
+          <div class="tab active" data-tab="transactions">Transaksi</div>
+          <div class="tab" data-tab="stats">Statistik</div>
+          <div class="tab" data-tab="add">Tambah Transaksi</div>
+        </div>
+        
+        <div class="tab-content active" id="transactions-tab">
+          <div class="finance-controls">
+            <div class="filter-group">
+              <button id="filter-all" class="active">Semua</button>
+              <button id="filter-income">Pemasukan</button>
+              <button id="filter-expense">Pengeluaran</button>
+            </div>
+            <div>
+              <select id="month-filter" class="month-filter">
+                <option value="all">Semua Bulan</option>
+                <option value="1">Januari</option>
+                <option value="2">Februari</option>
+                <option value="3">Maret</option>
+                <option value="4">April</option>
+                <option value="5">Mei</option>
+                <option value="6">Juni</option>
+                <option value="7">Juli</option>
+                <option value="8">Agustus</option>
+                <option value="9">September</option>
+                <option value="10">Oktober</option>
+                <option value="11">November</option>
+                <option value="12">Desember</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="transaction-list" id="transaction-list">
+            <!-- Transaksi akan dimuat di sini -->
+          </div>
+        </div>
+        
+        <div class="tab-content" id="stats-tab">
+          <div class="chart-container">
+            <canvas id="finance-chart"></canvas>
+          </div>
+        </div>
+        
+        <div class="tab-content" id="add-tab">
+          <form id="transaction-form">
+            <div>
+              <label for="transaction-type">Jenis Transaksi</label>
+              <select id="transaction-type" name="type" required>
+                <option value="income">Pemasukan</option>
+                <option value="expense">Pengeluaran</option>
+              </select>
+            </div>
+            
+            <div>
+              <label for="transaction-amount">Jumlah (Rp)</label>
+              <input type="number" id="transaction-amount" name="amount" min="0" required>
+            </div>
+            
+            <div>
+              <label for="transaction-category">Kategori</label>
+              <select id="transaction-category" name="category" required>
+                <option value="gaji">Gaji</option>
+                <option value="freelance">Freelance</option>
+                <option value="investasi">Investasi</option>
+                <option value="lainnya">Lainnya (Pemasukan)</option>
+                <option value="makanan">Makanan</option>
+                <option value="transportasi">Transportasi</option>
+                <option value="hiburan">Hiburan</option>
+                <option value="belanja">Belanja</option>
+                <option value="tagihan">Tagihan</option>
+                <option value="lainnya">Lainnya (Pengeluaran)</option>
+              </select>
+            </div>
+            
+            <div>
+              <label for="transaction-date">Tanggal</label>
+              <input type="date" id="transaction-date" name="date" required>
+            </div>
+            
+            <div>
+              <label for="transaction-description">Deskripsi (Opsional)</label>
+              <textarea id="transaction-description" name="description" rows="3"></textarea>
+            </div>
+            
+            <button type="submit">Simpan Transaksi</button>
+          </form>
         </div>
       </div>
-      
-      <div class="tab-content" id="stats-tab">
-        <div class="chart-container">
-          <canvas id="finance-chart"></canvas>
+    </section>
+
+    <section id="testimoni">
+      <div class="card" data-aos="fade-up">
+        <h2 class="section-title">Testimoni</h2>
+        <div class="testimonial">
+          <p>"Laksmana membawa sentuhan unik Afrika ke dalam desain web yang modern. Karyanya tidak hanya indah tetapi juga sangat fungsional. Dia memahami kebutuhan klien dengan sangat baik dan selalu memberikan hasil yang melebihi ekspektasi."</p>
+          <p class="testimonial-author">- Budi, CEO PT. Maju Jaya</p>
+        </div>
+        <div class="testimonial">
+          <p>"Saya sangat terkesan dengan pendekatan kreatif Laksmana. Dia menggabungkan elemen-elemen budaya Afrika dengan teknologi modern untuk menciptakan pengalaman pengguna yang benar-benar unik dan memikat. Proyek kami selesai tepat waktu dengan kualitas yang luar biasa."</p>
+          <p class="testimonial-author">- Ani, Marketing Manager</p>
         </div>
       </div>
-      
-      <div class="tab-content" id="add-tab">
-        <form id="transaction-form">
+    </section>
+
+    <section id="contact">
+      <div class="card" data-aos="fade-up">
+        <h2 class="section-title">Kontak Saya</h2>
+        <form id="contactForm" action="https://formspree.io/f/xkgrrjbv" method="POST">
           <div>
-            <label for="transaction-type">Jenis Transaksi</label>
-            <select id="transaction-type" name="type" required>
-              <option value="income">Pemasukan</option>
-              <option value="expense">Pengeluaran</option>
-            </select>
+            <label for="name">Nama</label>
+            <input type="text" id="name" name="name" placeholder="Nama Anda" required>
           </div>
           
           <div>
-            <label for="transaction-amount">Jumlah (Rp)</label>
-            <input type="number" id="transaction-amount" name="amount" min="0" required>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="_replyto" placeholder="Email Anda" required>
           </div>
           
           <div>
-            <label for="transaction-category">Kategori</label>
-            <select id="transaction-category" name="category" required>
-              <option value="gaji">Gaji</option>
-              <option value="freelance">Freelance</option>
-              <option value="investasi">Investasi</option>
-              <option value="lainnya">Lainnya (Pemasukan)</option>
-              <option value="makanan">Makanan</option>
-              <option value="transportasi">Transportasi</option>
-              <option value="hiburan">Hiburan</option>
-              <option value="belanja">Belanja</option>
-              <option value="tagihan">Tagihan</option>
-              <option value="lainnya">Lainnya (Pengeluaran)</option>
-            </select>
+            <label for="message">Pesan</label>
+            <textarea id="message" name="message" placeholder="Pesan Anda" rows="5" required></textarea>
           </div>
           
-          <div>
-            <label for="transaction-date">Tanggal</label>
-            <input type="date" id="transaction-date" name="date" required>
-          </div>
+          <!-- Hidden fields for Formspree features -->
+          <input type="hidden" name="_subject" value="Pesan Baru dari Portofolio Laksmana">
+          <input type="hidden" name="_next" value="?submit=success#contact">
+          <input type="text" name="_gotcha" style="display:none"> <!-- Anti-spam -->
           
-          <div>
-            <label for="transaction-description">Deskripsi (Opsional)</label>
-            <textarea id="transaction-description" name="description" rows="3"></textarea>
-          </div>
-          
-          <button type="submit">Simpan Transaksi</button>
+          <button type="submit">Kirim Pesan</button>
         </form>
-      </div>
-    </div>
-  </section>
-
-  <section id="testimoni">
-    <div class="card" data-aos="fade-up">
-      <h2 class="section-title">Testimoni</h2>
-      <div class="testimonial">
-        <p>"Laksmana membawa sentuhan unik Afrika ke dalam desain web yang modern. Karyanya tidak hanya indah tetapi juga sangat fungsional. Dia memahami kebutuhan klien dengan sangat baik dan selalu memberikan hasil yang melebihi ekspektasi."</p>
-        <p class="testimonial-author">- Laksmana </p>
-      </div>
-      <div class="testimonial">
-        <p>"Saya sangat terkesan dengan pendekatan kreatif Laksmana. Dia menggabungkan elemen-elemen budaya Afrika dengan teknologi modern untuk menciptakan pengalaman pengguna yang benar-benar unik dan memikat. Proyek kami selesai tepat waktu dengan kualitas yang luar biasa."</p>
-        <p class="testimonial-author">- Laksmana </p>
-      </div>
-    </div>
-  </section>
-
-  <section id="contact">
-    <div class="card" data-aos="fade-up">
-      <h2 class="section-title">Kontak Saya</h2>
-      <form id="contactForm" action="https://formspree.io/f/xkgrrjbv" method="POST">
-        <div>
-          <label for="name">Nama</label>
-          <input type="text" id="name" name="name" placeholder="Nama Anda" required>
+        <div id="formSuccess" class="form-success">
+          <h3><i class="fas fa-check-circle"></i> Pesan Terkirim!</h3>
+          <p>Terima kasih telah menghubungi saya. Saya akan segera membalas pesan Anda.</p>
         </div>
-        
-        <div>
-          <label for="email">Email</label>
-          <input type="email" id="email" name="_replyto" placeholder="Email Anda" required>
-        </div>
-        
-        <div>
-          <label for="message">Pesan</label>
-          <textarea id="message" name="message" placeholder="Pesan Anda" rows="5" required></textarea>
-        </div>
-        
-        <!-- Hidden fields for Formspree features -->
-        <input type="hidden" name="_subject" value="Pesan Baru dari Portofolio Laksmana">
-        <input type="hidden" name="_next" value="?submit=success#contact">
-        <input type="text" name="_gotcha" style="display:none"> <!-- Anti-spam -->
-        
-        <button type="submit">Kirim Pesan</button>
-      </form>
-      <div id="formSuccess" class="form-success">
-        <h3><i class="fas fa-check-circle"></i> Pesan Terkirim!</h3>
-        <p>Terima kasih telah menghubungi saya. Saya akan segera membalas pesan Anda.</p>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <button onclick="topFunction()" id="toTopBtn" title="Kembali ke atas"><i class="fas fa-arrow-up"></i></button>
+    <button onclick="topFunction()" id="toTopBtn" title="Kembali ke atas"><i class="fas fa-arrow-up"></i></button>
 
-  <a href="https://wa.me/082146585275" class="wa-float" target="_blank" aria-label="Chat via WhatsApp">
-    <i class="fab fa-whatsapp"></i>
-  </a>
+    <a href="https://wa.me/082146585275" class="wa-float" target="_blank" aria-label="Chat via WhatsApp">
+      <i class="fab fa-whatsapp"></i>
+    </a>
 
-  <div id="clock"></div>
+    <div id="clock"></div>
 
-  <footer>
-    <div class="footer-logo">Laksmana</div>
-    <p class="footer-text">Membawa keindahan dan kehangatan Afrika ke dalam dunia digital</p>
-    <div class="socials">
-      <a href="https://instagram.com/laksawl" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-      <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-      <a href="https://github.com/LaksaGaming" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-      <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-    </div>
-    <p class="copyright">&copy; 2025 Laksmana. All Rights Reserved.</p>
-  </footer>
+    <footer>
+      <div class="footer-logo">Laksmana</div>
+      <p class="footer-text">Membawa keindahan dan kehangatan Afrika ke dalam dunia digital</p>
+      <div class="socials">
+        <a href="https://instagram.com/laksawl" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="https://github.com/LaksaGaming" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+      </div>
+      <p class="copyright">&copy; 2025 Laksmana. All Rights Reserved.</p>
+    </footer>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -1267,11 +1523,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.1/lightgallery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
   <script>
-    // Konfigurasi Firebase (ganti dengan konfigurasi project Anda)
+    // Konfigurasi Firebase - GANTI DENGAN KONFIGURASI ANDA SENDIRI
     const firebaseConfig = {
       apiKey: "AIzaSyCH05exvW9is7JYTqT0PFAzWDJoBji6uWQ",
       authDomain: "interaktifberfikir-70ac0.firebaseapp.com",
-      databaseURL: "https://interaktifberfikir-70ac0-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "interaktifberfikir-70ac0",
       storageBucket: "interaktifberfikir-70ac0.firebasestorage.app",
       messagingSenderId: "931930581619",
@@ -1281,47 +1536,159 @@
     // Inisialisasi Firebase
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
+    const auth = firebase.auth();
 
-    // Inisialisasi AOS (Animate On Scroll)
-    AOS.init({
-      duration: 800,
-      easing: 'ease-in-out',
-      once: true
-    });
+    // ==================== AUTHENTICATION SYSTEM ====================
+    // DOM Elements
+    const loginPage = document.getElementById('login-page');
+    const mainContent = document.getElementById('main-content');
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const logoutBtn = document.getElementById('logout-btn');
 
-    // Typed.js untuk efek mengetik
-    const typed = new Typed("#typed", {
-      strings: ["Halo, saya Laksmana", "Web Developer", "Desainer Afro Klasik", "Pencipta Pengalaman Digital"],
-      typeSpeed: 60,
-      backSpeed: 40,
-      loop: true,
-      showCursor: true,
-      cursorChar: '|'
-    });
-
-    // Preloader
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        document.getElementById("loader").style.opacity = '0';
-        document.getElementById("loader").style.visibility = 'hidden';
-      }, 1500);
-    });
-
-    // Tombol kembali ke atas
-    let toTopBtn = document.getElementById("toTopBtn");
-    window.onscroll = function() {
-      toTopBtn.style.display = document.documentElement.scrollTop > 300 ? "block" : "none";
-    };
-    
-    function topFunction() {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
+    // Fungsi untuk menampilkan pesan error
+    function showError(elementId, message) {
+      const element = document.getElementById(elementId);
+      if (!element.nextElementSibling || !element.nextElementSibling.classList.contains('error-message')) {
+        const errorElement = document.createElement('div');
+        errorElement.className = 'error-message';
+        errorElement.style.color = 'var(--danger)';
+        errorElement.style.marginTop = '5px';
+        errorElement.style.fontSize = '0.9rem';
+        element.parentNode.insertBefore(errorElement, element.nextSibling);
+      }
+      element.nextElementSibling.textContent = message;
     }
 
-    // Dark/Light mode toggle dengan localStorage
-    document.addEventListener('DOMContentLoaded', () => {
+    // Fungsi untuk menghapus pesan error
+    function clearError(elementId) {
+      const element = document.getElementById(elementId);
+      if (element.nextElementSibling && element.nextElementSibling.classList.contains('error-message')) {
+        element.nextElementSibling.textContent = '';
+      }
+    }
+
+    // Check auth state
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in
+        loginPage.style.display = 'none';
+        mainContent.style.display = 'block';
+        logoutBtn.style.display = 'block';
+        
+        // Load data setelah login berhasil
+        loadDataAfterLogin();
+      } else {
+        // No user is signed in
+        loginPage.style.display = 'flex';
+        mainContent.style.display = 'none';
+        logoutBtn.style.display = 'none';
+      }
+    });
+
+    // Fungsi untuk memuat data setelah login
+    function loadDataAfterLogin() {
+      // Di sini Anda bisa memuat data yang diperlukan setelah login
+      console.log('User logged in:', auth.currentUser.email);
+      
+      // Inisialisasi AOS (Animate On Scroll)
+      AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+      });
+
+      // Inisialisasi Typed.js untuk efek mengetik
+      const typed = new Typed("#typed", {
+        strings: ["Halo, saya Laksmana", "Web Developer", "Desainer Afro Klasik", "Pencipta Pengalaman Digital"],
+        typeSpeed: 60,
+        backSpeed: 40,
+        loop: true,
+        showCursor: true,
+        cursorChar: '|'
+      });
+
+      // Inisialisasi particles.js
+      particlesJS('particles-js', {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: "#E8B959" },
+          shape: { type: "circle" },
+          opacity: { value: 0.5, random: true },
+          size: { value: 3, random: true },
+          line_linked: { enable: true, distance: 150, color: "#E8B959", opacity: 0.4, width: 1 },
+          move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "repulse" },
+            onclick: { enable: true, mode: "push" }
+          }
+        }
+      });
+
+      // Inisialisasi lightGallery
+      lightGallery(document.querySelector('.gallery'), {
+        selector: '.gallery-item',
+        download: false,
+        counter: false,
+        enableDrag: false
+      });
+
+      // Animasi skill bar saat muncul di viewport
+      const skills = document.querySelectorAll('.skill-bar');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.width = entry.target.getAttribute('data-level');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.7 });
+      
+      skills.forEach(skill => {
+        observer.observe(skill);
+      });
+
+      // Handle Formspree submission success
+      const urlParams = new URLSearchParams(window.location.search);
+      if(urlParams.get('submit') === 'success') {
+        document.getElementById('contactForm').style.display = 'none';
+        document.getElementById('formSuccess').style.display = 'block';
+        window.history.replaceState({}, document.title, window.location.pathname + '#contact');
+      }
+
+      // Jam digital
+      function updateClock() {
+        const now = new Date();
+        const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        const day = days[now.getDay()];
+        const date = now.toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        });
+        const time = now.toLocaleTimeString('id-ID', { hour12: false });
+        document.getElementById("clock").textContent = `${day}, ${date} | ${time}`;
+      }
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      // Tombol kembali ke atas
+      let toTopBtn = document.getElementById("toTopBtn");
+      window.onscroll = function() {
+        toTopBtn.style.display = document.documentElement.scrollTop > 300 ? "block" : "none";
+      };
+      
+      function topFunction() {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
+
+      // Dark/Light mode toggle dengan localStorage
       const darkToggle = document.getElementById('darkToggle');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const storedTheme = localStorage.getItem('theme');
@@ -1354,83 +1721,185 @@
           window.financeChart.update();
         }
       });
-    });
 
-    // Jam digital
-    function updateClock() {
-      const now = new Date();
-      const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-      const day = days[now.getDay()];
-      const date = now.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      });
-      const time = now.toLocaleTimeString('id-ID', { hour12: false });
-      document.getElementById("clock").textContent = `${day}, ${date} | ${time}`;
+      // Preloader
+      setTimeout(() => {
+        document.getElementById("loader").style.opacity = '0';
+        document.getElementById("loader").style.visibility = 'hidden';
+      }, 1500);
     }
-    setInterval(updateClock, 1000);
-    updateClock();
 
-    // Animasi skill bar saat muncul di viewport
-    document.addEventListener('DOMContentLoaded', () => {
-      const skills = document.querySelectorAll('.skill-bar');
+    // Login function
+    loginForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
       
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.style.width = entry.target.getAttribute('data-level');
-            observer.unobserve(entry.target);
+      // Validasi input
+      if (!email || !password) {
+        showError('login-email', !email ? 'Email harus diisi' : '');
+        showError('login-password', !password ? 'Password harus diisi' : '');
+        return;
+      }
+      
+      // Tampilkan loading
+      const loginBtn = loginForm.querySelector('button[type="submit"]');
+      const originalBtnText = loginBtn.innerHTML;
+      loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+      loginBtn.disabled = true;
+      
+      auth.signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          // Login success
+          console.log('User logged in:', userCredential.user);
+        })
+        .catch(error => {
+          // Handle errors
+          console.error('Login error:', error);
+          let errorMessage = 'Login gagal';
+          
+          switch (error.code) {
+            case 'auth/user-not-found':
+              errorMessage = 'Email tidak terdaftar';
+              showError('login-email', errorMessage);
+              break;
+            case 'auth/wrong-password':
+              errorMessage = 'Password salah';
+              showError('login-password', errorMessage);
+              break;
+            case 'auth/invalid-email':
+              errorMessage = 'Format email tidak valid';
+              showError('login-email', errorMessage);
+              break;
+            default:
+              alert(errorMessage + ': ' + error.message);
           }
+        })
+        .finally(() => {
+          // Reset button state
+          loginBtn.innerHTML = originalBtnText;
+          loginBtn.disabled = false;
         });
-      }, { threshold: 0.7 });
+    });
+
+    // Register function
+    registerForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('register-name').value;
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+      const confirm = document.getElementById('register-confirm').value;
       
-      skills.forEach(skill => {
-        observer.observe(skill);
-      });
-    });
-
-    // Inisialisasi lightGallery
-    document.addEventListener('DOMContentLoaded', () => {
-      lightGallery(document.querySelector('.gallery'), {
-        selector: '.gallery-item',
-        download: false,
-        counter: false,
-        enableDrag: false
-      });
-    });
-
-    // Handle Formspree submission success
-    document.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      if(urlParams.get('submit') === 'success') {
-        document.getElementById('contactForm').style.display = 'none';
-        document.getElementById('formSuccess').style.display = 'block';
-        window.history.replaceState({}, document.title, window.location.pathname + '#contact');
+      // Validasi input
+      let isValid = true;
+      
+      if (!name) {
+        showError('register-name', 'Nama harus diisi');
+        isValid = false;
       }
-    });
-
-    // Inisialisasi particles.js
-    particlesJS('particles-js', {
-      particles: {
-        number: { value: 80, density: { enable: true, value_area: 800 } },
-        color: { value: "#E8B959" },
-        shape: { type: "circle" },
-        opacity: { value: 0.5, random: true },
-        size: { value: 3, random: true },
-        line_linked: { enable: true, distance: 150, color: "#E8B959", opacity: 0.4, width: 1 },
-        move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
-      },
-      interactivity: {
-        detect_on: "canvas",
-        events: {
-          onhover: { enable: true, mode: "repulse" },
-          onclick: { enable: true, mode: "push" }
-        }
+      
+      if (!email) {
+        showError('register-email', 'Email harus diisi');
+        isValid = false;
       }
+      
+      if (!password) {
+        showError('register-password', 'Password harus diisi');
+        isValid = false;
+      }
+      
+      if (!confirm) {
+        showError('register-confirm', 'Konfirmasi password harus diisi');
+        isValid = false;
+      }
+      
+      if (password !== confirm) {
+        showError('register-confirm', 'Password dan konfirmasi password tidak sama');
+        isValid = false;
+      }
+      
+      if (!isValid) return;
+      
+      // Tampilkan loading
+      const registerBtn = registerForm.querySelector('button[type="submit"]');
+      const originalBtnText = registerBtn.innerHTML;
+      registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mendaftarkan...';
+      registerBtn.disabled = true;
+      
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          // Update user profile
+          return userCredential.user.updateProfile({
+            displayName: name
+          });
+        })
+        .then(() => {
+          // Registration success
+          alert('Pendaftaran berhasil! Silakan login.');
+          document.getElementById('switch-form').checked = false;
+          registerForm.reset();
+        })
+        .catch(error => {
+          // Handle errors
+          console.error('Registration error:', error);
+          let errorMessage = 'Pendaftaran gagal';
+          
+          switch (error.code) {
+            case 'auth/email-already-in-use':
+              errorMessage = 'Email sudah terdaftar';
+              showError('register-email', errorMessage);
+              break;
+            case 'auth/invalid-email':
+              errorMessage = 'Format email tidak valid';
+              showError('register-email', errorMessage);
+              break;
+            case 'auth/weak-password':
+              errorMessage = 'Password terlalu lemah (minimal 6 karakter)';
+              showError('register-password', errorMessage);
+              break;
+            default:
+              alert(errorMessage + ': ' + error.message);
+          }
+        })
+        .finally(() => {
+          // Reset button state
+          registerBtn.innerHTML = originalBtnText;
+          registerBtn.disabled = false;
+        });
     });
 
-    // Finance App Functionality dengan Firebase
+    // Clear errors when typing
+    document.getElementById('login-email').addEventListener('input', () => clearError('login-email'));
+    document.getElementById('login-password').addEventListener('input', () => clearError('login-password'));
+    document.getElementById('register-name').addEventListener('input', () => clearError('register-name'));
+    document.getElementById('register-email').addEventListener('input', () => clearError('register-email'));
+    document.getElementById('register-password').addEventListener('input', () => {
+      clearError('register-password');
+      clearError('register-confirm');
+    });
+    document.getElementById('register-confirm').addEventListener('input', () => clearError('register-confirm'));
+
+    // Logout function
+    function logout() {
+      // Tampilkan konfirmasi
+      if (confirm('Apakah Anda yakin ingin keluar?')) {
+        auth.signOut()
+          .then(() => {
+            console.log('User signed out');
+          })
+          .catch(error => {
+            console.error('Logout error:', error);
+            alert('Gagal logout: ' + error.message);
+          });
+      }
+    }
+
+    logoutBtn.addEventListener('click', e => {
+      e.preventDefault();
+      logout();
+    });
+
+    // ==================== FINANCE APP FUNCTIONALITY ====================
     document.addEventListener('DOMContentLoaded', function() {
       // Referensi database
       const transactionsRef = database.ref('transactions');
@@ -1524,9 +1993,11 @@
         document.querySelectorAll('.delete-btn').forEach(btn => {
           btn.addEventListener('click', function() {
             const transactionId = this.getAttribute('data-id');
-            transactionsRef.child(transactionId).remove()
-              .then(() => console.log("Transaksi dihapus"))
-              .catch(error => console.error("Gagal menghapus:", error));
+            if (confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
+              transactionsRef.child(transactionId).remove()
+                .then(() => console.log("Transaksi dihapus"))
+                .catch(error => console.error("Gagal menghapus:", error));
+            }
           });
         });
       }
@@ -1680,7 +2151,8 @@
           category: formData.get('category'),
           date: formData.get('date'),
           description: formData.get('description'),
-          createdAt: firebase.database.ServerValue.TIMESTAMP
+          createdAt: firebase.database.ServerValue.TIMESTAMP,
+          userId: auth.currentUser.uid
         };
         
         // Push ke Firebase
@@ -1701,16 +2173,27 @@
       document.getElementById('transaction-date').valueAsDate = new Date();
       
       // Load data dari Firebase
-      transactionsRef.on('value', (snapshot) => {
-        transactions = [];
-        snapshot.forEach((childSnapshot) => {
-          const transaction = childSnapshot.val();
-          transaction.id = childSnapshot.key;
-          transactions.push(transaction);
-        });
+      function loadFinanceData() {
+        if (!auth.currentUser) return;
         
-        renderTransactions();
-        calculateTotals();
+        transactionsRef.orderByChild('userId').equalTo(auth.currentUser.uid).on('value', (snapshot) => {
+          transactions = [];
+          snapshot.forEach((childSnapshot) => {
+            const transaction = childSnapshot.val();
+            transaction.id = childSnapshot.key;
+            transactions.push(transaction);
+          });
+          
+          renderTransactions();
+          calculateTotals();
+        });
+      }
+      
+      // Load data saat user login
+      auth.onAuthStateChanged(user => {
+        if (user) {
+          loadFinanceData();
+        }
       });
       
       // Error handling
