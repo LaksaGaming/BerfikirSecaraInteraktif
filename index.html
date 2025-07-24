@@ -11,6 +11,12 @@
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.1/css/lightgallery.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css">
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  
   <style>
     :root {
       --primary: #E8B959;
@@ -969,7 +975,6 @@
       }
     }
   </style>
-  <link href="https://ik.imagekit.io/gcv2ysaez/LAKSAGYM.jpg?updatedAt=1753315908942" rel="stylesheet">
 </head>
 
 <body>
@@ -1262,6 +1267,21 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.1/lightgallery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
   <script>
+    // Konfigurasi Firebase (ganti dengan konfigurasi project Anda)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCH05exvW9is7JYTqT0PFAzWDJoBji6uWQ",
+      authDomain: "interaktifberfikir-70ac0.firebaseapp.com",
+      databaseURL: "https://interaktifberfikir-70ac0-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "interaktifberfikir-70ac0",
+      storageBucket: "interaktifberfikir-70ac0.firebasestorage.app",
+      messagingSenderId: "931930581619",
+      appId: "1:931930581619:web:561a85ddcdfd478638d806"
+    };
+
+    // Inisialisasi Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
     // Inisialisasi AOS (Animate On Scroll)
     AOS.init({
       duration: 800,
@@ -1410,10 +1430,11 @@
       }
     });
 
-    // Finance App Functionality
+    // Finance App Functionality dengan Firebase
     document.addEventListener('DOMContentLoaded', function() {
-      // Initialize transactions from localStorage or empty array
-      let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+      // Referensi database
+      const transactionsRef = database.ref('transactions');
+      let transactions = [];
       
       // DOM Elements
       const transactionForm = document.getElementById('transaction-form');
@@ -1425,10 +1446,6 @@
       const tabContents = document.querySelectorAll('.tab-content');
       const filterButtons = document.querySelectorAll('.filter-group button');
       const monthFilter = document.getElementById('month-filter');
-      
-      // Chart initialization
-      const ctx = document.getElementById('finance-chart').getContext('2d');
-      let financeChart;
       
       // Format currency
       function formatCurrency(amount) {
@@ -1475,7 +1492,7 @@
         // Sort by date (newest first)
         filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
         
-        filteredTransactions.forEach((transaction, index) => {
+        filteredTransactions.forEach((transaction) => {
           const transactionElement = document.createElement('div');
           transactionElement.className = 'transaction-item';
           
@@ -1494,7 +1511,7 @@
             </div>
             <div class="transaction-amount ${transaction.type}">
               ${transaction.type === 'income' ? '+' : '-'}${formatCurrency(transaction.amount)}
-              <button class="delete-btn" data-index="${index}">
+              <button class="delete-btn" data-id="${transaction.id}">
                 <i class="fas fa-trash"></i>
               </button>
             </div>
@@ -1506,12 +1523,10 @@
         // Add event listeners to delete buttons
         document.querySelectorAll('.delete-btn').forEach(btn => {
           btn.addEventListener('click', function() {
-            const index = parseInt(this.getAttribute('data-index'));
-            transactions.splice(index, 1);
-            saveTransactions();
-            renderTransactions(getCurrentFilter(), monthFilter.value);
-            calculateTotals();
-            updateChart();
+            const transactionId = this.getAttribute('data-id');
+            transactionsRef.child(transactionId).remove()
+              .then(() => console.log("Transaksi dihapus"))
+              .catch(error => console.error("Gagal menghapus:", error));
           });
         });
       }
@@ -1520,11 +1535,6 @@
       function getCurrentFilter() {
         const activeFilter = document.querySelector('.filter-group button.active');
         return activeFilter ? activeFilter.id.replace('filter-', '') : 'all';
-      }
-      
-      // Save transactions to localStorage
-      function saveTransactions() {
-        localStorage.setItem('transactions', JSON.stringify(transactions));
       }
       
       // Initialize chart
@@ -1553,11 +1563,11 @@
         const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
         const textColor = isDark ? '#fff' : '#666';
         
-        if (financeChart) {
-          financeChart.destroy();
+        if (window.financeChart) {
+          window.financeChart.destroy();
         }
         
-        financeChart = new Chart(ctx, {
+        window.financeChart = new Chart(document.getElementById('finance-chart').getContext('2d'), {
           type: 'bar',
           data: {
             labels: displayMonths,
@@ -1664,32 +1674,50 @@
         e.preventDefault();
         
         const formData = new FormData(this);
-        const transaction = {
+        const newTransaction = {
           type: formData.get('type'),
           amount: parseFloat(formData.get('amount')),
           category: formData.get('category'),
           date: formData.get('date'),
-          description: formData.get('description')
+          description: formData.get('description'),
+          createdAt: firebase.database.ServerValue.TIMESTAMP
         };
         
-        transactions.push(transaction);
-        saveTransactions();
-        
-        this.reset();
-        document.getElementById('transaction-date').valueAsDate = new Date();
-        renderTransactions();
-        calculateTotals();
-        
-        // Switch back to transactions tab
-        document.querySelector('.tab[data-tab="transactions"]').click();
+        // Push ke Firebase
+        const newTransactionRef = transactionsRef.push();
+        newTransactionRef.set(newTransaction)
+          .then(() => {
+            console.log("Transaksi disimpan");
+            this.reset();
+            document.getElementById('transaction-date').valueAsDate = new Date();
+          })
+          .catch(error => {
+            console.error("Gagal menyimpan:", error);
+            alert("Gagal menyimpan transaksi: " + error.message);
+          });
       });
       
       // Set default date to today
       document.getElementById('transaction-date').valueAsDate = new Date();
       
-      // Initialize
-      calculateTotals();
-      renderTransactions();
+      // Load data dari Firebase
+      transactionsRef.on('value', (snapshot) => {
+        transactions = [];
+        snapshot.forEach((childSnapshot) => {
+          const transaction = childSnapshot.val();
+          transaction.id = childSnapshot.key;
+          transactions.push(transaction);
+        });
+        
+        renderTransactions();
+        calculateTotals();
+      });
+      
+      // Error handling
+      transactionsRef.on('error', (error) => {
+        console.error("Firebase error:", error);
+        alert("Gagal memuat data: " + error.message);
+      });
     });
   </script>
 </body>
