@@ -16,6 +16,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-storage-compat.js"></script>
   
   <!-- Font tambahan untuk login -->
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
@@ -1055,7 +1056,797 @@
       display: none;
     }
 
-    /* Responsive styles */
+    /* Dashboard Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .modal-content {
+      background-color: var(--light);
+      margin: 5% auto;
+      padding: 2rem;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 900px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    body.dark .modal-content {
+      background-color: var(--dark);
+      border: 1px solid rgba(232, 185, 89, 0.3);
+    }
+
+    .close-modal {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      font-size: 1.5rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    body.dark .close-modal {
+      color: var(--text-light);
+    }
+
+    .close-modal:hover {
+      color: var(--primary);
+      transform: rotate(90deg);
+    }
+
+    .dashboard-tabs {
+      display: flex;
+      border-bottom: 2px solid rgba(232, 185, 89, 0.3);
+      margin-bottom: 1.5rem;
+    }
+
+    body.dark .dashboard-tabs {
+      border-bottom-color: rgba(232, 185, 89, 0.2);
+    }
+
+    .dashboard-tab {
+      padding: 0.8rem 1.5rem;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--text);
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+      font-weight: 500;
+      position: relative;
+    }
+
+    body.dark .dashboard-tab {
+      color: var(--text-light);
+    }
+
+    .dashboard-tab.active {
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .dashboard-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary);
+    }
+
+    .dashboard-tab-content {
+      display: none;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .dashboard-tab-content.active {
+      display: block;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--dark);
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(216, 90, 66, 0.3);
+    }
+
+    .btn-secondary {
+      background-color: rgba(232, 185, 89, 0.1);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      padding: 0.7rem 1.5rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    body.dark .btn-secondary {
+      background-color: rgba(232, 185, 89, 0.2);
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(232, 185, 89, 0.3);
+      transform: translateY(-3px);
+    }
+
+    .search-box {
+      position: relative;
+      display: inline-block;
+      margin-left: 1rem;
+    }
+
+    .search-box input {
+      padding: 0.7rem 1rem 0.7rem 2.5rem;
+      border-radius: 30px;
+      border: 1px solid #ddd;
+      min-width: 250px;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    body.dark .search-box input {
+      background: rgba(58, 45, 31, 0.8);
+      border-color: #3A2D1F;
+      color: var(--text-light);
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #666;
+    }
+
+    body.dark .search-box i {
+      color: #aaa;
+    }
+
+    /* Notes Styles */
+    .notes-controls {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .notes-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .note-card {
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s;
+      border-left: 4px solid var(--primary);
+      cursor: pointer;
+      position: relative;
+    }
+
+    body.dark .note-card {
+      background: #2A2118;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .note-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .note-card h3 {
+      margin-top: 0;
+      color: var(--primary);
+      font-size: 1.2rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .note-card .note-content-preview {
+      color: var(--text);
+      font-size: 0.9rem;
+      margin: 0.5rem 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    body.dark .note-card .note-content-preview {
+      color: var(--text-light);
+    }
+
+    .note-card .note-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 1rem;
+    }
+
+    body.dark .note-card .note-meta {
+      color: #aaa;
+    }
+
+    .note-card .note-category {
+      background: rgba(232, 185, 89, 0.2);
+      color: var(--primary);
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    body.dark .note-card .note-category {
+      background: rgba(232, 185, 89, 0.3);
+    }
+
+    .note-card .note-actions {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .note-card:hover .note-actions {
+      opacity: 1;
+    }
+
+    .note-card .note-actions button {
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      margin-left: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    body.dark .note-card .note-actions button {
+      color: #aaa;
+    }
+
+    .note-card .note-actions button:hover {
+      color: var(--primary);
+    }
+
+    /* Files Styles */
+    .files-controls {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .file-filters {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: #f0f0f0;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    body.dark .filter-btn {
+      background: #3A2D1F;
+      color: var(--text-light);
+    }
+
+    .filter-btn.active {
+      background: var(--primary);
+      color: var(--dark);
+    }
+
+    .files-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .file-card {
+      background: white;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s;
+      text-align: center;
+      position: relative;
+    }
+
+    body.dark .file-card {
+      background: #2A2118;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .file-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .file-icon {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .file-card h3 {
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-card .file-meta {
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    body.dark .file-card .file-meta {
+      color: #aaa;
+    }
+
+    .file-card .file-actions {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .file-card:hover .file-actions {
+      opacity: 1;
+    }
+
+    .file-card .file-actions button {
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      margin-left: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    body.dark .file-card .file-actions button {
+      color: #aaa;
+    }
+
+    .file-card .file-actions button:hover {
+      color: var(--primary);
+    }
+
+    /* Bookmarks Styles */
+    .bookmarks-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .bookmark-card {
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s;
+      border-left: 4px solid var(--accent);
+      position: relative;
+    }
+
+    body.dark .bookmark-card {
+      background: #2A2118;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .bookmark-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .bookmark-card h3 {
+      margin-top: 0;
+      color: var(--accent);
+      font-size: 1.2rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bookmark-card .bookmark-url {
+      color: #666;
+      font-size: 0.9rem;
+      margin: 0.5rem 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    body.dark .bookmark-card .bookmark-url {
+      color: #aaa;
+    }
+
+    .bookmark-card .bookmark-notes {
+      color: var(--text);
+      font-size: 0.9rem;
+      margin: 0.5rem 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    body.dark .bookmark-card .bookmark-notes {
+      color: var(--text-light);
+    }
+
+    .bookmark-card .bookmark-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 1rem;
+    }
+
+    body.dark .bookmark-card .bookmark-meta {
+      color: #aaa;
+    }
+
+    .bookmark-card .bookmark-category {
+      background: rgba(216, 90, 66, 0.2);
+      color: var(--accent);
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    body.dark .bookmark-card .bookmark-category {
+      background: rgba(216, 90, 66, 0.3);
+    }
+
+    .bookmark-card .bookmark-actions {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .bookmark-card:hover .bookmark-actions {
+      opacity: 1;
+    }
+
+    .bookmark-card .bookmark-actions button {
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      margin-left: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    body.dark .bookmark-card .bookmark-actions button {
+      color: #aaa;
+    }
+
+    .bookmark-card .bookmark-actions button:hover {
+      color: var(--accent);
+    }
+
+    /* Projects Styles */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s;
+      border-left: 4px solid var(--secondary);
+      position: relative;
+    }
+
+    body.dark .project-card {
+      background: #2A2118;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .project-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .project-card h3 {
+      margin-top: 0;
+      color: var(--secondary);
+      font-size: 1.2rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .project-card .project-description {
+      color: var(--text);
+      font-size: 0.9rem;
+      margin: 0.5rem 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    body.dark .project-card .project-description {
+      color: var(--text-light);
+    }
+
+    .project-card .project-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 1rem;
+    }
+
+    body.dark .project-card .project-meta {
+      color: #aaa;
+    }
+
+    .project-card .project-category {
+      background: rgba(94, 48, 35, 0.2);
+      color: var(--secondary);
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    body.dark .project-card .project-category {
+      background: rgba(94, 48, 35, 0.3);
+    }
+
+    .project-card .project-status {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    .project-status.planning {
+      background: rgba(255, 152, 0, 0.2);
+      color: #FF9800;
+    }
+
+    .project-status.in-progress {
+      background: rgba(33, 150, 243, 0.2);
+      color: #2196F3;
+    }
+
+    .project-status.completed {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4CAF50;
+    }
+
+    .project-status.on-hold {
+      background: rgba(158, 158, 158, 0.2);
+      color: #9E9E9E;
+    }
+
+    .project-card .project-actions {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .project-card:hover .project-actions {
+      opacity: 1;
+    }
+
+    .project-card .project-actions button {
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      margin-left: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    body.dark .project-card .project-actions button {
+      color: #aaa;
+    }
+
+    .project-card .project-actions button:hover {
+      color: var(--secondary);
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: all 0.3s;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    body.dark .form-group input,
+    body.dark .form-group select,
+    body.dark .form-group textarea {
+      background: rgba(58, 45, 31, 0.8);
+      border-color: #3A2D1F;
+      color: var(--text-light);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(232, 185, 89, 0.2);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    /* File Upload Progress */
+    .file-upload-progress {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    body.dark .file-upload-progress {
+      background: #2A2118;
+    }
+
+    .file-upload-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #f0f0f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    body.dark .progress-bar {
+      background: #3A2D1F;
+    }
+
+    .progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .upload-error {
+      color: var(--danger);
+      padding: 0.5rem;
+    }
+
+    /* Project File Item */
+    .project-file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem;
+      background: rgba(232, 185, 89, 0.1);
+      border-radius: 5px;
+      margin-bottom: 0.5rem;
+    }
+
+    body.dark .project-file-item {
+      background: rgba(232, 185, 89, 0.2);
+    }
+
+    .project-file-item .remove-file {
+      background: none;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+    }
+
+    /* Loading and No Data States */
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--primary);
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 2rem;
+      color: #666;
+    }
+
+    body.dark .no-data {
+      color: #aaa;
+    }
+
+    /* Responsive Styles */
     @media (max-width: 992px) {
       .hero h1 {
         font-size: 2.8rem;
@@ -1132,6 +1923,49 @@
         width: 90%;
         padding: 1.5rem;
       }
+
+      .modal-content {
+        width: 90%;
+        margin: 10% auto;
+        padding: 1.5rem;
+      }
+      
+      .dashboard-tabs {
+        flex-wrap: wrap;
+      }
+      
+      .dashboard-tab {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+      }
+      
+      .notes-list,
+      .bookmarks-list,
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .files-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+      
+      .notes-controls,
+      .files-controls,
+      .bookmark-controls,
+      .projects-controls {
+        flex-direction: column;
+      }
+      
+      .search-box {
+        margin-left: 0;
+        margin-top: 1rem;
+        width: 100%;
+      }
+      
+      .search-box input {
+        width: 100%;
+        min-width: auto;
+      }
     }
 
     @media (max-width: 480px) {
@@ -1161,6 +1995,22 @@
 
       .login-header h1 {
         font-size: 2rem;
+      }
+
+      .modal-content {
+        width: 95%;
+        margin: 5% auto;
+        padding: 1rem;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn-primary,
+      .btn-secondary {
+        width: 100%;
+        justify-content: center;
       }
     }
   </style>
@@ -1496,6 +2346,203 @@
       </div>
     </section>
 
+    <!-- Modal untuk Dashboard -->
+    <div id="dashboard-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2 class="section-title">Dashboard Pengetahuan Saya</h2>
+        
+        <div class="dashboard-tabs">
+          <button class="dashboard-tab active" data-tab="notes">Catatan</button>
+          <button class="dashboard-tab" data-tab="files">File</button>
+          <button class="dashboard-tab" data-tab="bookmarks">Bookmark</button>
+          <button class="dashboard-tab" data-tab="projects">Proyek</button>
+        </div>
+        
+        <div class="dashboard-content">
+          <!-- Tab Catatan -->
+          <div id="notes-tab" class="dashboard-tab-content active">
+            <div class="notes-controls">
+              <button id="add-note" class="btn-primary"><i class="fas fa-plus"></i> Catatan Baru</button>
+              <div class="search-box">
+                <input type="text" id="search-notes" placeholder="Cari catatan...">
+                <i class="fas fa-search"></i>
+              </div>
+            </div>
+            <div class="notes-list" id="notes-list">
+              <!-- Catatan akan dimuat di sini -->
+            </div>
+          </div>
+          
+          <!-- Tab File -->
+          <div id="files-tab" class="dashboard-tab-content">
+            <div class="files-controls">
+              <button id="upload-file" class="btn-primary"><i class="fas fa-upload"></i> Unggah File</button>
+              <input type="file" id="file-input" multiple style="display: none;">
+              <div class="file-filters">
+                <button class="filter-btn active" data-filter="all">Semua</button>
+                <button class="filter-btn" data-filter="document">Dokumen</button>
+                <button class="filter-btn" data-filter="image">Gambar</button>
+                <button class="filter-btn" data-filter="video">Video</button>
+                <button class="filter-btn" data-filter="audio">Audio</button>
+                <button class="filter-btn" data-filter="other">Lainnya</button>
+              </div>
+            </div>
+            <div class="files-grid" id="files-grid">
+              <!-- File akan dimuat di sini -->
+            </div>
+          </div>
+          
+          <!-- Tab Bookmark -->
+          <div id="bookmarks-tab" class="dashboard-tab-content">
+            <div class="bookmark-controls">
+              <button id="add-bookmark" class="btn-primary"><i class="fas fa-plus"></i> Tambah Bookmark</button>
+              <div class="search-box">
+                <input type="text" id="search-bookmarks" placeholder="Cari bookmark...">
+                <i class="fas fa-search"></i>
+              </div>
+            </div>
+            <div class="bookmarks-list" id="bookmarks-list">
+              <!-- Bookmark akan dimuat di sini -->
+            </div>
+          </div>
+          
+          <!-- Tab Proyek -->
+          <div id="projects-tab" class="dashboard-tab-content">
+            <div class="projects-controls">
+              <button id="add-project" class="btn-primary"><i class="fas fa-plus"></i> Proyek Baru</button>
+              <div class="project-filters">
+                <button class="filter-btn active" data-filter="all">Semua</button>
+                <button class="filter-btn" data-filter="web">Web</button>
+                <button class="filter-btn" data-filter="mobile">Mobile</button>
+                <button class="filter-btn" data-filter="design">Desain</button>
+                <button class="filter-btn" data-filter="other">Lainnya</button>
+              </div>
+            </div>
+            <div class="projects-grid" id="projects-grid">
+              <!-- Proyek akan dimuat di sini -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal untuk Editor Catatan -->
+    <div id="note-editor-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2 class="section-title">Editor Catatan</h2>
+        <form id="note-form">
+          <input type="hidden" id="note-id">
+          <div class="form-group">
+            <label for="note-title">Judul</label>
+            <input type="text" id="note-title" required>
+          </div>
+          <div class="form-group">
+            <label for="note-category">Kategori</label>
+            <select id="note-category">
+              <option value="pribadi">Pribadi</option>
+              <option value="kerja">Kerja</option>
+              <option value="belajar">Belajar</option>
+              <option value="ide">Ide</option>
+              <option value="lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="note-content">Isi</label>
+            <textarea id="note-content" rows="10"></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">Simpan</button>
+            <button type="button" class="btn-secondary" id="cancel-note">Batal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal untuk Bookmark -->
+    <div id="bookmark-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2 class="section-title">Tambah Bookmark</h2>
+        <form id="bookmark-form">
+          <input type="hidden" id="bookmark-id">
+          <div class="form-group">
+            <label for="bookmark-title">Judul</label>
+            <input type="text" id="bookmark-title" required>
+          </div>
+          <div class="form-group">
+            <label for="bookmark-url">URL</label>
+            <input type="url" id="bookmark-url" required>
+          </div>
+          <div class="form-group">
+            <label for="bookmark-category">Kategori</label>
+            <select id="bookmark-category">
+              <option value="referensi">Referensi</option>
+              <option value="tutorial">Tutorial</option>
+              <option value="alat">Alat</option>
+              <option value="inspirasi">Inspirasi</option>
+              <option value="lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="bookmark-notes">Catatan</label>
+            <textarea id="bookmark-notes" rows="5"></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">Simpan</button>
+            <button type="button" class="btn-secondary" id="cancel-bookmark">Batal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal untuk Proyek -->
+    <div id="project-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2 class="section-title">Tambah Proyek</h2>
+        <form id="project-form">
+          <input type="hidden" id="project-id">
+          <div class="form-group">
+            <label for="project-title">Judul</label>
+            <input type="text" id="project-title" required>
+          </div>
+          <div class="form-group">
+            <label for="project-category">Kategori</label>
+            <select id="project-category">
+              <option value="web">Web</option>
+              <option value="mobile">Mobile</option>
+              <option value="design">Desain</option>
+              <option value="other">Lainnya</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="project-description">Deskripsi</label>
+            <textarea id="project-description" rows="5" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="project-status">Status</label>
+            <select id="project-status">
+              <option value="planning">Perencanaan</option>
+              <option value="in-progress">Dalam Pengerjaan</option>
+              <option value="completed">Selesai</option>
+              <option value="on-hold">Ditunda</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="project-files">File Terkait</label>
+            <div id="project-files-list"></div>
+            <button type="button" id="add-project-file" class="btn-secondary"><i class="fas fa-plus"></i> Tambah File</button>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">Simpan</button>
+            <button type="button" class="btn-secondary" id="cancel-project">Batal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <button onclick="topFunction()" id="toTopBtn" title="Kembali ke atas"><i class="fas fa-arrow-up"></i></button>
 
     <a href="https://wa.me/082146585275" class="wa-float" target="_blank" aria-label="Chat via WhatsApp">
@@ -1528,7 +2575,7 @@
       apiKey: "AIzaSyCH05exvW9is7JYTqT0PFAzWDJoBji6uWQ",
       authDomain: "interaktifberfikir-70ac0.firebaseapp.com",
       projectId: "interaktifberfikir-70ac0",
-      storageBucket: "interaktifberfikir-70ac0.firebasestorage.app",
+      storageBucket: "interaktifberfikir-70ac0.appspot.com",
       messagingSenderId: "931930581619",
       appId: "1:931930581619:web:561a85ddcdfd478638d806"
     };
@@ -1537,6 +2584,7 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
     const auth = firebase.auth();
+    const storage = firebase.storage();
 
     // ==================== AUTHENTICATION SYSTEM ====================
     // DOM Elements
@@ -2200,6 +3248,952 @@
       transactionsRef.on('error', (error) => {
         console.error("Firebase error:", error);
         alert("Gagal memuat data: " + error.message);
+      });
+    });
+
+    // ==================== DASHBOARD KNOWLEDGE MANAGEMENT SYSTEM ====================
+    document.addEventListener('DOMContentLoaded', function() {
+      // Referensi database untuk dashboard
+      const notesRef = database.ref('dashboard/notes');
+      const filesRef = database.ref('dashboard/files');
+      const bookmarksRef = database.ref('dashboard/bookmarks');
+      const projectsRef = database.ref('dashboard/projects');
+      const storageRef = storage.ref();
+      
+      // DOM Elements
+      const dashboardModal = document.getElementById('dashboard-modal');
+      const noteEditorModal = document.getElementById('note-editor-modal');
+      const bookmarkModal = document.getElementById('bookmark-modal');
+      const projectModal = document.getElementById('project-modal');
+      const openDashboardBtn = document.createElement('a');
+      const closeModalBtns = document.querySelectorAll('.close-modal');
+      const dashboardTabs = document.querySelectorAll('.dashboard-tab');
+      const dashboardTabContents = document.querySelectorAll('.dashboard-tab-content');
+      
+      // Tambahkan tombol dashboard ke header
+      openDashboardBtn.href = '#';
+      openDashboardBtn.innerHTML = '<i class="fas fa-brain"></i>';
+      openDashboardBtn.style.marginLeft = '1rem';
+      openDashboardBtn.style.fontSize = '1.5rem';
+      openDashboardBtn.style.color = 'inherit';
+      openDashboardBtn.style.transition = 'all 0.3s';
+      openDashboardBtn.addEventListener('mouseover', () => {
+        openDashboardBtn.style.color = 'var(--primary)';
+        openDashboardBtn.style.transform = 'rotate(20deg)';
+      });
+      openDashboardBtn.addEventListener('mouseout', () => {
+        openDashboardBtn.style.color = 'inherit';
+        openDashboardBtn.style.transform = 'rotate(0)';
+      });
+      openDashboardBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openDashboard();
+      });
+      
+      // Tambahkan tombol ke header setelah dark toggle
+      const darkToggle = document.getElementById('darkToggle');
+      darkToggle.parentNode.insertBefore(openDashboardBtn, darkToggle.nextSibling);
+      
+      // Fungsi untuk membuka dashboard
+      function openDashboard() {
+        dashboardModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        loadDashboardData();
+      }
+      
+      // Fungsi untuk menutup modal
+      function closeModal(modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+      
+      // Event listeners untuk menutup modal
+      closeModalBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const modal = this.closest('.modal');
+          closeModal(modal);
+        });
+      });
+      
+      // Tutup modal saat klik di luar konten modal
+      window.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) {
+          closeModal(e.target);
+        }
+      });
+      
+      // Tab switching untuk dashboard
+      dashboardTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          const tabId = this.getAttribute('data-tab');
+          
+          dashboardTabs.forEach(t => t.classList.remove('active'));
+          dashboardTabContents.forEach(c => c.classList.remove('active'));
+          
+          this.classList.add('active');
+          document.getElementById(`${tabId}-tab`).classList.add('active');
+          
+          // Muat ulang data jika diperlukan
+          if (tabId === 'files') {
+            loadFiles();
+          } else if (tabId === 'projects') {
+            loadProjects();
+          }
+        });
+      });
+      
+      // ==================== NOTES MANAGEMENT ====================
+      const addNoteBtn = document.getElementById('add-note');
+      const notesList = document.getElementById('notes-list');
+      const noteForm = document.getElementById('note-form');
+      const cancelNoteBtn = document.getElementById('cancel-note');
+      
+      // Buka editor catatan baru
+      addNoteBtn.addEventListener('click', function() {
+        noteForm.reset();
+        document.getElementById('note-id').value = '';
+        noteEditorModal.style.display = 'block';
+      });
+      
+      // Batal editor catatan
+      cancelNoteBtn.addEventListener('click', function() {
+        closeModal(noteEditorModal);
+      });
+      
+      // Simpan catatan
+      noteForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const noteId = document.getElementById('note-id').value;
+        const noteData = {
+          title: document.getElementById('note-title').value,
+          category: document.getElementById('note-category').value,
+          content: document.getElementById('note-content').value,
+          updatedAt: firebase.database.ServerValue.TIMESTAMP,
+          userId: auth.currentUser.uid
+        };
+        
+        // Jika ada ID, update catatan yang ada
+        if (noteId) {
+          notesRef.child(noteId).update(noteData)
+            .then(() => {
+              console.log("Catatan diperbarui");
+              closeModal(noteEditorModal);
+            })
+            .catch(error => {
+              console.error("Gagal memperbarui catatan:", error);
+              alert("Gagal memperbarui catatan: " + error.message);
+            });
+        } else {
+          // Jika tidak ada ID, buat catatan baru
+          noteData.createdAt = firebase.database.ServerValue.TIMESTAMP;
+          notesRef.push(noteData)
+            .then(() => {
+              console.log("Catatan disimpan");
+              closeModal(noteEditorModal);
+            })
+            .catch(error => {
+              console.error("Gagal menyimpan catatan:", error);
+              alert("Gagal menyimpan catatan: " + error.message);
+            });
+        }
+      });
+      
+      // Muat catatan
+      function loadNotes() {
+        if (!auth.currentUser) return;
+        
+        notesList.innerHTML = '<div class="loading">Memuat catatan...</div>';
+        
+        notesRef.orderByChild('userId').equalTo(auth.currentUser.uid).on('value', (snapshot) => {
+          notesList.innerHTML = '';
+          
+          if (!snapshot.exists()) {
+            notesList.innerHTML = '<p class="no-data">Belum ada catatan. Klik "Catatan Baru" untuk membuat catatan pertama Anda.</p>';
+            return;
+          }
+          
+          snapshot.forEach((childSnapshot) => {
+            const note = childSnapshot.val();
+            note.id = childSnapshot.key;
+            renderNote(note);
+          });
+        });
+      }
+      
+      // Render catatan
+      function renderNote(note) {
+        const noteElement = document.createElement('div');
+        noteElement.className = 'note-card';
+        noteElement.setAttribute('data-id', note.id);
+        
+        const date = new Date(note.updatedAt || note.createdAt);
+        const formattedDate = date.toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        });
+        
+        noteElement.innerHTML = `
+          <div class="note-actions">
+            <button class="edit-note" data-id="${note.id}"><i class="fas fa-edit"></i></button>
+            <button class="delete-note" data-id="${note.id}"><i class="fas fa-trash"></i></button>
+          </div>
+          <h3>${note.title}</h3>
+          <div class="note-content-preview">${note.content.substring(0, 200)}${note.content.length > 200 ? '...' : ''}</div>
+          <div class="note-meta">
+            <span class="note-category">${note.category}</span>
+            <span>${formattedDate}</span>
+          </div>
+        `;
+        
+        notesList.appendChild(noteElement);
+        
+        // Event listeners untuk aksi catatan
+        noteElement.querySelector('.edit-note').addEventListener('click', function(e) {
+          e.stopPropagation();
+          editNote(note.id);
+        });
+        
+        noteElement.querySelector('.delete-note').addEventListener('click', function(e) {
+          e.stopPropagation();
+          deleteNote(note.id);
+        });
+        
+        noteElement.addEventListener('click', function() {
+          viewNote(note.id);
+        });
+      }
+      
+      // Edit catatan
+      function editNote(noteId) {
+        notesRef.child(noteId).once('value', (snapshot) => {
+          const note = snapshot.val();
+          
+          document.getElementById('note-id').value = noteId;
+          document.getElementById('note-title').value = note.title;
+          document.getElementById('note-category').value = note.category;
+          document.getElementById('note-content').value = note.content;
+          
+          noteEditorModal.style.display = 'block';
+        });
+      }
+      
+      // Lihat catatan
+      function viewNote(noteId) {
+        notesRef.child(noteId).once('value', (snapshot) => {
+          const note = snapshot.val();
+          
+          document.getElementById('note-id').value = noteId;
+          document.getElementById('note-title').value = note.title;
+          document.getElementById('note-category').value = note.category;
+          document.getElementById('note-content').value = note.content;
+          
+          // Nonaktifkan input untuk view mode
+          document.getElementById('note-title').readOnly = true;
+          document.getElementById('note-category').disabled = true;
+          document.getElementById('note-content').readOnly = true;
+          document.querySelector('#note-form button[type="submit"]').style.display = 'none';
+          document.getElementById('cancel-note').textContent = 'Tutup';
+          
+          noteEditorModal.style.display = 'block';
+          
+          // Reset setelah modal ditutup
+          noteEditorModal.addEventListener('hidden.bs.modal', function() {
+            document.getElementById('note-title').readOnly = false;
+            document.getElementById('note-category').disabled = false;
+            document.getElementById('note-content').readOnly = false;
+            document.querySelector('#note-form button[type="submit"]').style.display = 'block';
+            document.getElementById('cancel-note').textContent = 'Batal';
+          }, { once: true });
+        });
+      }
+      
+      // Hapus catatan
+      function deleteNote(noteId) {
+        if (confirm('Apakah Anda yakin ingin menghapus catatan ini?')) {
+          notesRef.child(noteId).remove()
+            .then(() => console.log("Catatan dihapus"))
+            .catch(error => console.error("Gagal menghapus catatan:", error));
+        }
+      }
+      
+      // Pencarian catatan
+      document.getElementById('search-notes').addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const noteCards = document.querySelectorAll('.note-card');
+        
+        noteCards.forEach(card => {
+          const title = card.querySelector('h3').textContent.toLowerCase();
+          const content = card.querySelector('.note-content-preview').textContent.toLowerCase();
+          
+          if (title.includes(searchTerm) || content.includes(searchTerm)) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+      
+      // ==================== FILE MANAGEMENT ====================
+      const uploadFileBtn = document.getElementById('upload-file');
+      const fileInput = document.getElementById('file-input');
+      const filesGrid = document.getElementById('files-grid');
+      
+      // Buka dialog unggah file
+      uploadFileBtn.addEventListener('click', function() {
+        fileInput.click();
+      });
+      
+      // Tangani unggah file
+      fileInput.addEventListener('change', function(e) {
+        const files = e.target.files;
+        
+        if (files.length === 0) return;
+        
+        Array.from(files).forEach(file => {
+          uploadFile(file);
+        });
+        
+        // Reset input file
+        fileInput.value = '';
+      });
+      
+      // Unggah file ke Firebase Storage
+      function uploadFile(file) {
+        const fileRef = storageRef.child(`user_files/${auth.currentUser.uid}/${Date.now()}_${file.name}`);
+        const uploadTask = fileRef.put(file);
+        
+        // Buat elemen progress
+        const progressElement = document.createElement('div');
+        progressElement.className = 'file-upload-progress';
+        progressElement.innerHTML = `
+          <div class="file-upload-info">
+            <span>${file.name}</span>
+            <span class="upload-percent">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress" style="width: 0%"></div>
+          </div>
+        `;
+        filesGrid.prepend(progressElement);
+        
+        uploadTask.on('state_changed',
+          (snapshot) => {
+            // Update progress
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            progressElement.querySelector('.progress').style.width = `${progress}%`;
+            progressElement.querySelector('.upload-percent').textContent = `${Math.round(progress)}%`;
+          },
+          (error) => {
+            // Handle error
+            console.error("Gagal mengunggah file:", error);
+            progressElement.innerHTML = `<div class="upload-error">Gagal mengunggah ${file.name}: ${error.message}</div>`;
+          },
+          () => {
+            // Upload complete
+            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+              // Simpan metadata file ke database
+              const fileData = {
+                name: file.name,
+                url: downloadURL,
+                type: getFileType(file.type),
+                size: file.size,
+                uploadedAt: firebase.database.ServerValue.TIMESTAMP,
+                userId: auth.currentUser.uid
+              };
+              
+              filesRef.push(fileData)
+                .then(() => {
+                  console.log("Metadata file disimpan");
+                  progressElement.remove();
+                })
+                .catch(error => {
+                  console.error("Gagal menyimpan metadata file:", error);
+                  progressElement.innerHTML = `<div class="upload-error">Gagal menyimpan metadata ${file.name}</div>`;
+                });
+            });
+          }
+        );
+      }
+      
+      // Dapatkan tipe file untuk kategori
+      function getFileType(mimeType) {
+        if (mimeType.startsWith('image/')) return 'image';
+        if (mimeType.startsWith('video/')) return 'video';
+        if (mimeType.startsWith('audio/')) return 'audio';
+        if (mimeType.includes('pdf') || mimeType.includes('document') || mimeType.includes('msword') || mimeType.includes('presentation') || mimeType.includes('spreadsheet')) {
+          return 'document';
+        }
+        return 'other';
+      }
+      
+      // Muat file
+      function loadFiles(filter = 'all') {
+        if (!auth.currentUser) return;
+        
+        filesGrid.innerHTML = '<div class="loading">Memuat file...</div>';
+        
+        filesRef.orderByChild('userId').equalTo(auth.currentUser.uid).on('value', (snapshot) => {
+          filesGrid.innerHTML = '';
+          
+          if (!snapshot.exists()) {
+            filesGrid.innerHTML = '<p class="no-data">Belum ada file. Klik "Unggah File" untuk menambahkan file pertama Anda.</p>';
+            return;
+          }
+          
+          snapshot.forEach((childSnapshot) => {
+            const file = childSnapshot.val();
+            file.id = childSnapshot.key;
+            
+            if (filter === 'all' || file.type === filter) {
+              renderFile(file);
+            }
+          });
+        });
+      }
+      
+      // Render file
+      function renderFile(file) {
+        const fileElement = document.createElement('div');
+        fileElement.className = 'file-card';
+        fileElement.setAttribute('data-id', file.id);
+        fileElement.setAttribute('data-type', file.type);
+        
+        const fileIcon = getFileIcon(file.type);
+        const fileSize = formatFileSize(file.size);
+        const date = new Date(file.uploadedAt);
+        const formattedDate = date.toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        });
+        
+        fileElement.innerHTML = `
+          <div class="file-actions">
+            <button class="download-file" data-id="${file.id}" data-url="${file.url}"><i class="fas fa-download"></i></button>
+            <button class="delete-file" data-id="${file.id}"><i class="fas fa-trash"></i></button>
+          </div>
+          <div class="file-icon">${fileIcon}</div>
+          <h3>${file.name}</h3>
+          <div class="file-meta">
+            <span>${fileSize}</span>
+            <span>${formattedDate}</span>
+          </div>
+        `;
+        
+        filesGrid.appendChild(fileElement);
+        
+        // Event listeners untuk aksi file
+        fileElement.querySelector('.download-file').addEventListener('click', function(e) {
+          e.stopPropagation();
+          downloadFile(file.url, file.name);
+        });
+        
+        fileElement.querySelector('.delete-file').addEventListener('click', function(e) {
+          e.stopPropagation();
+          deleteFile(file.id, file.url);
+        });
+        
+        fileElement.addEventListener('click', function() {
+          previewFile(file);
+        });
+      }
+      
+      // Dapatkan ikon berdasarkan tipe file
+      function getFileIcon(fileType) {
+        switch(fileType) {
+          case 'image':
+            return '<i class="fas fa-file-image"></i>';
+          case 'video':
+            return '<i class="fas fa-file-video"></i>';
+          case 'audio':
+            return '<i class="fas fa-file-audio"></i>';
+          case 'document':
+            return '<i class="fas fa-file-pdf"></i>';
+          default:
+            return '<i class="fas fa-file"></i>';
+        }
+      }
+      
+      // Format ukuran file
+      function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+      }
+      
+      // Unduh file
+      function downloadFile(url, fileName) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+      
+      // Pratinjau file
+      function previewFile(file) {
+        if (file.type === 'image') {
+          window.open(file.url, '_blank');
+        } else if (file.type === 'pdf') {
+          window.open(`https://docs.google.com/viewer?url=${encodeURIComponent(file.url)}`, '_blank');
+        } else {
+          window.open(file.url, '_blank');
+        }
+      }
+      
+      // Hapus file
+      function deleteFile(fileId, fileUrl) {
+        if (confirm('Apakah Anda yakin ingin menghapus file ini?')) {
+          // Hapus dari storage
+          const fileRef = storage.refFromURL(fileUrl);
+          fileRef.delete()
+            .then(() => {
+              // Hapus dari database
+              filesRef.child(fileId).remove()
+                .then(() => console.log("File dihapus"))
+                .catch(error => console.error("Gagal menghapus metadata file:", error));
+            })
+            .catch(error => {
+              console.error("Gagal menghapus file dari storage:", error);
+              alert("Gagal menghapus file: " + error.message);
+            });
+        }
+      }
+      
+      // Filter file
+      document.querySelectorAll('.file-filters .filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.file-filters .filter-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          
+          const filter = this.getAttribute('data-filter');
+          loadFiles(filter);
+        });
+      });
+      
+      // ==================== BOOKMARK MANAGEMENT ====================
+      const addBookmarkBtn = document.getElementById('add-bookmark');
+      const bookmarksList = document.getElementById('bookmarks-list');
+      const bookmarkForm = document.getElementById('bookmark-form');
+      const cancelBookmarkBtn = document.getElementById('cancel-bookmark');
+      
+      // Buka form bookmark baru
+      addBookmarkBtn.addEventListener('click', function() {
+        bookmarkForm.reset();
+        document.getElementById('bookmark-id').value = '';
+        bookmarkModal.style.display = 'block';
+      });
+      
+      // Batal form bookmark
+      cancelBookmarkBtn.addEventListener('click', function() {
+        closeModal(bookmarkModal);
+      });
+      
+      // Simpan bookmark
+      bookmarkForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const bookmarkId = document.getElementById('bookmark-id').value;
+        const bookmarkData = {
+          title: document.getElementById('bookmark-title').value,
+          url: document.getElementById('bookmark-url').value,
+          category: document.getElementById('bookmark-category').value,
+          notes: document.getElementById('bookmark-notes').value,
+          updatedAt: firebase.database.ServerValue.TIMESTAMP,
+          userId: auth.currentUser.uid
+        };
+        
+        // Jika ada ID, update bookmark yang ada
+        if (bookmarkId) {
+          bookmarksRef.child(bookmarkId).update(bookmarkData)
+            .then(() => {
+              console.log("Bookmark diperbarui");
+              closeModal(bookmarkModal);
+            })
+            .catch(error => {
+              console.error("Gagal memperbarui bookmark:", error);
+              alert("Gagal memperbarui bookmark: " + error.message);
+            });
+        } else {
+          // Jika tidak ada ID, buat bookmark baru
+          bookmarkData.createdAt = firebase.database.ServerValue.TIMESTAMP;
+          bookmarksRef.push(bookmarkData)
+            .then(() => {
+              console.log("Bookmark disimpan");
+              closeModal(bookmarkModal);
+            })
+            .catch(error => {
+              console.error("Gagal menyimpan bookmark:", error);
+              alert("Gagal menyimpan bookmark: " + error.message);
+            });
+        }
+      });
+      
+      // Muat bookmark
+      function loadBookmarks() {
+        if (!auth.currentUser) return;
+        
+        bookmarksList.innerHTML = '<div class="loading">Memuat bookmark...</div>';
+        
+        bookmarksRef.orderByChild('userId').equalTo(auth.currentUser.uid).on('value', (snapshot) => {
+          bookmarksList.innerHTML = '';
+          
+          if (!snapshot.exists()) {
+            bookmarksList.innerHTML = '<p class="no-data">Belum ada bookmark. Klik "Tambah Bookmark" untuk menambahkan bookmark pertama Anda.</p>';
+            return;
+          }
+          
+          snapshot.forEach((childSnapshot) => {
+            const bookmark = childSnapshot.val();
+            bookmark.id = childSnapshot.key;
+            renderBookmark(bookmark);
+          });
+        });
+      }
+      
+      // Render bookmark
+      function renderBookmark(bookmark) {
+        const bookmarkElement = document.createElement('div');
+        bookmarkElement.className = 'bookmark-card';
+        bookmarkElement.setAttribute('data-id', bookmark.id);
+        
+        const date = new Date(bookmark.updatedAt || bookmark.createdAt);
+        const formattedDate = date.toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        });
+        
+        bookmarkElement.innerHTML = `
+          <div class="bookmark-actions">
+            <button class="edit-bookmark" data-id="${bookmark.id}"><i class="fas fa-edit"></i></button>
+            <button class="delete-bookmark" data-id="${bookmark.id}"><i class="fas fa-trash"></i></button>
+          </div>
+          <h3>${bookmark.title}</h3>
+          <div class="bookmark-url">${bookmark.url}</div>
+          <div class="bookmark-notes">${bookmark.notes || 'Tidak ada catatan'}</div>
+          <div class="bookmark-meta">
+            <span class="bookmark-category">${bookmark.category}</span>
+            <span>${formattedDate}</span>
+          </div>
+        `;
+        
+        bookmarksList.appendChild(bookmarkElement);
+        
+        // Event listeners untuk aksi bookmark
+        bookmarkElement.querySelector('.edit-bookmark').addEventListener('click', function(e) {
+          e.stopPropagation();
+          editBookmark(bookmark.id);
+        });
+        
+        bookmarkElement.querySelector('.delete-bookmark').addEventListener('click', function(e) {
+          e.stopPropagation();
+          deleteBookmark(bookmark.id);
+        });
+        
+        bookmarkElement.addEventListener('click', function() {
+          window.open(bookmark.url, '_blank');
+        });
+      }
+      
+      // Edit bookmark
+      function editBookmark(bookmarkId) {
+        bookmarksRef.child(bookmarkId).once('value', (snapshot) => {
+          const bookmark = snapshot.val();
+          
+          document.getElementById('bookmark-id').value = bookmarkId;
+          document.getElementById('bookmark-title').value = bookmark.title;
+          document.getElementById('bookmark-url').value = bookmark.url;
+          document.getElementById('bookmark-category').value = bookmark.category;
+          document.getElementById('bookmark-notes').value = bookmark.notes || '';
+          
+          bookmarkModal.style.display = 'block';
+        });
+      }
+      
+      // Hapus bookmark
+      function deleteBookmark(bookmarkId) {
+        if (confirm('Apakah Anda yakin ingin menghapus bookmark ini?')) {
+          bookmarksRef.child(bookmarkId).remove()
+            .then(() => console.log("Bookmark dihapus"))
+            .catch(error => console.error("Gagal menghapus bookmark:", error));
+        }
+      }
+      
+      // Pencarian bookmark
+      document.getElementById('search-bookmarks').addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const bookmarkCards = document.querySelectorAll('.bookmark-card');
+        
+        bookmarkCards.forEach(card => {
+          const title = card.querySelector('h3').textContent.toLowerCase();
+          const url = card.querySelector('.bookmark-url').textContent.toLowerCase();
+          const notes = card.querySelector('.bookmark-notes').textContent.toLowerCase();
+          
+          if (title.includes(searchTerm) || url.includes(searchTerm) || notes.includes(searchTerm)) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+      
+      // ==================== PROJECT MANAGEMENT ====================
+      const addProjectBtn = document.getElementById('add-project');
+      const projectsGrid = document.getElementById('projects-grid');
+      const projectForm = document.getElementById('project-form');
+      const cancelProjectBtn = document.getElementById('cancel-project');
+      const addProjectFileBtn = document.getElementById('add-project-file');
+      const projectFilesList = document.getElementById('project-files-list');
+      
+      // Buka form proyek baru
+      addProjectBtn.addEventListener('click', function() {
+        projectForm.reset();
+        document.getElementById('project-id').value = '';
+        projectFilesList.innerHTML = '';
+        projectModal.style.display = 'block';
+      });
+      
+      // Batal form proyek
+      cancelProjectBtn.addEventListener('click', function() {
+        closeModal(projectModal);
+      });
+      
+      // Tambah file ke proyek
+      addProjectFileBtn.addEventListener('click', function() {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.style.display = 'none';
+        document.body.appendChild(fileInput);
+        
+        fileInput.click();
+        
+        fileInput.addEventListener('change', function() {
+          const file = this.files[0];
+          if (!file) return;
+          
+          const fileItem = document.createElement('div');
+          fileItem.className = 'project-file-item';
+          fileItem.innerHTML = `
+            <span>${file.name}</span>
+            <button type="button" class="remove-file"><i class="fas fa-times"></i></button>
+          `;
+          
+          fileItem.querySelector('.remove-file').addEventListener('click', function() {
+            fileItem.remove();
+          });
+          
+          projectFilesList.appendChild(fileItem);
+          document.body.removeChild(fileInput);
+        });
+      });
+      
+      // Simpan proyek
+      projectForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const projectId = document.getElementById('project-id').value;
+        const projectData = {
+          title: document.getElementById('project-title').value,
+          category: document.getElementById('project-category').value,
+          description: document.getElementById('project-description').value,
+          status: document.getElementById('project-status').value,
+          updatedAt: firebase.database.ServerValue.TIMESTAMP,
+          userId: auth.currentUser.uid
+        };
+        
+        // Jika ada ID, update proyek yang ada
+        if (projectId) {
+          projectsRef.child(projectId).update(projectData)
+            .then(() => {
+              console.log("Proyek diperbarui");
+              closeModal(projectModal);
+            })
+            .catch(error => {
+              console.error("Gagal memperbarui proyek:", error);
+              alert("Gagal memperbarui proyek: " + error.message);
+            });
+        } else {
+          // Jika tidak ada ID, buat proyek baru
+          projectData.createdAt = firebase.database.ServerValue.TIMESTAMP;
+          projectsRef.push(projectData)
+            .then(() => {
+              console.log("Proyek disimpan");
+              closeModal(projectModal);
+            })
+            .catch(error => {
+              console.error("Gagal menyimpan proyek:", error);
+              alert("Gagal menyimpan proyek: " + error.message);
+            });
+        }
+      });
+      
+      // Muat proyek
+      function loadProjects(filter = 'all') {
+        if (!auth.currentUser) return;
+        
+        projectsGrid.innerHTML = '<div class="loading">Memuat proyek...</div>';
+        
+        projectsRef.orderByChild('userId').equalTo(auth.currentUser.uid).on('value', (snapshot) => {
+          projectsGrid.innerHTML = '';
+          
+          if (!snapshot.exists()) {
+            projectsGrid.innerHTML = '<p class="no-data">Belum ada proyek. Klik "Proyek Baru" untuk menambahkan proyek pertama Anda.</p>';
+            return;
+          }
+          
+          snapshot.forEach((childSnapshot) => {
+            const project = childSnapshot.val();
+            project.id = childSnapshot.key;
+            
+            if (filter === 'all' || project.category === filter) {
+              renderProject(project);
+            }
+          });
+        });
+      }
+      
+      // Render proyek
+      function renderProject(project) {
+        const projectElement = document.createElement('div');
+        projectElement.className = 'project-card';
+        projectElement.setAttribute('data-id', project.id);
+        projectElement.setAttribute('data-category', project.category);
+        
+        const date = new Date(project.updatedAt || project.createdAt);
+        const formattedDate = date.toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        });
+        
+        projectElement.innerHTML = `
+          <div class="project-actions">
+            <button class="edit-project" data-id="${project.id}"><i class="fas fa-edit"></i></button>
+            <button class="delete-project" data-id="${project.id}"><i class="fas fa-trash"></i></button>
+          </div>
+          <h3>${project.title}</h3>
+          <div class="project-description">${project.description}</div>
+          <div class="project-meta">
+            <span class="project-category">${project.category}</span>
+            <span class="project-status ${project.status.replace('-', '')}">${project.status.replace('-', ' ')}</span>
+            <span>${formattedDate}</span>
+          </div>
+        `;
+        
+        projectsGrid.appendChild(projectElement);
+        
+        // Event listeners untuk aksi proyek
+        projectElement.querySelector('.edit-project').addEventListener('click', function(e) {
+          e.stopPropagation();
+          editProject(project.id);
+        });
+        
+        projectElement.querySelector('.delete-project').addEventListener('click', function(e) {
+          e.stopPropagation();
+          deleteProject(project.id);
+        });
+        
+        projectElement.addEventListener('click', function() {
+          viewProject(project.id);
+        });
+      }
+      
+      // Edit proyek
+      function editProject(projectId) {
+        projectsRef.child(projectId).once('value', (snapshot) => {
+          const project = snapshot.val();
+          
+          document.getElementById('project-id').value = projectId;
+          document.getElementById('project-title').value = project.title;
+          document.getElementById('project-category').value = project.category;
+          document.getElementById('project-description').value = project.description;
+          document.getElementById('project-status').value = project.status;
+          
+          // Kosongkan dan muat ulang daftar file
+          projectFilesList.innerHTML = '';
+          
+          projectModal.style.display = 'block';
+        });
+      }
+      
+      // Lihat proyek
+      function viewProject(projectId) {
+        projectsRef.child(projectId).once('value', (snapshot) => {
+          const project = snapshot.val();
+          
+          document.getElementById('project-id').value = projectId;
+          document.getElementById('project-title').value = project.title;
+          document.getElementById('project-category').value = project.category;
+          document.getElementById('project-description').value = project.description;
+          document.getElementById('project-status').value = project.status;
+          
+          // Nonaktifkan input untuk view mode
+          document.getElementById('project-title').readOnly = true;
+          document.getElementById('project-category').disabled = true;
+          document.getElementById('project-description').readOnly = true;
+          document.getElementById('project-status').disabled = true;
+          document.querySelector('#project-form button[type="submit"]').style.display = 'none';
+          document.getElementById('cancel-project').textContent = 'Tutup';
+          addProjectFileBtn.style.display = 'none';
+          
+          // Kosongkan dan muat ulang daftar file
+          projectFilesList.innerHTML = '';
+          
+          projectModal.style.display = 'block';
+          
+          // Reset setelah modal ditutup
+          projectModal.addEventListener('hidden.bs.modal', function() {
+            document.getElementById('project-title').readOnly = false;
+            document.getElementById('project-category').disabled = false;
+            document.getElementById('project-description').readOnly = false;
+            document.getElementById('project-status').disabled = false;
+            document.querySelector('#project-form button[type="submit"]').style.display = 'block';
+            document.getElementById('cancel-project').textContent = 'Batal';
+            addProjectFileBtn.style.display = 'block';
+          }, { once: true });
+        });
+      }
+      
+      // Hapus proyek
+      function deleteProject(projectId) {
+        if (confirm('Apakah Anda yakin ingin menghapus proyek ini?')) {
+          projectsRef.child(projectId).remove()
+            .then(() => console.log("Proyek dihapus"))
+            .catch(error => console.error("Gagal menghapus proyek:", error));
+        }
+      }
+      
+      // Filter proyek
+      document.querySelectorAll('.project-filters .filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.project-filters .filter-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          
+          const filter = this.getAttribute('data-filter');
+          loadProjects(filter);
+        });
+      });
+      
+      // ==================== LOAD ALL DASHBOARD DATA ====================
+      function loadDashboardData() {
+        loadNotes();
+        loadFiles();
+        loadBookmarks();
+        loadProjects();
+      }
+      
+      // Initialize dashboard when user is logged in
+      auth.onAuthStateChanged(user => {
+        if (user) {
+          // Inisialisasi dashboard jika diperlukan
+        }
       });
     });
   </script>
